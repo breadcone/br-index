@@ -18,6 +18,7 @@ A personal portfolio site for Brian Le, a designer at IBM (mainframe modernizati
 - Fully responsive. Check phone widths. The two-column layouts stack to one column on small screens.
 - Accessible: real links and buttons, visible focus states, alt text on images, good contrast.
 - Respect `prefers-reduced-motion`: any animation must switch off or simplify for those users.
+- Publishing: on every push to `main`, GitHub runs `.github/workflows/deploy.yml`, which runs `scripts/build.sh`. That copies the site and renames `css/styles.css` and `js/main.js` to fingerprinted names (e.g. `styles.3f9a1c27b0.css`) so visitors never get stale CSS/JS. This is the only build step, and it only happens on GitHub; the files in the repo always stay plain and work as-is. Always link CSS/JS in pages exactly as `href="css/styles.css"` / `src="js/main.js"` (with `../` in subfolders) so the script can find them. GitHub Pages fixes every file's cache at 10 minutes; that can't be changed here.
 
 ## Folder structure
 ```

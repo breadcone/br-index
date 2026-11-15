@@ -62,7 +62,7 @@
   --text-arrow-button: calc(var(--u) * 1.4);
 
   /* Line height and tracking */
-  --leading-display: 1.1;
+  --leading-display: 1.15;
   --leading-card-title: 1;
   --leading-body: 1.4;
   --tracking-display: -0.02em;
@@ -326,10 +326,6 @@ a:focus-visible > [data-oval] .oval path,
   white-space: nowrap;
 }
 
-/* Phones only: a chevron after the label (see Small screens) */
-.site-switch__chevron {
-  display: none;
-}
 
 .site-switch:hover .site-switch__menu,
 .site-switch:focus-within .site-switch__menu,
@@ -621,7 +617,7 @@ a:focus-visible > [data-oval] .oval path,
   top: -1px;
   left: -1px;  /* sits on the divider line */
   right: -1px; /* sits on the card's outer line */
-  max-height: calc(100% + 2px);
+  height: calc(100% + 2px);
   overflow: hidden;
   padding: inherit;
   background: var(--color-box);
@@ -629,14 +625,15 @@ a:focus-visible > [data-oval] .oval path,
   opacity: 0;
   pointer-events: none;
   /* on the way back up, stay visible until the slide finishes */
-  transition: max-height 250ms ease, opacity 0s linear 250ms;
+  transition: height 300ms ease-in, opacity 0s linear 300ms;
 }
 
 .card__link:hover .card__objective,
 .card__link:focus-visible .card__objective {
-  max-height: 30em;
+  height: var(--open-h, auto); /* the box's full height, measured by js/main.js */
   opacity: 1;
-  transition: max-height 250ms ease, opacity 0s;
+  /* eases out with a slight overshoot, then settles */
+  transition: height 420ms cubic-bezier(0.34, 1.35, 0.64, 1), opacity 0s;
 }
 
 /* Timeline in the hover box, under the objective */
@@ -647,7 +644,7 @@ a:focus-visible > [data-oval] .oval path,
 /* Homepage cards: the title is a little larger (the largest that keeps the
    longest title on one line). Same gap under its label as the right side. */
 .card:has(.card__objective) .work-card__title {
-  font-size: calc(var(--text-card-title) * 0.84); /* smaller since the titles are bold now */
+  font-size: calc(var(--text-card-title) * 0.85); /* same size as the ceramics card titles */
   margin-top: 2px; /* the description's taller lines add ~2px above its letters; match it */
 }
 
@@ -661,6 +658,20 @@ a:focus-visible > [data-oval] .oval path,
   font-weight: var(--weight-bold);
 }
 
+/* Ceramics cards (the ones with a photo gallery): title and year a tad
+   larger than the details on the ceramics project pages */
+.work-card:has(.work-gallery) .work-card__title,
+.work-card:has(.work-gallery) .work-card__value {
+  font-size: calc(var(--text-card-title) * 0.76);
+}
+
+@media (min-width: 801px) {
+  .work-card:has(.work-gallery) .work-card__title,
+  .work-card:has(.work-gallery) .work-card__value {
+    font-size: calc(var(--text-card-title) * 0.66);
+  }
+}
+
 /* Card years (ceramics): regular sans-serif, not italic serif */
 .work-card__value.work-card__year {
   display: inline-block; /* lets the long oval end right after the years */
@@ -672,6 +683,13 @@ a:focus-visible > [data-oval] .oval path,
 }
 
 /* ---------- Homepage layout ---------- */
+/* Design homepage only: body text a touch smaller than the project pages
+   (13px vs 14px at a 1440px-wide window), so the boxes feel roomier. */
+.home--design {
+  --text-small: calc(var(--u) * 1.3);
+  font-size: var(--text-small);
+}
+
 .home {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -977,6 +995,10 @@ a:focus-visible > [data-oval] .oval path,
 }
 
 /* Timeline */
+.timeline {
+  line-height: 1.5; /* a touch more space between lines than the body text */
+}
+
 .timeline dd {
   white-space: nowrap;
 }
@@ -1068,6 +1090,13 @@ a:focus-visible > [data-oval] .oval path,
 
 .work-card__cell {
   padding: calc(var(--box-pad-y) * 0.6) var(--box-pad-x);
+}
+
+/* Ceramic project cards: the same padding on all four sides, with a little
+   more on the left */
+.card.work-card .work-card__cell {
+  padding: calc(var(--u) * 2);
+  padding-left: calc(var(--u) * 2.8);
 }
 
 .work-card__cell + .work-card__cell {
@@ -1274,6 +1303,29 @@ a:focus-visible > [data-oval] .oval path,
 .cs-text h3 {
   font-size: inherit;
   font-weight: var(--weight-bold);
+}
+
+/* Text wrapping on project pages only (.case-study).
+   - Body paragraphs and captions keep text-wrap: pretty (set globally) and
+     add light hyphenation, using the page's lang="en". Only words of 10+
+     letters break, leaving at least 5 letters on each side, so breaks stay
+     rare and readable (about 1 line in 10). Browsers that ignore the limit still hyphenate
+     sensibly; ones without hyphenation just wrap normally.
+   - Short headings and the centered pull quotes use text-wrap: balance so
+     their lines come out even instead of leaving one short last line. */
+.case-study .cs-text p,
+.case-study .cs-text li,
+.case-study .cs-caption {
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  hyphenate-limit-chars: 10 5 5;
+}
+
+.case-study .cs-title,
+.case-study .cs-section-title,
+.case-study .cs-text h3,
+.case-study .cs-quote {
+  text-wrap: balance;
 }
 
 /* Pull quote */
@@ -1751,14 +1803,23 @@ a:focus-visible > [data-oval] .oval path,
   padding: var(--page-top) var(--page-gutter) var(--page-gutter);
 }
 
+/* The details column is about 22% wide (at least 220px, set on .work-meta),
+   but grows when needed so the title, year and dimensions always fit on
+   one line */
 .work-sheet {
   display: grid;
-  grid-template-columns: minmax(220px, 22%) 1fr;
+  grid-template-columns: fit-content(22%) 1fr;
+}
+
+/* One work per sheet; sheets stack with the page gutter between them */
+.work-sheet + .work-sheet {
+  margin-top: var(--page-gutter);
 }
 
 .work-meta {
   display: flex;
   flex-direction: column;
+  min-width: 220px;
   border-right: var(--line);
 }
 
@@ -1771,10 +1832,32 @@ a:focus-visible > [data-oval] .oval path,
 
 /* stacked cells: one line between each, nothing on their sides */
 .work-meta .work-card__cell {
-  padding: calc(var(--work-pad) * 0.7) var(--work-pad); /* a little less above and below than at the sides */
+  padding: calc(var(--u) * 2); /* the same on all four sides */
 }
 
-/* Multi-line values (e.g. Materials) get a little more line spacing */
+/* Title and values: the same size, a little smaller than on the ceramics
+   home page cards */
+.work-meta .work-card__title,
+.work-meta .work-card__value {
+  font-size: calc(var(--text-card-title) * 0.7);
+}
+
+/* The work's title stands out in bold */
+.work-meta .work-card__title {
+  font-weight: var(--weight-bold);
+}
+
+/* Title, year and dimensions never break onto a second line (materials
+   can wrap) */
+.work-meta .work-card__title,
+.work-meta__inner > .work-card__cell:nth-child(2) .work-card__value,
+.work-meta__inner > .work-card__cell:nth-child(3) .work-card__value {
+  white-space: nowrap;
+}
+
+/* Multi-line values (e.g. Materials) get a little more line spacing; the
+   title uses the same, so every line in the column is the same height */
+.work-meta .work-card__title,
 .work-meta .work-card__value {
   line-height: 1.2;
 }
@@ -1788,6 +1871,14 @@ a:focus-visible > [data-oval] .oval path,
 .work-photos {
   min-width: 0;
   padding: 0;
+}
+
+/* Desktop: the title and detail text are a little smaller than on phones */
+@media (min-width: 801px) {
+  .work-meta .work-card__title,
+  .work-meta .work-card__value {
+    font-size: calc(var(--text-card-title) * 0.6);
+  }
 }
 
 /* Photo sets: one large photo on the left, two smaller photos stacked on
@@ -1820,8 +1911,10 @@ a:focus-visible > [data-oval] .oval path,
   height: 100%;
 }
 
+/* Side photos set the height of each set; the big photo fills the rest.
+   Photos are cropped to these shapes (big about 1.14 : 1) before upload. */
 .work-set__side {
-  aspect-ratio: 1.56;
+  aspect-ratio: 1.3;
   height: auto;
 }
 
@@ -1900,48 +1993,35 @@ a:focus-visible > [data-oval] .oval path,
     height var(--menu-open) var(--menu-open-ease);
 }
 
+/* Every popup has the same shape (set in js/main.js); photos of another
+   shape are cropped to fill it. A click anywhere closes it. */
 .lightbox__img {
   display: block;
-  height: auto;
+  object-fit: cover;
   border: var(--line); /* thin black line around the photo, inside the white mat */
 }
 
-/* Close box: outside the photo, to the right of its top-right corner,
-   sharing the photo's border line. Appears once the photo has opened. */
-.lightbox__close {
-  position: absolute;
-  top: 0;
-  left: calc(100% - 1px);
-  z-index: 2;
-  padding: 0;
-  cursor: pointer;
-  opacity: 0;
-  transition:
-    background-color var(--hover-duration) ease,
-    opacity 150ms ease;
+.lightbox {
+  cursor: zoom-out;
 }
 
-.lightbox-open .lightbox__close {
-  opacity: 1;
-  transition:
-    background-color var(--hover-duration) ease,
-    opacity 200ms ease var(--menu-open);
+/* Full-size popup, used on every page and screen size (js/main.js always
+   adds .lightbox--full). The photo is as large as fits below the header,
+   with the page gutter around it (js/main.js reads this padding to size it).
+   No white mat: the box's own black line is the photo's only border.
+   A frosted-glass layer covers the page behind it, starting just below the
+   header's line so the header stays clear and usable. */
+.lightbox--full {
+  --lightbox-mat: 0px;
+  top: var(--header-height);
+  padding: var(--page-gutter);
+  background: rgb(255 255 255 / 0.3);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 
-.lightbox__close .icon {
-  margin: 0;
-  transition: filter var(--hover-duration) ease, rotate var(--hover-duration) ease;
-}
-
-.lightbox__close:hover,
-.lightbox__close:focus-visible {
-  background: var(--color-hover);
-}
-
-.lightbox__close:hover .icon,
-.lightbox__close:focus-visible .icon {
-  filter: invert(1);
-  rotate: 90deg;
+.lightbox--full .lightbox__img {
+  border: 0;
 }
 
 /* Photos in work cards can be clicked to enlarge */
@@ -2137,66 +2217,77 @@ html:not(.js) .view-toggle {
   overflow-clip-margin: 1.2em;
 }
 
-/* ---------- Small screens ---------- */
-@media (max-width: 800px) {
-  /* Header label: centered in the bar, with the dropdown centered under it */
-  .site-switch {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    height: 100%;
-    translate: -50% 0;
-    justify-content: center;
-  }
+/* Header label (all screen sizes): centered in the bar with a chevron after
+   it, and the dropdown centered under it */
+.site-switch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  translate: -50% 0;
+  justify-content: center;
+}
 
-  .site-switch > .site-header__name {
-    flex: 0 0 auto;
-    border-right: 0;
-  }
+.site-switch > .site-header__name {
+  flex: 0 0 auto;
+  border-right: 0;
+}
 
-  /* Chevron after the label; it flips up while the dropdown is open */
-  .site-switch__chevron {
-    display: inline-block;
-    height: 1em;
-    margin: 0 0 0 0.3em;
-    vertical-align: -0.15em;
-    transition: rotate 200ms ease;
-  }
+/* Chevron after the label; it flips up while the dropdown is open */
+.site-switch__chevron {
+  display: inline-block;
+  height: 1em;
+  margin: 0 0 0 0.3em;
+  vertical-align: -0.15em;
+  transition: rotate 200ms ease;
+}
 
-  .site-switch.is-open .site-switch__chevron {
+.site-switch.is-open .site-switch__chevron {
+  rotate: 180deg;
+}
+
+/* No box around the label here, so no box fill on hover */
+.site-switch > .site-header__name:hover,
+.site-switch > .site-header__name:focus-visible {
+  background: none;
+  color: inherit;
+}
+
+.site-switch > .site-header__name:hover .site-section,
+.site-switch > .site-header__name:focus-visible .site-section {
+  color: var(--color-accent);
+}
+
+/* Keyboard focus: a thin blue underline instead */
+.site-switch > .site-header__name:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-color: var(--color-hover);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.site-switch__menu {
+  left: 50%;
+  translate: -50% 0;
+  border-left: var(--line);
+  text-align: center;
+}
+
+/* Mouse users: the chevron also flips while hovering opens the dropdown */
+@media (hover: hover) {
+  .site-switch:hover .site-switch__chevron,
+  .site-switch:focus-within .site-switch__chevron {
     rotate: 180deg;
   }
+}
 
-  /* No box around the label here, so no box fill on hover */
-  .site-switch > .site-header__name:hover,
-  .site-switch > .site-header__name:focus-visible {
-    background: none;
-    color: inherit;
-  }
-
-  .site-switch > .site-header__name:hover .site-section,
-  .site-switch > .site-header__name:focus-visible .site-section {
-    color: var(--color-accent);
-  }
-
-  /* Keyboard focus: a thin blue underline instead */
-  .site-switch > .site-header__name:focus-visible {
-    outline: none;
-    text-decoration: underline;
-    text-decoration-color: var(--color-hover);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-  }
-
-  .site-switch__menu {
-    left: 50%;
-    translate: -50% 0;
-    border-left: var(--line);
-    text-align: center;
-  }
+/* ---------- Small screens ---------- */
+@media (max-width: 800px) {
 
   .index-overlay {
-    width: 100%;
+    width: 60%; /* covers 60% of the screen from the right */
+    min-width: 0;
     max-width: none;
   }
 
@@ -2240,55 +2331,63 @@ html:not(.js) .view-toggle {
     filter: invert(1);
   }
 
-  /* Ceramic work pages: metadata above the photos, two photos per row */
+  /* Ceramic work pages on phones: the title on top, then the photos, then
+     year, dimensions and materials underneath.
+     The metadata column "dissolves" (display: contents) so its cells join
+     the sheet's own two-column grid; order puts the photos after the title.
+     Lines: the photos draw the line under the title; each cell after the
+     title draws the line above itself, so no edge is doubled. */
   .work-sheet {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
-  .work-meta {
-    border-right: 0;
-    border-bottom: var(--line);
-  }
-
+  .work-meta,
   .work-meta__inner {
-    position: static;
-    min-height: 0;
+    display: contents;
   }
 
+  .work-meta__inner > .work-card__cell {
+    order: 2;
+  }
+
+  .work-meta__inner > .work-card__cell:first-child {
+    order: 0;
+  }
+
+  .work-photos {
+    order: 1;
+    grid-column: 1 / -1;
+    border-top: var(--line);
+  }
+
+
+  /* Year and dimensions share one row, split by a vertical line.
+     Title and materials keep the full width. */
+  .work-meta__inner > .work-card__cell:first-child,
+  .work-meta__inner > .work-card__cell:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .work-meta__inner > .work-card__cell:nth-child(3) {
+    border-left: var(--line);
+  }
+
+  /* Photos on phones: all three square. The main photo runs the full
+     width, with the two smaller ones side by side underneath. The 1px gaps
+     show the black background, so each shared edge is a single line. */
   .work-set {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .work-set__main {
+    grid-column: 1 / -1;
     grid-row: auto;
-    aspect-ratio: 4 / 3;
+    height: auto;
+    aspect-ratio: 1;
   }
 
-  /* Photo popup: the close box sits above the photo's top-right corner,
-     since there is no room beside it */
-  /* Photo popup on phones: full width, minus the page gutter on each side
-     (js/main.js reads this padding to size the photo). No white mat, so the
-     box's own black line is the photo's only border.
-     A frosted-glass layer covers the page behind the photo, starting just
-     below the header's line so the header stays clear and usable. */
-  .lightbox {
-    --lightbox-mat: 0px;
-    top: var(--header-height);
-    padding-inline: var(--page-gutter);
-    background: rgb(255 255 255 / 0.3);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-  }
-
-  .lightbox__img {
-    border: 0;
-  }
-
-  .lightbox__close {
-    top: auto;
-    bottom: calc(100% - 1px);
-    left: auto;
-    right: 0;
+  .work-set__side {
+    aspect-ratio: 1;
   }
 
   /* Case studies: text above media */

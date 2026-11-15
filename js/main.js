@@ -29,7 +29,7 @@
       subtitle: "", // optional line under the title (e.g. "Selected works from IBM")
       groups: [
         { label: "Case studies", items: [
-          { text: "AI Framework for z/OS", meta: "2024–2026", href: "projects/ai-framework.html" },
+          { text: "z/OS AI Framework", meta: "2024–2026", href: "projects/ai-framework.html" },
           { text: "Cloud Pak System", meta: "2018–2021", href: "projects/cloud-pak-system.html" },
           { text: "Cloud Pak AIOps", meta: "2021–2022", href: "projects/cloud-pak-aiops.html" }
         ] },
@@ -43,9 +43,9 @@
       groups: [
         { label: "Works", items: [
           { text: "Persimmons", href: "ceramics/persimmons.html" },
-          // [TODO] Ritual 1 and Ritual 2 have cards on ceramics.html but no pages yet
-          { text: "Ritual 1", href: "#", todo: true },
-          { text: "Ritual 2", href: "#", todo: true }
+          { text: "Ritual Vessel no. 1", href: "ceramics/ritual-1.html" },
+          // [TODO] Ritual Vessel no. 2 has a card on ceramics.html but no page yet
+          { text: "Ritual Vessel no. 2", href: "#", todo: true }
         ] },
         // [TODO] "Artist Statement" has no page yet
         { label: "Info", items: [{ text: "Artist Statement", href: "#", todo: true }] },
@@ -197,7 +197,7 @@
   var overlay = document.createElement("nav");
   overlay.className = "box index-panel index-overlay";
   overlay.id = "index-overlay";
-  overlay.setAttribute("aria-label", "Index");
+  overlay.setAttribute("aria-label", "Contents");
   overlay.innerHTML = buildPanel();
 
   // Phones only (shown by the CSS): the panel fills the screen, so a square
@@ -280,11 +280,8 @@
       if (i === chars.length) { last.classList.add("is-caret", "is-done"); return; }
       chars[i].classList.add("is-shown", "is-caret");
       i++;
-      // An uneven, human pace: each key 90–200ms, with an occasional
-      // small hesitation anywhere in the word.
-      var delay = 90 + Math.random() * 110;
-      if (Math.random() < 0.18) delay += 140 + Math.random() * 160;
-      setTimeout(step, delay);
+      // A steady, even pace: every letter takes the same time
+      setTimeout(step, 110);
     })();
   }
   typeTitle();
@@ -665,58 +662,67 @@
 
 /* ---------------------------------------------------------
    Image popup (ceramics work cards)
-   Clicking a photo opens it larger in a box half the width of the screen,
-   with a square × to close. It grows from the center with the same timing
-   as the other boxes, and folds back the same way. Escape, the ×, or a
-   click outside the box closes it. The popup shows the same full-size file,
-   so it stays sharp.
+   Clicking a photo opens it larger. Every popup has the same shape and
+   size as the first Persimmons photo (1800 × 1270); other photos are
+   cropped to fill it. It grows from the center with the same timing as the
+   other boxes, and folds back the same way. There is no visible close
+   button: a click anywhere, or Escape, closes it. A hidden "Close photo"
+   button stays for keyboard and screen-reader users.
    --------------------------------------------------------- */
 (function () {
   var photos = document.querySelectorAll(".work-card img:not(.icon), .work-grid img");
   if (!photos.length) return;
 
-  var closeIcon = document.querySelector('img[src$="arrow-north-east.svg"]');
-  var iconBase = closeIcon ? closeIcon.getAttribute("src").replace(/arrow-north-east\.svg$/, "") : "images/icons/";
-
   var pop = document.createElement("div");
-  pop.className = "lightbox";
+  // Same popup on every page and screen size (.lightbox--full in
+  // css/styles.css): no white mat, just the 1px black line, glass behind,
+  // as large as fits below the header.
+  pop.className = "lightbox lightbox--full";
   pop.setAttribute("role", "dialog");
   pop.setAttribute("aria-modal", "true");
   pop.setAttribute("aria-label", "Enlarged photo");
   pop.innerHTML =
     '<div class="lightbox__frame">' +
       '<div class="box lightbox__box"><img class="lightbox__img" alt=""></div>' +
-      '<button class="arrow-button lightbox__close" type="button" aria-label="Close photo">' +
-        '<img class="icon" src="' + iconBase + 'close.svg" alt=""></button>' +
+      '<button class="visually-hidden lightbox__close" type="button">Close photo</button>' +
     "</div>";
   document.body.appendChild(pop);
   var big = pop.querySelector(".lightbox__img");
   var closeBtn = pop.querySelector(".lightbox__close");
   var lastPhoto = null;
 
-  // Size the popup to the photo itself, so there are never empty bars beside
-  // it: as large as fits in half the screen width and 90% of its height.
-  // Square photos open at 70% of that. On phones the box runs the full
-  // width, minus the page gutter on each side (the popup's side padding).
-  function sizeFor(photo) {
-    var w = Number(photo.getAttribute("width")) || photo.naturalWidth || 1;
-    var h = Number(photo.getAttribute("height")) || photo.naturalHeight || 1;
-    var ratio = w / h;
-    var phone = window.innerWidth <= 800;
-    // leave room for the white mat around the photo and the box's 1px line on each side
-    var mat = 2 * (parseFloat(getComputedStyle(pop.querySelector(".lightbox__box")).paddingLeft) || 0) + 2;
-    var gutter = 2 * (parseFloat(getComputedStyle(pop).paddingLeft) || 0);
-    var maxW = (phone ? window.innerWidth - gutter : window.innerWidth * 0.5) - mat;
-    var maxH = pop.clientHeight * 0.9 - mat; // the popup's own height (on phones it starts below the header)
-    var width = Math.min(maxW, maxH * ratio);
-    if (!phone && Math.abs(ratio - 1) < 0.02) width *= 0.7;
-    big.style.width = Math.round(width) + "px";
+  // Every popup has the shape of the first Persimmons photo; other photos
+  // are cropped to fill it (object-fit: cover in css/styles.css).
+  var RATIO = 1800 / 1270;
+
+  // Size the popup: as large as fits inside its padding (the page gutter).
+  function sizeFor() {
+    var ratio = RATIO;
+    var popStyle = getComputedStyle(pop);
+    var padX = (parseFloat(popStyle.paddingLeft) || 0) + (parseFloat(popStyle.paddingRight) || 0);
+    var padY = (parseFloat(popStyle.paddingTop) || 0) + (parseFloat(popStyle.paddingBottom) || 0);
+    // leave room for the box's 1px line on each side
+    var line = 2;
+    var maxW = pop.clientWidth - padX - line;
+    var maxH = pop.clientHeight - padY - line;
+    var width = Math.round(Math.min(maxW, maxH * ratio));
+    big.style.width = width + "px";
+    big.style.height = Math.round(width / ratio) + "px";
   }
 
   function open(photo) {
     lastPhoto = photo;
-    sizeFor(photo);
+    sizeFor();
+    // Show the page's photo at once, then swap in the high-detail file
+    // (data-full) when it has loaded, so people can look closely. The page
+    // itself keeps the lighter file.
     big.src = photo.currentSrc || photo.src;
+    var fullSrc = photo.getAttribute("data-full");
+    if (fullSrc) {
+      var hi = new Image();
+      hi.onload = function () { if (lastPhoto === photo) big.src = hi.src; };
+      hi.src = fullSrc;
+    }
     big.alt = photo.alt;
     document.documentElement.classList.add("lightbox-open");
     closeBtn.focus({ preventScroll: true });
@@ -737,7 +743,7 @@
   });
 
   closeBtn.addEventListener("click", close);
-  pop.addEventListener("click", function (e) { if (e.target === pop) close(); });
+  pop.addEventListener("click", close); // anywhere, photo included
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && document.documentElement.classList.contains("lightbox-open")) close();
   });
@@ -974,7 +980,7 @@
     var meta = document.createElement("div");
     meta.className = "work-tile__meta";
     meta.innerHTML =
-      '<div class="work-card__cell"><p class="work-card__label">Title of work:</p>' +
+      '<div class="work-card__cell"><p class="work-card__label">Title:</p>' +
       '<p class="work-card__title"></p></div>';
     meta.querySelector(".work-card__title").textContent = title ? title.textContent : "";
     tile.insertBefore(meta, img); // title strip above the photo
@@ -1070,4 +1076,27 @@
   window.addEventListener("resize", queueFit);
 })();
 
+
+/* ==========================================================
+   Homepage card Objective box: measure its full height so the
+   slide-down can animate to it (with a soft bounce in styles.css).
+   ========================================================== */
+(function () {
+  var boxes = document.querySelectorAll(".card__objective");
+  if (!boxes.length) return;
+  function measure() {
+    boxes.forEach(function (box) {
+      var t = box.style.transition;
+      box.style.transition = "none";
+      box.style.height = "auto";
+      box.style.setProperty("--open-h", box.offsetHeight + "px");
+      box.style.height = "";
+      box.offsetHeight; // apply before restoring the animation
+      box.style.transition = t;
+    });
+  }
+  measure();
+  window.addEventListener("resize", measure);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+})();
 
