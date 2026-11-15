@@ -114,8 +114,8 @@
     );
   }
 
-  // Section switcher: hovering the "br-index/…" label in the header drops
-  // down the other two portfolios. Built here so every page stays in sync.
+  // Section switcher: hovering the "br-index/…" label in the header (or
+  // tapping it on a touch screen) drops down the other two portfolios. Built here so every page stays in sync.
   (function () {
     var nameLink = document.querySelector(".site-header__name");
     if (!nameLink) return;
@@ -138,6 +138,80 @@
     }).join("");
     wrap.appendChild(list);
 
+    // The current portfolio is also listed, but only on touch screens (the
+    // CSS hides it elsewhere): there, tapping the label opens the dropdown
+    // instead of going home, so this row is the way home.
+    if (SECTIONS.some(function (s) { return s.text === current; })) {
+      var here = SECTIONS.filter(function (s) { return s.text === current; })[0];
+      var hereItem = document.createElement("li");
+      hereItem.className = "site-switch__current";
+      hereItem.innerHTML = '<a data-oval href="' + url(here.href) + '" aria-current="page">br-index/<span class="site-section">' + here.text.replace("br-index/", "") + "</span></a>";
+      list.insertBefore(hereItem, list.firstChild);
+    }
+
+    // Touch screens have no hover, so a tap on the label opens and closes
+    // the dropdown. Tapping anywhere outside closes it.
+    var touch = window.matchMedia("(hover: none)");
+    function setSwitchOpen(open) {
+      wrap.classList.toggle("is-open", open);
+      nameLink.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    nameLink.addEventListener("click", function (e) {
+      if (!touch.matches) return;
+      e.preventDefault();
+      setSwitchOpen(!wrap.classList.contains("is-open"));
+    });
+    document.addEventListener("click", function (e) {
+      if (!wrap.contains(e.target)) setSwitchOpen(false);
+    });
+
+    // The section name ("design") types itself in on page load, with a blue
+    // caret that goes away once it's done. Each letter keeps its space while
+    // hidden, so the label never shifts. Reduced motion: it just appears.
+    var section = nameLink.querySelector(".site-section");
+    if (section) {
+      section.setAttribute("aria-hidden", "true");
+      var spoken = document.createElement("span");
+      spoken.className = "visually-hidden";
+      spoken.textContent = section.textContent;
+      section.parentNode.appendChild(spoken);
+      var chars = Array.from(section.textContent).map(function (ch) {
+        var span = document.createElement("span");
+        span.className = "type-char";
+        span.textContent = ch;
+        return span;
+      });
+      section.textContent = "";
+      chars.forEach(function (c) { section.appendChild(c); });
+      var last = chars[chars.length - 1];
+      // Phones only (shown by the CSS): a chevron after the label, hinting
+      // at the dropdown
+      var chevron = document.createElement("img");
+      chevron.className = "icon site-switch__chevron";
+      chevron.src = url("images/icons/chevron-down.svg");
+      chevron.alt = "";
+      section.parentNode.insertBefore(chevron, section.nextSibling);
+      // When typing is done the caret goes away
+      function typed() {
+        last.classList.remove("is-caret");
+      }
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        chars.forEach(function (c) { c.classList.add("is-shown"); });
+      } else {
+        var i = 0;
+        setTimeout(function step() {
+          if (i > 0) chars[i - 1].classList.remove("is-caret");
+          if (i === chars.length) { typed(); return; }
+          chars[i].classList.add("is-shown", "is-caret");
+          i++;
+          // Same uneven, human pace as the other typing on the site
+          var delay = 90 + Math.random() * 110;
+          if (Math.random() < 0.18) delay += 140 + Math.random() * 160;
+          setTimeout(step, delay);
+        }, 300);
+      }
+    }
+
     // Make the label cell as wide as the widest portfolio name, so the
     // dropdown below it is exactly the same width. Re-measured once the
     // fonts load and whenever the window changes size.
@@ -159,6 +233,19 @@
   overlay.id = "index-overlay";
   overlay.setAttribute("aria-label", "Index");
   overlay.innerHTML = buildPanel();
+
+  // Phones only (shown by the CSS): the panel fills the screen, so a square
+  // X box in its top-right corner, beside "/design", closes it.
+  var panelClose = document.createElement("button");
+  panelClose.type = "button";
+  panelClose.className = "index-close";
+  panelClose.setAttribute("aria-label", "Close index");
+  panelClose.innerHTML = '<img class="icon" src="' + url("images/icons/close.svg") + '" alt="">';
+  overlay.querySelector(".index-sec--intro").appendChild(panelClose);
+  panelClose.addEventListener("click", function () {
+    setOpen(false);
+    trigger.focus();
+  });
 
   // Every portfolio's panel is as wide as the design one, so the panel keeps
   // one width across the site. Measured from a hidden copy of the design

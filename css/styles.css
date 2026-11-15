@@ -85,7 +85,10 @@
   --pair-gap: calc(var(--u) * 1.2);
 
   /* Sizes */
-  --header-height: calc(var(--text-nav) * 1.4 + var(--header-pad-y) * 2 + 1px);
+  /* Rounded to a whole pixel, so the header's bottom line and anything that
+     meets it (dropdown, Index panel) land on the same pixel row: no thick or
+     doubled lines */
+  --header-height: round(up, calc(var(--text-nav) * 1.4 + var(--header-pad-y) * 2 + 1px), 1px);
   --header-total: var(--header-height);
   --arrow-button-size: calc(var(--u) * 4);
   --thumb-size: calc(var(--u) * 14.8);
@@ -266,12 +269,15 @@ a:focus-visible > [data-oval] .oval path,
   border-right: var(--line);
 }
 
-/* "Brian Le" home link on the left, marked off by a vertical line */
+/* "br-index/…" label on the left, in its own cell marked off by a
+   vertical line (on phones it sits centered with no lines instead) */
 .site-header__name {
   border-right: var(--line);
 }
 
-/* Section switcher: hovering the "br-index/…" label drops down the other two
+/* Section switcher: "design" types itself in on page load (the caret
+   leaves once it's done; js/main.js).
+   Hovering the label (or tapping it on a touch screen) drops down the other
    portfolios in a small box hanging from the header (its top edge shares
    the header's bottom line). It slides down from behind the header line;
    its edges stay drawn the whole way, because the clip moves with the box
@@ -289,7 +295,7 @@ a:focus-visible > [data-oval] .oval path,
 
 .site-switch__menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 1px); /* starts just below the header's line, which is its top edge */
   left: 0;
   z-index: 11;
   min-width: 100%;
@@ -299,6 +305,7 @@ a:focus-visible > [data-oval] .oval path,
   list-style: none;
   background: var(--color-box);
   border: var(--line);
+  border-top: 0; /* the header's line is its top edge: no double line */
   border-left: 0; /* the page edge; avoids a stray line at the window's edge */
   transform: translateY(-100%);
   clip-path: inset(100% -1px -1px -1px); /* fully tucked above the header line */
@@ -309,8 +316,21 @@ a:focus-visible > [data-oval] .oval path,
     visibility 0s linear var(--menu-close);
 }
 
+/* The label cell stretches to the width js/main.js gives the switcher
+   (the widest of the portfolio names), so it matches the dropdown. */
+.site-switch > .site-header__name {
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
+/* Phones only: a chevron after the label (see Small screens) */
+.site-switch__chevron {
+  display: none;
+}
+
 .site-switch:hover .site-switch__menu,
-.site-switch:focus-within .site-switch__menu {
+.site-switch:focus-within .site-switch__menu,
+.site-switch.is-open .site-switch__menu {
   transform: translateY(0);
   clip-path: inset(0 -1px -1px -1px);
   visibility: visible;
@@ -318,6 +338,32 @@ a:focus-visible > [data-oval] .oval path,
     transform var(--menu-open) var(--menu-open-ease),
     clip-path var(--menu-open) var(--menu-open-ease),
     visibility 0s;
+}
+
+/* Touch screens: only a tap opens it (a tap leaves a sticky hover/focus
+   behind, which would otherwise keep it open) */
+@media (hover: none) {
+  .site-switch:not(.is-open) .site-switch__menu {
+    transform: translateY(-100%);
+    clip-path: inset(100% -1px -1px -1px);
+    visibility: hidden;
+    transition:
+      transform var(--menu-close) var(--menu-close-ease),
+      clip-path var(--menu-close) var(--menu-close-ease),
+      visibility 0s linear var(--menu-close);
+  }
+}
+
+/* The current portfolio's row is only for touch screens, where tapping the
+   label opens the menu instead of going home */
+@media (hover: hover) {
+  .site-switch__current {
+    display: none;
+  }
+
+  .site-switch__menu .site-switch__current + li { /* must outrank ".site-switch__menu li + li" */
+    border-top: 0; /* the header's line is already above it */
+  }
 }
 
 /* The section part of each "br-index/…" label is blue */
@@ -348,12 +394,6 @@ a:focus-visible > [data-oval] .oval path,
 .site-switch__menu a[data-oval] {
   --oval-left: 0.5em;
   --oval-right: 0.5em;
-}
-
-/* The label cell stretches to the width js/main.js gives the switcher
-   (the widest of the three portfolio names), so it matches the dropdown. */
-.site-switch > .site-header__name {
-  flex: 1 1 auto;
 }
 
 /* Box hover: text in its own box fills the box blue and turns white.
@@ -1636,6 +1676,11 @@ a:focus-visible > [data-oval] .oval path,
   flex: 1 0 auto;
 }
 
+/* Phones only: the X box that closes the panel (see Small screens) */
+.index-close {
+  display: none;
+}
+
 /* Ceramic work pages (ceramics/*.html) -------------------------------- */
 /* One white sheet across the page. On the left, a narrow metadata column
    (title, year, dimensions, materials) that
@@ -1986,9 +2031,105 @@ html:not(.js) .view-toggle {
 
 /* ---------- Small screens ---------- */
 @media (max-width: 800px) {
+  /* Header label: centered in the bar, with the dropdown centered under it */
+  .site-switch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 100%;
+    translate: -50% 0;
+    justify-content: center;
+  }
+
+  .site-switch > .site-header__name {
+    flex: 0 0 auto;
+    border-right: 0;
+  }
+
+  /* Chevron after the label; it flips up while the dropdown is open */
+  .site-switch__chevron {
+    display: inline-block;
+    height: 1em;
+    margin: 0 0 0 0.3em;
+    vertical-align: -0.15em;
+    transition: rotate 200ms ease;
+  }
+
+  .site-switch.is-open .site-switch__chevron {
+    rotate: 180deg;
+  }
+
+  /* No box around the label here, so no box fill on hover */
+  .site-switch > .site-header__name:hover,
+  .site-switch > .site-header__name:focus-visible {
+    background: none;
+    color: inherit;
+  }
+
+  .site-switch > .site-header__name:hover .site-section,
+  .site-switch > .site-header__name:focus-visible .site-section {
+    color: var(--color-accent);
+  }
+
+  /* Keyboard focus: a thin blue underline instead */
+  .site-switch > .site-header__name:focus-visible {
+    outline: none;
+    text-decoration: underline;
+    text-decoration-color: var(--color-hover);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .site-switch__menu {
+    left: 50%;
+    translate: -50% 0;
+    border-left: var(--line);
+    text-align: center;
+  }
+
   .index-overlay {
     width: 100%;
     max-width: none;
+  }
+
+  /* Index panel: a square X box in the top-right corner, as tall as the
+     "/design" row, so it shares that row's top and bottom lines. It draws
+     no lines of its own. Box hover: fills blue, X turns white. */
+  .index-sec--intro {
+    position: relative;
+  }
+
+  .index-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    padding: 0;
+    background: var(--color-box);
+    border: 0; /* no divider: the X sits in the "/design" row */
+    font-size: var(--text-card-title);
+    cursor: pointer;
+    transition: background-color var(--hover-duration) ease;
+  }
+
+  .index-close .icon {
+    margin: 0;
+    height: 1em;
+    transition: filter var(--hover-duration) ease;
+  }
+
+  .index-close:hover,
+  .index-close:focus-visible {
+    background: var(--color-hover);
+    outline: none;
+  }
+
+  .index-close:hover .icon,
+  .index-close:focus-visible .icon {
+    filter: invert(1);
   }
 
   /* Ceramic work pages: metadata above the photos, two photos per row */
@@ -2065,6 +2206,46 @@ html:not(.js) .view-toggle {
     position: static;
     height: auto;
     overflow: visible;
+  }
+
+  /* Timeline: just the role and the years, in regular weight; the team
+     name is hidden so each row stays on one line */
+  .timeline__team {
+    display: none;
+  }
+
+  .timeline strong {
+    font-weight: var(--weight-regular);
+  }
+
+  /* Project and ceramics cards: no Timeline / Year cell, so the title
+     spans the full width (leaving room for the arrow box in the corner),
+     and no hover oval around the title */
+  .card .work-card__head {
+    grid-template-columns: 1fr;
+  }
+
+  .card .work-card__head > .work-card__cell + .work-card__cell {
+    display: none;
+  }
+
+  .card .work-card__title .oval {
+    display: none;
+  }
+
+  .card .work-card__head > .work-card__cell:first-child {
+    padding-right: calc(var(--box-pad-x) + var(--arrow-button-size));
+  }
+
+  /* Phones never wrap these lines: anything too long ends in "…" */
+  .timeline dt,
+  .timeline dd,
+  .card .work-card__head .work-card__title {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .card__header {
