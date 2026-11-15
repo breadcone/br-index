@@ -81,7 +81,9 @@
   // Work out the site root from this script's own address (js/main.js),
   // so links work from the homepage and from projects/ pages alike.
   var script = document.currentScript;
-  var root = script ? script.src.replace(/js\/main\.js(\?.*)?$/, "") : "";
+  // (On the live site the file is renamed with a fingerprint, e.g.
+  // js/main.3f9a1c27b0.js; see scripts/build.sh.)
+  var root = script ? script.src.replace(/js\/main(\.[0-9a-f]+)?\.js(\?.*)?$/, "") : "";
   function url(path) { return /^(https?:|mailto:)/.test(path) ? path : root + path; }
 
   var here = location.href.split("#")[0].split("?")[0];
@@ -165,51 +167,15 @@
       if (!wrap.contains(e.target)) setSwitchOpen(false);
     });
 
-    // The section name ("design") types itself in on page load, with a blue
-    // caret that goes away once it's done. Each letter keeps its space while
-    // hidden, so the label never shifts. Reduced motion: it just appears.
+    // Phones only (shown by the CSS): a chevron after the label, hinting
+    // at the dropdown. The label itself is plain text and appears right away.
     var section = nameLink.querySelector(".site-section");
     if (section) {
-      section.setAttribute("aria-hidden", "true");
-      var spoken = document.createElement("span");
-      spoken.className = "visually-hidden";
-      spoken.textContent = section.textContent;
-      section.parentNode.appendChild(spoken);
-      var chars = Array.from(section.textContent).map(function (ch) {
-        var span = document.createElement("span");
-        span.className = "type-char";
-        span.textContent = ch;
-        return span;
-      });
-      section.textContent = "";
-      chars.forEach(function (c) { section.appendChild(c); });
-      var last = chars[chars.length - 1];
-      // Phones only (shown by the CSS): a chevron after the label, hinting
-      // at the dropdown
       var chevron = document.createElement("img");
       chevron.className = "icon site-switch__chevron";
       chevron.src = url("images/icons/chevron-down.svg");
       chevron.alt = "";
       section.parentNode.insertBefore(chevron, section.nextSibling);
-      // When typing is done the caret goes away
-      function typed() {
-        last.classList.remove("is-caret");
-      }
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        chars.forEach(function (c) { c.classList.add("is-shown"); });
-      } else {
-        var i = 0;
-        setTimeout(function step() {
-          if (i > 0) chars[i - 1].classList.remove("is-caret");
-          if (i === chars.length) { typed(); return; }
-          chars[i].classList.add("is-shown", "is-caret");
-          i++;
-          // Same uneven, human pace as the other typing on the site
-          var delay = 90 + Math.random() * 110;
-          if (Math.random() < 0.18) delay += 140 + Math.random() * 160;
-          setTimeout(step, delay);
-        }, 300);
-      }
     }
 
     // Make the label cell as wide as the widest portfolio name, so the
@@ -729,18 +695,21 @@
   var lastPhoto = null;
 
   // Size the popup to the photo itself, so there are never empty bars beside
-  // it: as large as fits in half the screen width (full width on phones)
-  // and 90% of its height. Square photos open at 70% of that.
+  // it: as large as fits in half the screen width and 90% of its height.
+  // Square photos open at 70% of that. On phones the box runs the full
+  // width, minus the page gutter on each side (the popup's side padding).
   function sizeFor(photo) {
     var w = Number(photo.getAttribute("width")) || photo.naturalWidth || 1;
     var h = Number(photo.getAttribute("height")) || photo.naturalHeight || 1;
     var ratio = w / h;
-    // leave room for the white mat around the photo
-    var mat = 2 * (parseFloat(getComputedStyle(pop.querySelector(".lightbox__box")).paddingLeft) || 0);
-    var maxW = (window.innerWidth <= 800 ? window.innerWidth - 32 : window.innerWidth * 0.5) - mat;
-    var maxH = window.innerHeight * 0.9 - mat;
+    var phone = window.innerWidth <= 800;
+    // leave room for the white mat around the photo and the box's 1px line on each side
+    var mat = 2 * (parseFloat(getComputedStyle(pop.querySelector(".lightbox__box")).paddingLeft) || 0) + 2;
+    var gutter = 2 * (parseFloat(getComputedStyle(pop).paddingLeft) || 0);
+    var maxW = (phone ? window.innerWidth - gutter : window.innerWidth * 0.5) - mat;
+    var maxH = pop.clientHeight * 0.9 - mat; // the popup's own height (on phones it starts below the header)
     var width = Math.min(maxW, maxH * ratio);
-    if (Math.abs(ratio - 1) < 0.02) width *= 0.7;
+    if (!phone && Math.abs(ratio - 1) < 0.02) width *= 0.7;
     big.style.width = Math.round(width) + "px";
   }
 
@@ -1036,3 +1005,69 @@
   try { saved = localStorage.getItem("ceramics-view"); } catch (e) {}
   show(saved === "grid" ? "grid" : "list");
 })();
+
+/* ---------------------------------------------------------
+   Compact right column: no unwanted line breaks
+   The timeline rows and the card headers (title, label, years) should
+   each sit on one line. Whenever any of them would wrap at the current
+   window size (and always on phones), the whole group switches to its
+   compact layout (.is-compact in styles.css): the timeline shows just the
+   role and years, and the cards drop the Timeline/Year cell so the title
+   gets the full width. Re-checked when fonts load and the window resizes.
+   --------------------------------------------------------- */
+(function () {
+  var phone = window.matchMedia("(max-width: 800px)");
+
+  // How many lines an element's text takes up (text only, so icons and the
+  // hover oval drawing don't count)
+  function lineCount(el) {
+    var rects = [];
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    var range = document.createRange();
+    while (walker.nextNode()) {
+      var node = walker.currentNode;
+      if (!node.textContent.trim() || !node.parentElement || node.parentElement.offsetParent === null) continue;
+      range.selectNodeContents(node);
+      Array.from(range.getClientRects()).forEach(function (r) { if (r.width > 0) rects.push(r); });
+    }
+    var size = parseFloat(getComputedStyle(el).fontSize) || 16;
+    var tops = rects.map(function (r) { return r.top; }).sort(function (a, b) { return a - b; });
+    var lines = tops.length ? 1 : 0;
+    for (var i = 1; i < tops.length; i++) {
+      if (tops[i] - tops[i - 1] > size * 0.6) lines++;
+    }
+    return lines;
+  }
+
+  // Each group: the elements that switch together, and the lines to test
+  var groups = [
+    { toggle: ".timeline", test: ".timeline dt, .timeline dd" },
+    { toggle: ".card .work-card__head", test: ".card .work-card__head .work-card__label, .card .work-card__head .work-card__title, .card .work-card__head .work-card__value" }
+  ].map(function (g) {
+    return { toggle: Array.from(document.querySelectorAll(g.toggle)), test: g.test };
+  }).filter(function (g) { return g.toggle.length; });
+  if (!groups.length) return;
+
+  function fit() {
+    groups.forEach(function (g) {
+      g.toggle.forEach(function (el) { el.classList.remove("is-compact"); });
+      var wraps = phone.matches || Array.from(document.querySelectorAll(g.test)).some(function (el) {
+        return el.offsetParent !== null && lineCount(el) > 1;
+      });
+      if (wraps) g.toggle.forEach(function (el) { el.classList.add("is-compact"); });
+    });
+  }
+
+  var queued = false;
+  function queueFit() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; fit(); });
+  }
+
+  fit();
+  if (document.fonts) document.fonts.ready.then(fit);
+  window.addEventListener("resize", queueFit);
+})();
+
+
