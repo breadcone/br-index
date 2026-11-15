@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orchids — Brian Le</title>
+  <meta name="description" content="Brian grows orchids on his windowsill, coaxing blooms through patience.">
+  <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <!-- The glass orb (span.orb) can go back here in place of the name; its styles are kept in css/styles.css -->
+    <a class="site-header__link site-header__name" href="orchids.html"><span data-oval>br-index/<span class="site-section">orchids</span></span></a>
+    <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Index</span></a>
+  </header>
+
+  <main class="home">
+
+    <!-- Left column: one tall box with three sections -->
+    <div class="box home__left">
+
+      <section class="box__section intro">
+        <h1 class="statement"><span data-type-in data-circle="grows orchids">Brian grows orchids on&#10;his windowsill, coaxing blooms through patience.</span></h1>
+      </section>
+
+      <section class="box__section related">
+        <div>
+          <h2 class="label">Related entries:</h2>
+          <ul class="link-list">
+            <!-- data-intro holds each entry's intro line (hover swap is switched off for now; see HOVER_SWAP in js/main.js). -->
+            <li><a data-oval data-intro="Brian is a designer working on Mainframe modernization and AI." href="index.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">design work</a></li>
+            <li><a data-oval data-intro="Brian is a ceramic artist that explores forms of becoming and inevitability." href="ceramics.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">ceramics</a></li>
+          </ul>
+        </div>
+        <span class="orb-photo">
+          <img class="related__thumb" src="images/home/orb.avif" width="800" height="800" alt="A frosted glass orb resting on a soft blue background">
+          <span class="orb-photo__light" aria-hidden="true"></span>
+        </span>
+
+      </section>
+
+      <section class="box__section">
+        <h2 class="label">Access points:</h2>
+        <ul class="link-list">
+          <li><a data-oval href="https://freight.cargo.site/m/N3042622597460362339586141958857/Resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+          <li><a data-oval href="mailto:brian.le.de@gmail.com">Email</a></li>
+          <li><a data-oval href="https://www.linkedin.com/in/lebrians/" target="_blank" rel="noopener">Linkedin</a></li>
+        </ul>
+      </section>
+
+    </div>
+
+    <!-- Right column: Orchids -->
+    <div class="home__right">
+      <div class="box">
+        <section class="box__section pair">
+          <p><strong>Orchid Grower</strong> at<br><span class="serif">a window sill somewhere</span></p>
+        </section>
+      </div>
+
+      <div class="box subject">
+        <section class="box__section">
+          <h2 class="label">Orchids:</h2>
+          <!-- [TODO] Orchids content goes here -->
+        </section>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

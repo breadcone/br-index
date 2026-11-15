@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brian Le</title>
+  <meta name="description" content="Brian Le is a designer working on Mainframe modernization and AI.">
+  <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <!-- The glass orb (span.orb) can go back here in place of the name; its styles are kept in css/styles.css -->
+    <a class="site-header__link site-header__name" href="index.html"><span data-oval>br-index/<span class="site-section">design</span></span></a>
+    <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Index</span></a>
+  </header>
+
+  <main class="home">
+
+    <!-- Left column: one tall box with three sections -->
+    <div class="box home__left">
+
+      <section class="box__section intro">
+        <h1 class="statement"><span data-type-in data-circle="designer">Brian is a designer working on Mainframe modernization and AI.</span></h1>
+      </section>
+
+      <section class="box__section related">
+        <div>
+          <h2 class="label">Related entries:</h2>
+          <ul class="link-list">
+            <!-- data-intro holds each entry's intro line (hover swap is switched off for now; see HOVER_SWAP in js/main.js). -->
+            <li><a data-oval data-intro="Brian is a ceramic artist that explores forms of becoming and inevitability." href="ceramics.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">ceramics</a></li>
+            <li><a data-oval data-intro="Brian grows orchids on&#10;his windowsill, coaxing blooms through patience." href="orchids.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">orchids</a></li>
+          </ul>
+        </div>
+        <span class="orb-photo">
+          <img class="related__thumb" src="images/home/orb.avif" width="800" height="800" alt="A frosted glass orb resting on a soft blue background">
+          <span class="orb-photo__light" aria-hidden="true"></span>
+        </span>
+
+      </section>
+
+      <section class="box__section">
+        <h2 class="label">Access points:</h2>
+        <ul class="link-list">
+          <li><a data-oval href="https://freight.cargo.site/m/N3042622597460362339586141958857/Resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+          <li><a data-oval href="mailto:brian.le.de@gmail.com">Email</a></li>
+          <li><a data-oval href="https://www.linkedin.com/in/lebrians/" target="_blank" rel="noopener">Linkedin</a></li>
+        </ul>
+      </section>
+
+    </div>
+
+    <!-- Right column -->
+    <div class="home__right">
+
+      <div class="box">
+        <section class="box__section pair">
+          <p><strong>Design Lead</strong> at<br><span class="serif">International Business Machines</span></p>
+          <p><strong>1 Madison Ave.</strong><br><span class="serif">New York, New York</span></p>
+        </section>
+
+        <section class="box__section">
+          <h2 class="visually-hidden">Timeline</h2>
+          <dl class="timeline">
+            <div class="pair">
+              <dt><strong>Design Lead</strong> AI on z/OS</dt>
+              <dd>2026 <img class="icon" src="images/icons/arrow-right.svg" alt=""><span class="visually-hidden">to</span> Present</dd>
+            </div>
+            <div class="pair">
+              <dt><strong>Senior Designer</strong> IBM Z</dt>
+              <dd>2021 <img class="icon" src="images/icons/arrow-right.svg" alt=""><span class="visually-hidden">to</span> 2026</dd>
+            </div>
+            <div class="pair">
+              <dt><strong>Visual Designer</strong> IBM Hybrid Cloud</dt>
+              <dd>2018 <img class="icon" src="images/icons/arrow-right.svg" alt=""><span class="visually-hidden">to</span> 2021</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+
+      <article class="box card">
+        <a class="card__link work-card__head" href="projects/ai-framework.html">
+          <div class="work-card__cell">
+            <p class="work-card__label">Case study:</p>
+            <h2 class="work-card__title" data-oval>AI Framework for z/OS</h2>
+            <div class="card__objective">
+              <p class="work-card__label">Objective:</p>
+              <p>Designing a centralized experience for configuring, monitoring, and governing AI capabilities built into IBM's flagship mainframe operating system, z/OS.</p>
+            </div>
+          </div>
+          <div class="work-card__cell">
+            <p class="work-card__label">Timeline:</p>
+            <p class="work-card__value work-card__year">2024 – 2026</p>
+          </div>
+        </a>
+        <span class="arrow-button card__arrow" aria-hidden="true"><img class="icon" src="images/icons/arrow-north-east.svg" alt=""></span>
+        <img class="card__image" src="images/projects/ai-framework/01-hero.avif" width="2400" height="1600" alt="Abstract render of gray and blue planes converging at a single point">
+      </article>
+
+      <article class="box card">
+        <a class="card__link work-card__head" href="projects/cloud-pak-system.html">
+          <div class="work-card__cell">
+            <p class="work-card__label">Case study:</p>
+            <h2 class="work-card__title" data-oval>Cloud Pak System</h2>
+            <div class="card__objective">
+              <p class="work-card__label">Objective:</p>
+              <p>Bringing clarity to complex enterprise infrastructure management through thoughtful visual and interaction design.</p>
+            </div>
+          </div>
+          <div class="work-card__cell">
+            <p class="work-card__label">Timeline:</p>
+            <p class="work-card__value work-card__year">2018 – 2021</p>
+          </div>
+        </a>
+        <span class="arrow-button card__arrow" aria-hidden="true"><img class="icon" src="images/icons/arrow-north-east.svg" alt=""></span>
+        <img class="card__image" src="images/projects/cloud-pak-system/02-desktop-hd.avif" width="2400" height="1576" loading="lazy" alt="Cloud Pak System dashboard showing cluster utilization, hardware allocation, and the system rack">
+      </article>
+
+      <article class="box card">
+        <a class="card__link work-card__head" href="projects/cloud-pak-aiops.html">
+          <div class="work-card__cell">
+            <p class="work-card__label">Case study:</p>
+            <h2 class="work-card__title" data-oval>Cloud Pak AIOps</h2>
+            <div class="card__objective">
+              <p class="work-card__label">Objective:</p>
+              <p>Designing visualizations that help enterprise teams understand and assess system health, topology, risk, and AI-driven recommendations.</p>
+            </div>
+          </div>
+          <div class="work-card__cell">
+            <p class="work-card__label">Timeline:</p>
+            <p class="work-card__value work-card__year">2021 – 2022</p>
+          </div>
+        </a>
+        <span class="arrow-button card__arrow" aria-hidden="true"><img class="icon" src="images/icons/arrow-north-east.svg" alt=""></span>
+        <img class="card__image" src="images/projects/watson-aiops/01-desktop-hd.avif" width="2400" height="1576" loading="lazy" alt="Watson AIOps interface with a risk assessment, anomaly detection chart, and chat feed of alerts">
+      </article>
+
+    </div>
+
+  </main>
+
+</body>
+</html>

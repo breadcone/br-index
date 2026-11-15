@@ -1,0 +1,81 @@
+<!doctype html>
+<!--
+  Ceramic work page template. To add a piece:
+  1. Copy this file and rename it (e.g. ceramics/ritual-1.html).
+  2. Put its photos in images/ceramics/ (AVIF, even pixel sizes, about 1300–2400px).
+  3. Fill in the metadata strip and replace every [TODO].
+  4. Fill the photo sets: each set is one large photo (about 4:3) plus two
+     smaller ones (about 3:2). Copy a whole .work-set block to add another set.
+  5. On ceramics.html, link that work's card to this page (see the Persimmons card).
+  See ceramics/persimmons.html for a finished example.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[TODO Title] — Brian Le</title>
+  <meta name="description" content="[TODO Title], [TODO year]. [TODO materials].">
+  <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&display=swap">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <script src="../js/main.js" defer></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="site-header__link site-header__name" href="../ceramics.html"><span data-oval>br-index/<span class="site-section">ceramics</span></span></a>
+    <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Index</span></a>
+  </header>
+
+  <main class="work-page">
+
+    <!-- One white sheet: a narrow metadata column on the left, photos on the right -->
+    <div class="box work-sheet">
+
+      <aside class="work-meta" aria-label="About this work">
+        <div class="work-meta__inner">
+        <div class="work-card__cell">
+          <p class="work-card__label">Title of work:</p>
+          <h1 class="work-card__title">[TODO Title]</h1>
+        </div>
+        <div class="work-card__cell">
+          <p class="work-card__label">Year:</p>
+          <p class="work-card__value">[TODO]</p>
+        </div>
+        <div class="work-card__cell">
+          <p class="work-card__label">Dimensions:</p>
+          <p class="work-card__value">[TODO] inches</p>
+        </div>
+        <div class="work-card__cell">
+          <p class="work-card__label">Materials:</p>
+          <p class="work-card__value">[TODO]</p>
+        </div>
+        </div>
+      </aside>
+
+      <!-- Photos: repeating sets of one large photo on the left and two smaller
+           photos stacked on the right. Copy a whole .work-set block to add another. -->
+      <div class="work-photos">
+        <div class="work-grid">
+          <div class="work-set">
+            <img class="work-set__main" src="../images/ceramics/[TODO]-01.avif" width="1720" height="1256" alt="[TODO Describe the photo]">
+            <img class="work-set__side" src="../images/ceramics/[TODO]-02.avif" width="1600" height="1024" loading="lazy" alt="[TODO]">
+            <img class="work-set__side" src="../images/ceramics/[TODO]-03.avif" width="1600" height="1024" loading="lazy" alt="[TODO]">
+          </div>
+          <div class="work-set">
+            <img class="work-set__main" src="../images/ceramics/[TODO]-04.avif" width="1720" height="1256" loading="lazy" alt="[TODO]">
+            <img class="work-set__side" src="../images/ceramics/[TODO]-05.avif" width="1600" height="1024" loading="lazy" alt="[TODO]">
+            <img class="work-set__side" src="../images/ceramics/[TODO]-06.avif" width="1600" height="1024" loading="lazy" alt="[TODO]">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+</body>
+</html>

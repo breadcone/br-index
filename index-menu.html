@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Index — Brian Le</title>
+  <meta name="description" content="Brian Le: related entries and access points.">
+  <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- On every other page, "Index" opens this content as an overlay.
+       This page is the fallback when JavaScript is off or the link is opened directly.
+       The content itself is written once, in js/main.js (the INDEX object). -->
+  <header class="site-header">
+    <!-- The glass orb (span.orb) can go back here in place of the name; its styles are kept in css/styles.css -->
+    <a class="site-header__link site-header__name" href="index.html"><span data-oval>br-index/<span class="site-section">index</span></span></a>
+    <a class="site-header__link site-header__index is-current" href="index-menu.html" aria-current="page"><span data-oval>Index</span></a>
+  </header>
+
+  <main class="index-page" data-index-static></main>
+
+</body>
+</html>

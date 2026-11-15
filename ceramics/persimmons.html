@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Persimmons — Brian Le</title>
+  <meta name="description" content="Persimmons, 2026. Stoneware, oxide washes, underglaze, glaze.">
+  <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&display=swap">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <script src="../js/main.js" defer></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <!-- The glass orb (span.orb) can go back here in place of the name; its styles are kept in css/styles.css -->
+    <a class="site-header__link site-header__name" href="../ceramics.html"><span data-oval>br-index/<span class="site-section">ceramics</span></span></a>
+    <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Index</span></a>
+  </header>
+
+  <main class="work-page">
+
+    <!-- One white sheet: a narrow metadata column on the left, photos on the right -->
+    <div class="box work-sheet">
+
+      <aside class="work-meta" aria-label="About this work">
+        <div class="work-meta__inner">
+        <div class="work-card__cell">
+          <p class="work-card__label">Title of work:</p>
+          <h1 class="work-card__title">Persimmons</h1>
+        </div>
+        <div class="work-card__cell">
+          <p class="work-card__label">Year:</p>
+          <p class="work-card__value">2026</p>
+        </div>
+        <div class="work-card__cell">
+          <p class="work-card__label">Dimensions:</p>
+          <p class="work-card__value">7 × 7 × 7 inches</p>
+        </div>
+        <div class="work-card__cell">
+          <p class="work-card__label">Materials:</p>
+          <p class="work-card__value">Stoneware, oxide washes, underglaze, glaze</p>
+        </div>
+        </div>
+      </aside>
+
+      <!-- Photos: repeating sets of one large photo on the left and two smaller
+           photos stacked on the right. Copy a whole .work-set block to add another. -->
+      <div class="work-photos">
+        <div class="work-grid">
+          <div class="work-set">
+            <img class="work-set__main" src="../images/ceramics/persimmons-01.avif" width="1720" height="1256" alt="Three ceramic persimmons with glazed green leaves and twisted stems on a blue backdrop">
+            <img class="work-set__side" src="../images/ceramics/persimmons-02.avif" width="1300" height="1300" loading="lazy" alt="Ceramic persimmon seen from above, with a glazed leaf lid and a twisted stem">
+            <img class="work-set__side" src="../images/ceramics/persimmons-03.avif" width="1300" height="1300" loading="lazy" alt="Single ceramic persimmon lying on its side with a ruffled green leaf cap">
+          </div>
+          <!-- Second set uses Ritual 1 photos as a test. [TODO] Replace with more Persimmons photos. -->
+          <div class="work-set">
+            <img class="work-set__main" src="../images/ceramics/ritual-1.avif" width="1856" height="1356" loading="lazy" alt="A round glazed stoneware vessel in pink and green drips, with two small curled handles">
+            <img class="work-set__side" src="../images/ceramics/ritual-1-02.avif" width="1428" height="1428" loading="lazy" alt="Close-up of the vessel's rim and shoulder, showing speckled green and pink glaze">
+            <img class="work-set__side" src="../images/ceramics/ritual-1-03.avif" width="1212" height="1212" loading="lazy" alt="The vessel seen from directly above, its round opening framed by two handles">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+</body>
+</html>

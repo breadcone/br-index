@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ceramics — Brian Le</title>
+  <meta name="description" content="Brian is a ceramic artist that explores forms of becoming and inevitability.">
+  <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <!-- The glass orb (span.orb) can go back here in place of the name; its styles are kept in css/styles.css -->
+    <a class="site-header__link site-header__name" href="ceramics.html"><span data-oval>br-index/<span class="site-section">ceramics</span></span></a>
+    <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Index</span></a>
+  </header>
+
+  <main class="home">
+
+    <!-- Left column: one tall box with three sections -->
+    <div class="box home__left">
+
+      <section class="box__section intro">
+        <h1 class="statement"><span data-type-in data-circle="ceramic artist">Brian is a ceramic artist that explores forms of becoming and inevitability.</span></h1>
+      </section>
+
+      <section class="box__section related">
+        <div>
+          <h2 class="label">Related entries:</h2>
+          <ul class="link-list">
+            <!-- data-intro holds each entry's intro line (hover swap is switched off for now; see HOVER_SWAP in js/main.js). -->
+            <li><a data-oval data-intro="Brian is a designer working on Mainframe modernization and AI." href="index.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">design work</a></li>
+            <li><a data-oval data-intro="Brian grows orchids on&#10;his windowsill, coaxing blooms through patience." href="orchids.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">orchids</a></li>
+          </ul>
+        </div>
+        <span class="orb-photo">
+          <img class="related__thumb" src="images/home/orb.avif" width="800" height="800" alt="A frosted glass orb resting on a soft blue background">
+          <span class="orb-photo__light" aria-hidden="true"></span>
+        </span>
+
+      </section>
+
+      <section class="box__section">
+        <h2 class="label">Access points:</h2>
+        <ul class="link-list">
+          <li><a data-oval href="mailto:brian.le.de@gmail.com">Email</a></li>
+          <!-- [TODO] Add the Instagram profile link -->
+          <li><a data-oval href="#">Instagram</a></li>
+        </ul>
+      </section>
+
+    </div>
+
+    <!-- Right column: Ceramics -->
+    <div class="home__right">
+      <!-- Ceramic work card: title and year cells across the top, photo below.
+           The top strip links to ceramics/persimmons.html. -->
+      <article class="box card work-card">
+        <a class="work-card__head card__link" href="ceramics/persimmons.html">
+          <div class="work-card__cell">
+            <p class="work-card__label">Title of work:</p>
+            <h2 class="work-card__title" data-oval>Persimmons</h2>
+          </div>
+          <div class="work-card__cell">
+            <p class="work-card__label">Year:</p>
+            <p class="work-card__value work-card__year">2026</p>
+          </div>
+        </a>
+        <span class="arrow-button card__arrow" aria-hidden="true"><img class="icon" src="images/icons/arrow-north-east.svg" alt=""></span>
+        <!-- Three views: one large photo, two square close-ups stacked beside it -->
+        <div class="work-gallery">
+          <img class="work-gallery__main" src="images/ceramics/persimmons-01.avif" width="1720" height="1256" loading="lazy" alt="Three ceramic persimmons with glazed green leaves and twisted stems on a blue backdrop">
+          <img src="images/ceramics/persimmons-02.avif" width="1300" height="1300" loading="lazy" alt="Ceramic persimmon seen from above, with a glazed leaf lid and a twisted stem">
+          <img src="images/ceramics/persimmons-03.avif" width="1300" height="1300" loading="lazy" alt="Single ceramic persimmon lying on its side with a ruffled green leaf cap">
+        </div>
+      </article>
+
+      <article class="box card work-card">
+        <div class="work-card__head">
+          <div class="work-card__cell">
+            <p class="work-card__label">Title of work:</p>
+            <h2 class="work-card__title" data-oval>Ritual 1</h2>
+          </div>
+          <div class="work-card__cell">
+            <p class="work-card__label">Year:</p>
+            <p class="work-card__value work-card__year">2024</p>
+          </div>
+        </div>
+        <span class="arrow-button card__arrow" aria-hidden="true"><img class="icon" src="images/icons/arrow-north-east.svg" alt=""></span>
+        <!-- Three views: one large photo, two square close-ups stacked beside it -->
+        <div class="work-gallery">
+          <img class="work-gallery__main" src="images/ceramics/ritual-1.avif" width="1856" height="1356" loading="lazy" alt="A round glazed stoneware vessel in pink and green drips, with two small curled handles">
+          <img src="images/ceramics/ritual-1-02.avif" width="1428" height="1428" loading="lazy" alt="Close-up of the vessel's rim and shoulder, showing speckled green and pink glaze">
+          <img src="images/ceramics/ritual-1-03.avif" width="1212" height="1212" loading="lazy" alt="The vessel seen from directly above, its round opening framed by two handles">
+        </div>
+      </article>
+
+      <article class="box card work-card">
+        <div class="work-card__head">
+          <div class="work-card__cell">
+            <p class="work-card__label">Title of work:</p>
+            <h2 class="work-card__title" data-oval>Ritual 2</h2>
+          </div>
+          <div class="work-card__cell">
+            <p class="work-card__label">Year:</p>
+            <p class="work-card__value work-card__year">2025</p>
+          </div>
+        </div>
+        <span class="arrow-button card__arrow" aria-hidden="true"><img class="icon" src="images/icons/arrow-north-east.svg" alt=""></span>
+        <!-- Three views: one large photo, two square close-ups stacked beside it -->
+        <div class="work-gallery">
+          <img class="work-gallery__main" src="images/ceramics/ritual-2.avif" width="1592" height="1194" loading="lazy" alt="A wide green-glazed stoneware vessel with a footed base, two winged handles, and a row of small spikes">
+          <img src="images/ceramics/ritual-2-02.avif" width="788" height="788" loading="lazy" alt="The green vessel from above at an angle, showing its wide rim and spikes">
+          <img src="images/ceramics/ritual-2-03.avif" width="790" height="790" loading="lazy" alt="The green vessel holding two pink cosmos flowers">
+        </div>
+      </article>
+    </div>
+
+  </main>
+
+</body>
+</html>
