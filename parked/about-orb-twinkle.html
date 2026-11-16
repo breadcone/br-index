@@ -1,0 +1,26 @@
+<!--
+  PARKED: the "twinkling highlight" animation for the orb photo in the About
+  dialog, saved as it was on 2026-11-16 when the About orb switched to the
+  homepage's moving light (.orb-photo). This file is not a page and is never
+  published (scripts/build.sh skips the parked/ folder).
+
+  What it does: the bright spot on the orb's upper right glows and breathes,
+  white with shimmers of pink, and slowly drifts a little along the curve of
+  the glass. A soft halo sits on the backdrop just outside that rim, the bright
+  patch of light in the shadow slides and stretches on the floor, and a soft
+  glow pulses and drifts along the bottom rim. Reduced motion: held still.
+
+  Its styles are still in css/styles.css (the "Twinkling highlight" section:
+  .orb-glint and its parts, plus the orb-glint-* keyframes), and
+  .about__cover there still has position: relative and container-type: size,
+  which it needs.
+
+  To bring it back: in js/main.js, in the About dialog markup, put the cover
+  back to this (replacing the .orb-photo version):
+-->
+
+        '<div class="about__cover"><img src="' + url("images/home/orb.avif") + '" width="800" height="800" alt="A frosted glass orb resting on a soft blue background">' +
+          // the twinkling highlights on the orb: upper right, plus a soft pulse along the bottom rim (all drawn in css/styles.css)
+          '<span class="orb-glint" aria-hidden="true"><span class="orb-glint__halo"></span><span class="orb-glint__core"></span><span class="orb-glint__rim"></span>' +
+          '<span class="orb-glint__dot orb-glint__dot--1"></span></span>' +
+        '</div>' +

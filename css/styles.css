@@ -11,14 +11,14 @@
    and remove the Google Fonts links from the page <head>. */
 @font-face {
   font-family: "Alte Haas Grotesk";
-  src: url("../fonts/AlteHaasGrotesk-Regular.woff2") format("woff2");
+  src: url("../fonts/AlteHaasGroteskRegular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Alte Haas Grotesk";
-  src: url("../fonts/AlteHaasGrotesk-Bold.woff2") format("woff2");
+  src: url("../fonts/AlteHaasGroteskBold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -644,8 +644,15 @@ a:focus-visible > [data-oval] .oval path,
 /* Homepage cards: the title is a little larger (the largest that keeps the
    longest title on one line). Same gap under its label as the right side. */
 .card:has(.card__objective) .work-card__title {
-  font-size: calc(var(--text-card-title) * 0.85); /* same size as the ceramics card titles */
+  font-size: calc(var(--text-card-title) * 0.76); /* same size as the ceramics card titles on phones */
   margin-top: 2px; /* the description's taller lines add ~2px above its letters; match it */
+}
+
+@media (min-width: 801px) {
+  /* on desktop: between the ceramics card size (0.66) and the old size (0.85) */
+  .card:has(.card__objective) .work-card__title {
+    font-size: calc(var(--text-card-title) * 0.75);
+  }
 }
 
 /* Arrow button stays above everything */
@@ -660,16 +667,418 @@ a:focus-visible > [data-oval] .oval path,
 
 /* Ceramics cards (the ones with a photo gallery): title and year a tad
    larger than the details on the ceramics project pages */
-.work-card:has(.work-gallery) .work-card__title,
-.work-card:has(.work-gallery) .work-card__value {
+.work-card:has(.work-gallery, .work-mosaic) .work-card__title,
+.work-card:has(.work-gallery, .work-mosaic) .work-card__value {
   font-size: calc(var(--text-card-title) * 0.76);
 }
 
 @media (min-width: 801px) {
-  .work-card:has(.work-gallery) .work-card__title,
-  .work-card:has(.work-gallery) .work-card__value {
+  .work-card:has(.work-gallery, .work-mosaic) .work-card__title,
+  .work-card:has(.work-gallery, .work-mosaic) .work-card__value {
     font-size: calc(var(--text-card-title) * 0.66);
   }
+}
+
+/* Ceramics cards (.work-card--mosaic), in the mobile detail format.
+   Top strip: title on the left; year and materials on the right as
+   unlabeled lines in the small serif (year heavier). Then a photo grid.
+   It is complete on its own: no link or arrow.
+   The grid matches the original Persimmons card: an 8 : 3 column split,
+   so each piece gets one large photo on the left with two detail squares
+   stacked beside it (the same proportions as .work-gallery). The group
+   photo runs the full width. The 1px gaps show the black
+   background, and the grid draws only the line above itself, so no edge
+   is doubled. */
+.work-mosaic {
+  display: grid;
+  grid-template-columns: minmax(0, 8fr) minmax(0, 3fr);
+  gap: 1px;
+  background: var(--color-line);
+  border-top: var(--line);
+}
+
+.work-mosaic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+/* Full-width photo keeps the shape of the group photo */
+.work-mosaic img.work-mosaic__wide {
+  grid-column: 1 / -1;
+  aspect-ratio: 1720 / 1256;
+}
+
+/* The large photo fills whatever the two detail squares beside it
+   measure; contain: size stops its own shape from making the rows taller */
+.work-mosaic img.work-mosaic__main {
+  grid-column: 1;
+  grid-row: span 2;
+  aspect-ratio: auto;
+  contain: size;
+}
+
+/* The works (ceramics home): one box with a strip on top ("Selected
+   works" and 2x / 3x / 4x), then a grid of square hero photos, each a link
+   to its work's page.
+
+   Lines: the box draws the outer line and the strip draws the line under
+   itself; the 1px gaps in the grid show the black background. So no edge
+   is ever doubled.
+
+   Spacing (all visible gaps, measured from the ink, not the text box):
+   the space left of, above and below "Archive" is equal, and the
+   circles sit as far from the right edge as from the strip's top and
+   bottom. */
+.work-browser {
+  --wb-t: calc(var(--text-card-title) * 0.85); /* title size */
+  --wb-n: var(--text-serif);                    /* number size */
+}
+
+/* Empty cells at the end of the grid show the page gradient, with no line
+   around them. So this box has no white fill and no right or bottom line
+   of its own (the space for them stays, so nothing shifts): the two strips
+   are white and draw the right edge beside themselves, and the photos draw
+   the right and bottom edges beside themselves. The extra shadow on the
+   top strip also fills the box's top-right corner pixel. */
+.box.work-browser {
+  background: none;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.work-browser__bar,
+.work-browser__sub {
+  background: var(--color-box);
+  box-shadow: 1px 0 0 var(--color-line); /* the box's right edge, beside this strip */
+}
+
+.work-browser__bar {
+  display: flex;
+  align-items: center;
+  border-bottom: var(--line);
+  box-shadow: 1px 0 0 var(--color-line), 1px -1px 0 var(--color-line);
+}
+
+/* "Archive": light italic serif. The line box adds 0.176em above
+   the capitals and 0.194em below the letters, and the "S" starts 0.029em
+   in, so the padding subtracts those to make the visible gaps equal. */
+.work-browser__title {
+  --wb-gap: calc(var(--box-pad-y) * 0.6 + 0.176em); /* the visible gap */
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding:
+    calc(var(--wb-gap) - 0.176em)
+    0
+    calc(var(--wb-gap) - 0.194em)
+    calc(var(--wb-gap) - 0.029em);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--weight-serif-light);
+  font-variation-settings: var(--serif-axes), "opsz" 22; /* fixed optical size, so the ink offsets above hold at every size */
+  letter-spacing: var(--tracking-serif);
+  font-size: var(--wb-t);
+  line-height: 1.1;
+}
+
+/* Right: 2x / 3x / 4x as small italic serif numbers, centered in round
+   buttons 2em across. The strip is 1.2 x pad-y + 1.082 x title size tall,
+   so the right padding below puts the circles' edge as far from the right
+   side as from the strip's top and bottom. */
+.work-browser__cols {
+  display: flex;
+  flex: 0 0 auto;
+  gap: calc(var(--wb-n) * 0.35);
+  padding-right: calc(var(--box-pad-y) * 0.6 + var(--wb-t) * 0.541 - var(--wb-n));
+}
+
+.work-browser__cols button {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.work-browser__cols button:focus-visible {
+  outline: none;
+}
+
+.work-browser__num {
+  display: grid;
+  place-items: center;
+  width: calc(var(--wb-n) * 2);
+  height: calc(var(--wb-n) * 2);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--weight-serif-light); /* same as "Objects:" */
+  font-variation-settings: var(--serif-axes);
+  letter-spacing: var(--tracking-serif);
+  font-size: var(--wb-n);
+  line-height: 1;
+  padding-bottom: 0.07em; /* lifts the digits a hair so their ink sits dead center */
+  box-sizing: border-box;
+  /* the blue circle: exactly the button's round box, a closed loop */
+  --oval-stroke: 1.5px;
+  --oval-closed: 1;
+  --oval-left: 0px;
+  --oval-right: 0px;
+  --oval-top: 0px;
+  --oval-bottom: 0px;
+}
+
+.work-browser__num .oval {
+  --oval-extra-x: 0px;
+}
+
+/* The circle marks the current size, and whichever one is hovered or
+   keyboard-focused; while another is hovered, the current one lets go */
+.work-browser__cols button[aria-pressed="true"] .oval path,
+.work-browser__cols button:hover .oval path,
+.work-browser__cols button:focus-visible .oval path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset var(--draw-duration) ease-in-out;
+}
+
+.work-browser__cols:has(button:hover) button[aria-pressed="true"]:not(:hover) .oval path,
+.work-browser__cols:has(button:focus-visible) button[aria-pressed="true"]:not(:focus-visible) .oval path {
+  stroke-dashoffset: 1;
+  opacity: 0;
+  transition: none;
+}
+
+/* Sub strip under "Archive": "Objects: 006" on the left, 2x / 3x / 4x
+   on the right (their circles sit as far from the right edge as from the
+   strip's top and bottom). All in the sans. It draws only the line under itself (the box draws the
+   sides), so no edge is doubled. The insets match the strip above. */
+.work-browser__sub {
+  --wbs-gap: calc(var(--box-pad-y) * 0.6);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--wbs-gap);
+  padding: calc(var(--box-pad-y) * 0.45) var(--wbs-gap); /* a little less above and below */
+  border-bottom: var(--line);
+  font-size: var(--text-serif);
+  line-height: 1.3;
+}
+
+.work-browser__facts {
+  margin: 0;
+}
+
+.work-browser__key,
+.work-browser__objects,
+.work-browser__sort {
+  font-family: var(--font-sans);
+}
+
+/* " / Curated sequence" (Curated) or " / Newest first" (Chronological),
+   after the count. The slash is in the label serif, with a little space
+   on each side. */
+.work-browser__sep {
+  margin: 0 0.4em;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--weight-serif-light);
+  font-variation-settings: var(--serif-axes);
+}
+
+/* 2x / 3x / 4x in the sub strip: its padding already sets the gap */
+.work-browser__sub .work-browser__cols {
+  padding-right: 0;
+}
+
+/* Chronological / Curated (top strip, right): italic serif words, like
+   2x / 3x / 4x; the blue circle marks the current order and moves to
+   whichever one is hovered. The right padding is the title's gap plus room
+   for the circle around "Curated". */
+.work-browser__order {
+  display: flex;
+  flex: 0 0 auto;
+  gap: calc(var(--u) * 1.6);
+  padding-right: calc(var(--box-pad-y) * 0.6 + 0.65em);
+  padding-left: var(--box-pad-y);
+  font-size: var(--text-serif);
+  line-height: 1.3;
+}
+
+.work-browser__order button {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--weight-serif-light); /* same as "Objects:" */
+  font-variation-settings: var(--serif-axes);
+  letter-spacing: var(--tracking-serif);
+  cursor: pointer;
+}
+
+.work-browser__order button:focus-visible {
+  outline: none;
+}
+
+.work-browser__opt {
+  display: inline-block;
+  --oval-stroke: 1.5px;
+  --oval-closed: 1;
+  --oval-left: 0.5em;
+  --oval-right: 0.5em;
+  --oval-top: 0.3em;
+  --oval-bottom: 0.3em;
+}
+
+.work-browser__order button[aria-pressed="true"] .oval path,
+.work-browser__order button:hover .oval path,
+.work-browser__order button:focus-visible .oval path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset var(--draw-duration) ease-in-out;
+}
+
+.work-browser__order:has(button:hover) button[aria-pressed="true"]:not(:hover) .oval path,
+.work-browser__order:has(button:focus-visible) button[aria-pressed="true"]:not(:focus-visible) .oval path {
+  stroke-dashoffset: 1;
+  opacity: 0;
+  transition: none;
+}
+
+/* The grid. Each photo draws a 1px line around itself, out into the 1px
+   gap, so neighbors share one line and the outer lines land right on the
+   box's own edges (one line, not two). Empty cells at the end of the last
+   row are left blank: no fill, no lines, so the page gradient shows. */
+.work-squares {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+}
+
+.work-squares[data-cols="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.work-squares[data-cols="4"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.work-squares img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.work-squares__item {
+  position: relative;
+  display: block;
+  margin: 0;
+  background: var(--color-box);
+  box-shadow: 0 0 0 1px var(--color-line); /* a crisp 1px line, not a soft shadow */
+}
+
+/* Keyboard focus: the caption shows (below) instead of an outline */
+a.work-squares__item:focus-visible {
+  outline: none;
+}
+
+/* Hover caption: a small black box with white text, flush in the photo's
+   bottom-left corner. One line: the title in bold sans-serif with a comma,
+   then the year in the serif. Small type. Shows on hover and on keyboard
+   focus; fades in and out quickly. */
+.work-squares__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: calc(var(--u) * 0.6) calc(var(--u) * 1.5) calc(var(--u) * 0.75);
+  background: none; /* no background */
+  color: var(--color-text); /* black */
+  font-size: calc(var(--u) * 1);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.work-squares__name {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-display);
+}
+
+.work-squares__year {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--weight-regular);
+  font-variation-settings: var(--serif-axes);
+  letter-spacing: var(--tracking-serif);
+}
+
+.work-squares__item:hover .work-squares__caption,
+.work-squares__item:focus-visible .work-squares__caption {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-squares__caption {
+    transition: none;
+  }
+}
+
+/* Orchid grid: names always show in a full-width box under each photo,
+   split from the photo by a 1px divider (only on pages with
+   data-captions="below") */
+.work-squares[data-captions="below"] .work-squares__caption {
+  position: static;
+  display: block;
+  width: 100%;
+  padding: calc(var(--u) * 0.6) calc(var(--u) * 0.9);
+  background: var(--color-box);
+  border-top: 1px solid var(--color-line);
+  color: var(--color-text);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  opacity: 1;
+}
+
+.theme-dark .work-squares[data-captions="below"] .work-squares__caption {
+  background: var(--color-box);
+}
+
+/* Orchid names: light serif italic, like the other small labels */
+.work-squares[data-captions="below"] .work-squares__name {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--weight-serif-light);
+  font-variation-settings: var(--serif-axes);
+  letter-spacing: var(--tracking-serif);
+}
+
+/* Unlabeled notes in the small serif (the label style); the year is
+   heavier */
+.work-card__label.work-card__note {
+  margin-bottom: 0;
+}
+
+.work-card__label.work-card__note--year {
+  margin-bottom: calc(var(--text-small) * 0.3);
+  font-weight: 600;
 }
 
 /* Card years (ceramics): regular sans-serif, not italic serif */
@@ -799,6 +1208,24 @@ a:focus-visible > [data-oval] .oval path,
   max-width: 11.5em; /* wide enough that every intro line fits in 3 lines */
 }
 
+/* Ceramics intro: set in 3 lines, broken where the HTML says (&#10;), so
+   it's wide enough for the longest line. pre-line keeps those breaks even
+   before the typing script runs. Where the column is narrower, the lines
+   that have to wrap are evened out. */
+.statement--ceramics {
+  max-width: 14em;
+  white-space: pre-line;
+  text-wrap: balance;
+}
+
+/* Orchids intro: the same idea, 3 lines broken where the HTML says (&#10;),
+   wide enough for "Brian enjoys growing orchids." */
+.statement--orchids {
+  max-width: 14em;
+  white-space: pre-line;
+  text-wrap: balance;
+}
+
 
 /* Homepage serif (labels, company and address lines): a touch bigger */
 .home .label,
@@ -864,20 +1291,23 @@ a:focus-visible > [data-oval] .oval path,
    (--hx, --hy) so the highlight leans toward the mouse, like light
    shifting across glass. --orb-x/y/r mark where the orb sits in the photo. */
 .orb-photo {
+  /* the orb's outline in the photo, measured from the image: it's a touch
+     taller than wide, so it has a width radius and a height radius */
   --orb-x: 52%;
-  --orb-y: 51%;
-  --orb-r: 20.5%;
-  --hx: 60%;   /* resting highlight: right of center, on the middle line */
-  --hy: 51%;
-  --pink: 0; /* 0 = white highlight, 1 = pink; rises as it moves toward either side (js/main.js) */
+  --orb-y: 51.25%;
+  --orb-r: 20.75%;   /* width radius */
+  --orb-ry: 21%;     /* height radius */
+  --hx: 45.8%; /* starting/resting highlight: a little left of center, on the middle line */
+  --hy: 51.25%;
+  --pink: 0.4; /* 0 = white highlight, 1 = pink; rises as it moves toward either side (js/main.js) */
   /* Curved highlight (js/main.js updates these as it moves): the light is
      drawn as an arc that bends like the orb's surface. --hr is how tightly
      it curves (tighter near the edge), --hcx where that curve is centered,
      --ht its thickness, --fs how much it's squeezed sideways near the edge. */
-  --hr: calc(100cqw * 0.526); /* cqw: sized from the photo's actual width, so it scales when the photo shrinks */
-  --hcx: 7.4%;
-  --ht: calc(100cqw * 0.055);
-  --fs: 0.92;
+  --hr: calc(100cqw * 0.692); /* cqw: sized from the photo's actual width, so it scales when the photo shrinks */
+  --hcx: 114.9%;
+  --ht: calc(100cqw * 0.057);
+  --fs: 0.954;
   --hl-g: calc(255 - 80 * var(--pink));
   --hl-b: calc(255 - 45 * var(--pink));
   position: relative;
@@ -898,7 +1328,7 @@ a:focus-visible > [data-oval] .oval path,
   inset: 1px; /* inside the photo's border */
   pointer-events: none;
   z-index: 2;
-  clip-path: circle(var(--orb-r) at var(--orb-x) var(--orb-y));
+  clip-path: ellipse(var(--orb-r) var(--orb-ry) at var(--orb-x) var(--orb-y));
   /* Layers, top first. Normal blending (not screen) so the shade can darken
      the far side too; the contrast between the two makes the light read. */
   background:
@@ -962,17 +1392,17 @@ a:focus-visible > [data-oval] .oval path,
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 11% 3.2% at var(--cx, 47%) var(--cy, 71.5%),
+    radial-gradient(ellipse 11% 3.2% at var(--cx, 55.4%) var(--cy, 72%),
       rgb(255 var(--hl-g) var(--hl-b) / 0.75) 0%,
       rgb(255 var(--hl-g) var(--hl-b) / 0.28) 50%,
       rgb(255 var(--hl-g) var(--hl-b) / 0) 100%),
-    radial-gradient(ellipse 42% 60% at var(--lx, 76%) 42%,
+    radial-gradient(ellipse 42% 60% at var(--lx, 33.3%) 42%,
       rgba(255, 255, 255, 0.28) 0%,
       rgba(255, 255, 255, 0.1) 50%,
       rgba(255, 255, 255, 0) 100%);
   mix-blend-mode: screen;
-  -webkit-mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-r) at var(--orb-x) var(--orb-y), transparent 98%, #000 100%);
-  mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-r) at var(--orb-x) var(--orb-y), transparent 98%, #000 100%);
+  -webkit-mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-ry) at var(--orb-x) var(--orb-y), transparent 98%, #000 100%);
+  mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-ry) at var(--orb-x) var(--orb-y), transparent 98%, #000 100%);
 }
 
 /* Soft extra shadow under the orb that slides away from the light (opposite
@@ -985,13 +1415,13 @@ a:focus-visible > [data-oval] .oval path,
   inset: 1px;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(ellipse 27% 8% at var(--sx, 50%) var(--sy, 74%),
+  background: radial-gradient(ellipse 27% 8% at var(--sx, 57.6%) var(--sy, 72.4%),
     rgba(20, 30, 80, 0.42) 0%,
     rgba(20, 30, 80, 0.18) 45%,
     rgba(20, 30, 80, 0) 100%);
   mix-blend-mode: multiply;
-  -webkit-mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-r) at var(--orb-x) var(--orb-y), transparent 98%, #000 100%);
-  mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-r) at var(--orb-x) var(--orb-y), transparent 98%, #000 100%);
+  -webkit-mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-ry) at var(--orb-x) var(--orb-y), transparent 98%, #000 100%);
+  mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-ry) at var(--orb-x) var(--orb-y), transparent 98%, #000 100%);
 }
 
 /* Timeline */
@@ -2001,8 +2431,9 @@ a:focus-visible > [data-oval] .oval path,
   border: var(--line); /* thin black line around the photo, inside the white mat */
 }
 
+/* Plain arrow over the popup (a click anywhere still closes it) */
 .lightbox {
-  cursor: zoom-out;
+  cursor: default;
 }
 
 /* Full-size popup, used on every page and screen size (js/main.js always
@@ -2022,6 +2453,138 @@ a:focus-visible > [data-oval] .oval path,
 
 .lightbox--full .lightbox__img {
   border: 0;
+}
+
+/* Photo gallery (orchids with more than one photo, data-gallery): a column
+   of square thumbnails to the right of the photo, as tall as the photo,
+   split from it and from each other by 1px lines. js/main.js sizes them in
+   whole pixels so the lines stay crisp. The shown photo's thumbnail is at
+   full strength with a gray outline; the others are dimmed and brighten
+   on hover. */
+.lightbox__media {
+  display: flex;
+}
+
+.lightbox__thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--color-line); /* shows through the gaps as the lines */
+  border-left: var(--line);
+}
+
+.lightbox__thumbs[hidden] {
+  display: none;
+}
+
+.lightbox__thumb {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: var(--color-box);
+  cursor: pointer;
+}
+
+.lightbox__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+  transition: opacity 150ms ease;
+}
+
+.lightbox__thumb:hover img,
+.lightbox__thumb:focus-visible img,
+.lightbox__thumb[aria-current="true"] img {
+  opacity: 1;
+}
+
+.lightbox__thumb[aria-current="true"]::after,
+.lightbox__thumb:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px #b8b8b8; /* bright gray, softer than white */
+  pointer-events: none;
+}
+
+.lightbox__thumb:focus-visible {
+  outline: none;
+}
+
+/* Phones: the thumbnails run in a row under the photo instead, split from
+   it by a 1px line */
+@media (max-width: 800px) {
+  .lightbox__media {
+    flex-direction: column;
+  }
+
+  .lightbox__thumbs {
+    flex-direction: row;
+    border-left: 0;
+    border-top: var(--line);
+  }
+}
+
+/* Close box for the photo popup. Larger screens: hidden (a click anywhere
+   closes the popup) but still reachable by keyboard and screen readers.
+   Phones: a square X box just above the photo's top-right corner, like the
+   About dialog's. Its bottom and right edges sit exactly on the popup's
+   line, so each shared edge is one line. Box hover: fills blue. */
+.lightbox__close {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+  .lightbox__close {
+    top: calc(var(--arrow-button-size) * -1);
+    right: -1px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: var(--arrow-button-size);
+    height: var(--arrow-button-size);
+    overflow: visible;
+    clip: auto;
+    border: var(--line);
+    background: var(--color-box);
+    cursor: pointer;
+    opacity: 0;
+    transition: background-color var(--hover-duration) ease, opacity 150ms ease;
+  }
+
+  /* The X fades in once the photo has finished growing open */
+  .lightbox-open .lightbox__close {
+    opacity: 1;
+    transition: background-color var(--hover-duration) ease, opacity 150ms ease var(--menu-open);
+  }
+
+  .lightbox__close .icon {
+    margin: 0;
+    height: calc(var(--u) * 1.4);
+    transition: filter var(--hover-duration) ease;
+  }
+
+  .lightbox__close:hover,
+  .lightbox__close:focus-visible {
+    background: var(--color-hover);
+    outline: none;
+  }
+
+  .lightbox__close:hover .icon,
+  .lightbox__close:focus-visible .icon {
+    filter: invert(1);
+  }
 }
 
 /* Photos in work cards can be clicked to enlarge */
@@ -2286,8 +2849,7 @@ html:not(.js) .view-toggle {
 @media (max-width: 800px) {
 
   .index-overlay {
-    width: 60%; /* covers 60% of the screen from the right */
-    min-width: 0;
+    width: 100%;
     max-width: none;
   }
 
@@ -2433,6 +2995,11 @@ html:not(.js) .view-toggle {
     overflow: visible;
   }
 
+  /* No "Access points" section on phones (all three home pages) */
+  .home__left > .access {
+    display: none;
+  }
+
   /* Blue hand-drawn ovals (hover and the ones that stay drawn): 30%
      thinner on phones, wherever they appear */
   .oval path {
@@ -2449,6 +3016,709 @@ html:not(.js) .view-toggle {
     row-gap: var(--label-gap);
     padding-right: calc(var(--box-pad-x) + var(--arrow-button-size));
   }
+}
+
+/* ---------- About dialog ----------
+   Opened from "About" in the design Index panel.
+   Desktop: a landscape box, 42% of the window wide. The left column holds the
+   orb, name and location; the statement fills the right.
+   Phones: the orb is a small photo top-left with the name and location beside
+   it; the statement follows below.
+   The close X sits just outside the box, on its top-right corner.
+   Lines are drawn only between cells and on the column divide; the dialog's
+   own border is the outer edge. */
+.about {
+  --about-size: calc(var(--u) * 1.8);    /* all the large sans type in the dialog */
+  box-sizing: border-box;
+  width: 42vw;
+  min-width: min(520px, 92vw);
+  max-width: 92vw;
+  margin: auto;
+  padding: 0;
+  border: var(--line);
+  border-radius: 0;
+  background: var(--color-box);
+  color: var(--color-text);
+  overflow: visible;                     /* lets the X sit outside the box */
+}
+
+/* Frosted glass behind the box: the page is blurred and lightly whitened */
+.about::backdrop {
+  background: rgba(246, 249, 255, 0.45);
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+}
+
+.about[open] {
+  animation: about-in 200ms ease-out;
+}
+
+@keyframes about-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* The grid places every part directly, so the two wrappers draw no box */
+.about__grid {
+  display: grid;
+  grid-template-columns: 37% 1fr;
+  grid-template-areas:
+    "cover text"
+    "info  text";
+}
+
+.about__side,
+.about__main {
+  display: contents;
+}
+
+.about__cover {
+  grid-area: cover;
+  position: relative;      /* holds the twinkling highlight */
+  container-type: size;    /* lets the highlight match the photo's crop */
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-bottom: var(--line);
+  background: #dfe8fb;
+}
+
+.about__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The About dialog's orb uses the homepage's moving light (.orb-photo).
+   Here the photo fills the cover box, which may crop it on phones, so the
+   orb photo is a square centered in the box and as big as the box's larger
+   side: the same crop object-fit: cover would give, so the light stays on
+   the orb. No border of its own (the box has its lines). */
+.about__cover .about__orb {
+  position: absolute;
+  width: max(100cqw, 100cqh);
+  left: calc((100cqw - max(100cqw, 100cqh)) / 2);
+  top: calc((100cqh - max(100cqw, 100cqh)) / 2);
+}
+
+.about__cover .about__orb .related__thumb {
+  width: 100%;
+  height: auto;
+  border: 0;
+}
+
+.about__orb .orb-photo__light,
+.about__orb::before,
+.about__orb::after {
+  inset: 0;
+}
+
+/* PARKED (see parked/about-orb-twinkle.html): Twinkling highlight on the orb in the About dialog.
+   The bright spot on the orb's upper right glows and breathes, white with
+   passing shimmers of pink, and slowly drifts a little along the curve of
+   the glass. Softer highlights pulse and drift along the bottom rim. Light from it also spills onto the backdrop: a soft halo just
+   outside the rim and a brighter patch in the shadow (light focused through
+   the glass), both rising and falling with the glow.
+   .orb-glint is a square matching the photo's crop (the photo fills the box
+   with object-fit: cover, so it may be cropped on phones). Positions are in
+   % of the photo: --gx/--gy is the bright spot, --orb-* the orb itself.
+   Reduced motion: it holds still at a gentle glow. */
+.orb-glint {
+  --orb-x: 52%;
+  --orb-y: 51%;
+  --orb-r: 20.5%;
+  --gx: 64.5%;
+  --gy: 44.5%;
+  --glint-tilt: -27deg;   /* turns the glow to lie along the rim */
+  --glint-s: max(100cqw, 100cqh);
+  position: absolute;
+  left: calc((100cqw - var(--glint-s)) / 2);
+  top: calc((100cqh - var(--glint-s)) / 2);
+  width: var(--glint-s);
+  height: var(--glint-s);
+  pointer-events: none;
+}
+
+.orb-glint > span {
+  position: absolute;
+  inset: 0;
+}
+
+/* Light on the backdrop: a halo just outside the upper-right rim and a
+   bright patch in the shadow. Masked out where the orb is. */
+.orb-glint__halo,
+.orb-glint__rim {
+  mix-blend-mode: screen;
+  /* fades in softly just outside the rim, so there's no hard edge */
+  -webkit-mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-r) at var(--orb-x) var(--orb-y), transparent 96%, rgb(0 0 0 / 0.5) 104%, #000 114%);
+  mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-r) at var(--orb-x) var(--orb-y), transparent 96%, rgb(0 0 0 / 0.5) 104%, #000 114%);
+}
+
+/* the halo outside the upper-right rim travels with the glow */
+.orb-glint__rim {
+  background: radial-gradient(ellipse 20% 16% at 70% 40%,
+    rgba(255, 240, 250, 0.6) 0%,
+    rgba(255, 215, 238, 0.22) 50%,
+    rgba(255, 236, 248, 0) 100%);
+  opacity: 0.75;
+  transform-origin: var(--orb-x) var(--orb-y);
+  animation: orb-glint-halo 5.6s ease-in-out infinite, orb-glint-travel 13s ease-in-out infinite;
+}
+
+/* the bright patch in the shadow drifts a little the opposite way */
+.orb-glint__halo {
+  background:
+    radial-gradient(ellipse 13% 3.8% at 48% 72.5%,
+      rgba(255, 240, 248, 0.75) 0%,
+      rgba(255, 215, 238, 0.28) 50%,
+      rgba(255, 235, 245, 0) 100%);
+  opacity: 0.75;
+  transform-origin: 48% 72.5%;
+  animation: orb-glint-halo 5.6s ease-in-out infinite, orb-glint-shift 13s ease-in-out infinite;
+}
+
+/* The glow itself, kept inside the orb */
+.orb-glint__core {
+  /* a soft fade at the rim (not a hard cut), so the glow never shows a
+     sharp edge where it meets the side of the orb */
+  -webkit-mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-r) at var(--orb-x) var(--orb-y), #000 80%, rgb(0 0 0 / 0.5) 91%, transparent 99%);
+  mask-image: radial-gradient(ellipse var(--orb-r) var(--orb-r) at var(--orb-x) var(--orb-y), #000 80%, rgb(0 0 0 / 0.5) 91%, transparent 99%);
+  mix-blend-mode: screen;
+  /* the whole glow swings a little around the orb's center, so it slides
+     along the curve of the glass rather than across it */
+  transform-origin: var(--orb-x) var(--orb-y);
+  animation: orb-glint-travel 13s ease-in-out infinite;
+}
+
+.orb-glint__core::before,
+.orb-glint__core::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform-origin: var(--gx) var(--gy);
+  rotate: var(--glint-tilt);
+}
+
+/* white glow: a bright soft center inside a wider haze */
+.orb-glint__core::before {
+  background:
+    radial-gradient(ellipse 4% 6.5% at var(--gx) var(--gy),
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.5) 45%,
+      rgba(255, 255, 255, 0) 100%),
+    radial-gradient(ellipse 11% 16% at var(--gx) var(--gy),
+      rgba(255, 240, 248, 0.55) 0%,
+      rgba(255, 225, 242, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  opacity: 0.8;
+  animation: orb-glint-pulse 5.6s ease-in-out infinite;
+}
+
+/* pink shimmer that drifts a little along the rim, on its own slower beat */
+.orb-glint__core::after {
+  background:
+    radial-gradient(ellipse 5% 10% at calc(var(--gx) + 3.2%) var(--gy),
+      rgba(255, 140, 200, 0.95) 0%,
+      rgba(255, 150, 205, 0.38) 50%,
+      rgba(255, 170, 215, 0) 100%),
+    radial-gradient(ellipse 4% 6% at calc(var(--gx) - 2.6%) calc(var(--gy) + 2%),
+      rgba(255, 160, 210, 0.55) 0%,
+      rgba(255, 160, 210, 0) 100%);
+  opacity: 0.3;
+  animation: orb-glint-pink 7.3s ease-in-out infinite;
+}
+
+/* Soft highlights along the bright bottom rim of the orb, each pulsing and
+   drifting along the rim on its own beat, so the light seems to move
+   around the base of the glass. */
+.orb-glint__dot {
+  mix-blend-mode: screen;
+  opacity: 0.2;
+  background: radial-gradient(ellipse var(--dw) var(--dh) at var(--dx) var(--dy),
+    rgba(255, 248, 252, 1) 0%,
+    rgba(255, 185, 225, 0.5) 50%,
+    rgba(255, 185, 225, 0) 100%);
+  transform-origin: var(--orb-x) var(--orb-y);
+  animation:
+    orb-glint-dot var(--dt) ease-in-out var(--dd) infinite,
+    orb-glint-drift calc(var(--dt) * 2.3) ease-in-out var(--dd) infinite;
+}
+
+.orb-glint__dot--1 { --dx: 51%;   --dy: 69.4%; --dw: 12%;  --dh: 3.4%; --dt: 3.4s; --dd: -0.6s; } /* the bottom */
+
+@keyframes orb-glint-dot {
+  0%, 100% { opacity: 0.05; }
+  40%      { opacity: 1; }
+  62%      { opacity: 0.3; }
+  78%      { opacity: 0.9; }
+}
+
+@keyframes orb-glint-travel {
+  0%, 100% { rotate: -6deg; }
+  22%      { rotate: 4deg; }
+  41%      { rotate: -2deg; }
+  63%      { rotate: 9deg; }
+  82%      { rotate: -4deg; }
+}
+
+@keyframes orb-glint-shift {
+  0%, 100% { translate: 3% 0;       scale: 0.9 1; }
+  22%      { translate: -2% 0.3%;   scale: 1.12 1.05; }
+  41%      { translate: 1.5% -0.2%; scale: 0.95 0.95; }
+  63%      { translate: -4% 0.4%;   scale: 1.2 1.08; }
+  82%      { translate: 2% 0;       scale: 1 1; }
+}
+
+@keyframes orb-glint-drift {
+  0%, 100% { rotate: -9deg; }
+  50%      { rotate: 9deg; }
+}
+
+@keyframes orb-glint-pulse {
+  0%   { opacity: 0.35; scale: 0.85; }
+  18%  { opacity: 1;    scale: 1.14; }
+  31%  { opacity: 0.6;  scale: 0.94; }
+  47%  { opacity: 0.95; scale: 1.08; }
+  64%  { opacity: 0.4;  scale: 0.87; }
+  81%  { opacity: 1;    scale: 1.16; }
+  100% { opacity: 0.35; scale: 0.85; }
+}
+
+@keyframes orb-glint-halo {
+  0%, 100% { opacity: 0.3; }
+  18%      { opacity: 1; }
+  31%      { opacity: 0.55; }
+  47%      { opacity: 0.9; }
+  64%      { opacity: 0.35; }
+  81%      { opacity: 1; }
+}
+
+@keyframes orb-glint-pink {
+  0%, 100% { opacity: 0.25; translate: 0 -2%; }
+  35%      { opacity: 1;    translate: 0 0.5%; }
+  60%      { opacity: 0.45; translate: 0 2%; }
+  80%      { opacity: 0.9;  translate: 0 -0.5%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-glint__halo,
+  .orb-glint__rim,
+  .orb-glint__core,
+  .orb-glint__core::before,
+  .orb-glint__core::after,
+  .orb-glint__dot {
+    animation: none;
+  }
+  .orb-glint__rim { opacity: 0.8; }
+  .orb-glint__dot { opacity: 0.5; }
+  .orb-glint__halo { opacity: 0.8; }
+  .orb-glint__core::before { opacity: 0.85; }
+  .orb-glint__core::after { opacity: 0.4; }
+}
+
+.about__info {
+  grid-area: info;
+}
+
+.about__cell {
+  padding: var(--box-pad-y) var(--box-pad-x);
+}
+
+.about__cell + .about__cell {
+  border-top: var(--line);
+}
+
+.about__cell .label {
+  margin-bottom: calc(var(--u) * 0.2);
+  line-height: 1.2;
+}
+
+.about__value {
+  margin: 0;
+  font-size: var(--about-size);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+}
+
+.about__text {
+  grid-area: text;
+  border-left: var(--line);
+  padding: var(--box-pad-y) calc(var(--u) * 2.4) var(--box-pad-y) var(--box-pad-x);
+}
+
+.about__text p:not(.label) {
+  margin: 0;
+  font-size: var(--about-size);
+  line-height: 1.45;
+}
+
+/* Square close button just outside the box's top-right corner, on the right
+   edge. Its top edge sits on the box's top border and its left edge on the
+   box's right border, so each shared edge is one line, not two. */
+.about__close {
+  position: absolute;
+  top: -1px;
+  right: calc(var(--arrow-button-size) * -1);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--arrow-button-size);
+  aspect-ratio: 1;
+  padding: 0;
+  border: var(--line);
+  background: var(--color-box);
+  cursor: pointer;
+  transition: background-color var(--hover-duration) ease;
+}
+
+.about__close .icon {
+  margin: 0;
+  height: calc(var(--u) * 1.4);
+  transition: filter var(--hover-duration) ease;
+}
+
+.about__close:hover,
+.about__close:focus-visible {
+  background: var(--color-hover);
+  outline: none;
+}
+
+.about__close:hover .icon,
+.about__close:focus-visible .icon {
+  filter: invert(1);
+}
+
+/* Phones: the orb row on top (orb left, name and location right), then the
+   statement */
+@media (max-width: 800px) {
+  .about {
+    width: calc(100vw - 2 * var(--page-gutter));
+    min-width: 0;
+    max-width: none;
+  }
+
+  .about__grid {
+    grid-template-columns: 30% 1fr;
+    grid-template-areas:
+      "cover info"
+      "text  text";
+  }
+
+  /* The photo fills the height of the name block beside it */
+  .about__cover {
+    aspect-ratio: auto;
+    align-self: stretch;
+    border-right: var(--line);
+  }
+
+  .about__info {
+    border-bottom: var(--line);
+  }
+
+  .about__text {
+    border-left: 0;
+  }
+
+  /* On phones the X sits just outside the box's top-right corner. Its bottom
+     and right edges sit exactly on the box's border, so there is one line. */
+  .about__close {
+    top: calc(var(--arrow-button-size) * -1);
+    right: -1px;
+    border: var(--line);
+  }
+}
+
+/* ---------- Dark theme (orchids page only) ----------
+   The page is marked <body class="theme-dark">. Only colors change here; the
+   layout is the same as the light pages. Black boxes sit on a near-black
+   page with a faint green at the bottom, so the black photo backgrounds blend
+   into the boxes. --line is set again here because it was built from
+   --color-line on :root, and a custom property keeps the value it was
+   first resolved with. */
+.theme-dark {
+  color-scheme: dark;
+  --color-text: #ecebe4;                 /* warm off-white */
+  --color-line: #3a3a3a;                 /* site borders: dark gray */
+  --color-box: #000;                     /* section backgrounds: black */
+  --color-media: #141513;
+  --color-placeholder: #1a1b19;
+  --color-accent: #3b82ff;               /* secondary blue: "orchids" in the header, focus rings. Same hue as the site blue, lightened to pass contrast on black (about 5.8:1) */
+  --color-hover: #3b82ff;                /* hover fill and hover oval, same blue */
+  --color-hover-text: #000;              /* black text on the blue (about 5.8:1; white would be about 3.9:1) */
+  --gradient-top: #000;                  /* solid black page background */
+  --gradient-bottom: #000;
+  --line: 1px solid var(--color-line);
+}
+
+/* Arrow icons are black SVGs. On the dark page they are flipped to white.
+   The hover rules already flip them (to white on the blue fill), so they
+   stay correct. */
+.theme-dark .icon {
+  filter: invert(1);
+}
+
+/* Hover caption on a photo: a soft black chip so the name reads over any
+   flower color (the light theme has no chip) */
+.theme-dark .work-squares__caption {
+  background: rgb(0 0 0 / 0.72);
+}
+
+/* The orb photo: inverted, then grayscale, then darkened */
+.theme-dark .orb-photo img {
+  filter: invert(1) grayscale(1) brightness(0.25);
+}
+
+/* The moving highlight on the orb: turned down to about a third of its
+   light-theme strength, so it reads as a soft sheen on the dark glass */
+.theme-dark .orb-photo__light {
+  opacity: 0.35;
+}
+
+/* The light under the orb is off: the moving patch of light (the caustic)
+   is dropped. Only a very faint wash of background light is kept. */
+.theme-dark .orb-photo::before {
+  background: radial-gradient(ellipse 42% 60% at var(--lx, 33.3%) 42%,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0) 100%);
+}
+
+/* The enlarged photo sits over a dark veil, not the light frost of the
+   light theme */
+.theme-dark .lightbox--full {
+  background: rgb(0 0 0 / 0.55);
+}
+
+/* Orchid photos: the page is marked data-popup-native. Photos in the grid
+   are clickable and show larger in the popup. */
+[data-popup-native] .work-squares img {
+  cursor: pointer;
+}
+
+/* Orchid popup: metadata strip under the photo, split by a 1px line */
+.lightbox__meta {
+  box-sizing: border-box;
+  display: block;
+  padding: 0 0 calc(var(--u) * 0.75);
+  border-top: var(--line);
+  background: var(--color-box);
+  color: var(--color-text);
+  font-size: calc(var(--u) * 1);
+  line-height: 1.3;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.lightbox__meta[hidden] {
+  display: none;
+}
+
+.lightbox__meta p {
+  margin: 0;
+}
+
+.lightbox__meta-name {
+  padding: calc(var(--u) * 0.6) calc(var(--u) * 0.9);
+  font-size: calc(var(--u) * 1.25); /* the name reads a little larger than the details */
+  border-bottom: var(--line); /* divider between the name and the details */
+}
+
+.lightbox__meta-details {
+  padding: calc(var(--u) * 0.6) calc(var(--u) * 0.9) 0;
+}
+
+.lightbox__meta-name,
+.lightbox__meta-row {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--weight-serif-light);
+  font-variation-settings: var(--serif-axes);
+  letter-spacing: var(--tracking-serif);
+}
+
+/* The labels in the details ("Hybrid cross:", "Species native to:") match the values */
+.lightbox__meta-label {
+  font-weight: var(--weight-serif-light);
+}
+
+/* The name is set a little heavier than the details */
+.lightbox__meta-name {
+  font-weight: 500;
+}
+
+/* Collection dropdown (orchids page): clicking "Collection" opens a list of
+   the photos, by Species and then Hybrids. It reuses the Contents menu's
+   look (.index-sec, .label, .index-cell) and floats over the photos at half
+   the box's width (full width on phones). Its top edge is the bar's line and
+   its left edge is the box's line; it draws only its right and bottom lines. */
+.work-browser__head {
+  position: relative;
+}
+
+/* "Collection" is the button. No hover or open state (only a focus line
+   for keyboard users). */
+.work-browser__toggle {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.work-browser__toggle:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Chevron after "Collection", on the text's visual middle; it flips up
+   while the list is open */
+.work-browser__chevron {
+  display: inline-block;
+  width: calc(var(--wb-t) * 0.6);
+  height: auto;
+  margin-left: 0.35em;
+  vertical-align: middle;
+  position: relative;
+  top: calc(var(--wb-t) * 0.25); /* nudged down onto the middle of the letters (cap top to baseline) */
+  transition: rotate 200ms ease;
+}
+
+.work-browser__toggle[aria-expanded="true"] .work-browser__chevron {
+  rotate: 180deg;
+}
+
+/* Species / Hybrids / All sits at the right end of the "Collection" row,
+   styled like Chronological / Curated on the ceramics page */
+.work-browser__bar--menu .work-browser__order {
+  margin-left: auto;
+}
+
+/* "All" is short and leans right in italic, so its circle looked shifted
+   left. Nudge it about 1px right (same total width). */
+.work-browser__order button[data-filter="all"] .work-browser__opt {
+  --oval-left: 0.42em;
+  --oval-right: 0.58em;
+}
+
+/* Photos filtered out by Species / Hybrids */
+.work-squares__item[hidden] {
+  display: none;
+}
+
+/* Phones only: a square X box at the right end of the "Collection" row
+   while the list is open. It sits inside the row, so it draws no lines of
+   its own (like the X in the Contents panel). Box hover: fills blue, the X
+   turns white. */
+.work-browser__bar--menu {
+  position: relative;
+}
+
+.work-browser__close {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  .work-browser__close:not([hidden]) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    padding: 0;
+    background: var(--color-box);
+    border: 0;
+    cursor: pointer;
+    transition: background-color var(--hover-duration) ease;
+  }
+
+  .work-browser__close .icon {
+    margin: 0;
+    height: calc(var(--u) * 1.4);
+    transition: filter var(--hover-duration) ease;
+  }
+
+  /* While the list is open, the X takes the switcher's place at the end of
+     the row (the list covers the photos, so the switcher has nothing to do) */
+  .work-browser__bar--menu:has(.work-browser__close:not([hidden])) .work-browser__order {
+    visibility: hidden;
+  }
+
+  .work-browser__close:hover,
+  .work-browser__close:focus-visible {
+    background: var(--color-hover);
+    outline: none;
+  }
+
+  .work-browser__close:hover .icon,
+  .work-browser__close:focus-visible .icon {
+    filter: invert(1);
+  }
+}
+
+.work-browser__menu {
+  /* same spacing as the Contents menu */
+  --index-pad-x: calc(var(--box-pad-x) * 0.75);
+  --index-pad-y: calc(var(--box-pad-y) * 0.75);
+  --index-cell-y: calc(var(--u) * 0.75);
+  --index-cell-y-compact: calc(var(--u) * 0.35);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 3;
+  width: 50%;
+  box-sizing: border-box;
+  background: var(--color-box);
+  border-right: var(--line);
+  border-bottom: var(--line);
+}
+
+.work-browser__menu[hidden] {
+  display: none;
+}
+
+/* The names are buttons, set like the Contents menu's links */
+.work-browser__menu .index-cell {
+  width: 100%;
+  margin: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.work-browser__menu .index-cell:focus-visible {
+  outline: none; /* the oval shows focus */
+}
+
+/* Phones: the list runs the full width; its right edge is the box's edge,
+   drawn beside it like the bar's */
+@media (max-width: 800px) {
+  .work-browser__menu {
+    width: 100%;
+    border-right: 0;
+    box-shadow: 1px 0 0 var(--color-line);
+  }
+}
+
+/* Orchid photos open the popup, so each one shows a white outline on hover
+   and keyboard focus. The outline is drawn inside the photo's own edge, so
+   it does not double up with the lines between photos. */
+[data-popup-native] .work-squares__item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+[data-popup-native] .work-squares__item:hover::after,
+[data-popup-native] .work-squares__item:has(img:focus-visible)::after {
+  box-shadow: inset 0 0 0 1px #fff; /* white outline on the dark orchids page */
 }
 
 /* ---------- Reduced motion ---------- */

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ceramics — Brian Le</title>
-  <meta name="description" content="Brian is a ceramic artist that explores forms of becoming and inevitability.">
+  <meta name="description" content="Brian is a ceramic artist making sculptures of ritual through clay and glaze.">
   <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,13 +23,14 @@
     <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Contents</span></a>
   </header>
 
-  <main class="home">
+  <!-- data-popup-phone="square": on phones, enlarged photos open as squares (js/main.js) -->
+  <main class="home" data-popup-phone="square">
 
     <!-- Left column: one tall box with three sections -->
     <div class="box home__left">
 
       <section class="box__section intro">
-        <h1 class="statement"><span data-type-in data-circle="ceramic artist">Brian is a ceramic artist that explores forms of becoming and inevitability.</span></h1>
+        <h1 class="statement statement--ceramics"><span data-type-in data-type-circle-only data-circle="ceramic artist">Brian is a ceramic artist&#10;making sculptures of ritual&#10;through clay and glaze.</span></h1>
       </section>
 
       <section class="box__section related">
@@ -38,7 +39,7 @@
           <ul class="link-list">
             <!-- data-intro holds each entry's intro line (hover swap is switched off for now; see HOVER_SWAP in js/main.js). -->
             <li><a data-oval data-intro="Brian is a designer working on Mainframe modernization and AI." href="index.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">design work</a></li>
-            <li><a data-oval data-intro="Brian grows orchids on&#10;his windowsill, coaxing blooms through patience." href="orchids.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">orchids</a></li>
+            <li><a data-oval data-intro="Brian is an orchid collector&#10;with an affinity for species&#10;and primary hybrids." href="orchids.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">orchids</a></li>
           </ul>
         </div>
         <span class="orb-photo">
@@ -48,12 +49,11 @@
 
       </section>
 
-      <section class="box__section">
+      <section class="box__section access">
         <h2 class="label">Access points:</h2>
         <ul class="link-list">
           <li><a data-oval href="mailto:brian.le.de@gmail.com">Email</a></li>
-          <!-- [TODO] Add the Instagram profile link -->
-          <li><a data-oval href="#">Instagram</a></li>
+          <li><a data-oval href="https://www.instagram.com/breadcone/" target="_blank" rel="noopener">Instagram</a></li>
         </ul>
       </section>
 
@@ -61,68 +61,61 @@
 
     <!-- Right column: Ceramics -->
     <div class="home__right">
-      <!-- Ceramic work card: title and year cells across the top, photo below.
-           The top strip links to ceramics/persimmons.html. -->
-      <article class="box card work-card">
-        <a class="work-card__head card__link" href="ceramics/persimmons.html">
-          <div class="work-card__cell">
-            <p class="work-card__label">Title:</p>
-            <h2 class="work-card__title" data-oval>Persimmons</h2>
+      <!-- The works. A strip on top: "Archive", with Chronological /
+           Curated on the right (a blue circle marks the current one and
+           moves to whichever one you hover). Under it, a sub strip with the
+           object count and 2x / 3x / 4x, which set the number of grid
+           columns (3 is the default). Below it, square hero photos, one per work, each
+           cropped so the piece fills the same share of its square. Hovering
+           a square shows its name and year; clicking opens the work's page. -->
+      <section class="box work-browser" aria-labelledby="selected-works">
+        <div class="work-browser__bar">
+          <h2 class="work-browser__title" id="selected-works">Archive</h2>
+          <div class="work-browser__order" role="group" aria-label="Order">
+            <button type="button" data-order="chronological" aria-pressed="false" data-label="Newest first"><span class="work-browser__opt" data-oval>Chronological</span></button>
+            <button type="button" data-order="curated" aria-pressed="true" data-label="Curated sequence"><span class="work-browser__opt" data-oval>Curated</span></button>
           </div>
-          <div class="work-card__cell">
-            <p class="work-card__label">Year:</p>
-            <p class="work-card__value work-card__year">2026</p>
+        </div>
+        <!-- Sub strip: how many objects (fills itself in) and the grid size.
+             Order: Curated is the order written below; Chronological sorts
+             by year, newest first (works with no year yet go last). -->
+        <div class="work-browser__sub">
+          <p class="work-browser__facts"><span class="work-browser__key">Objects:</span> <span class="work-browser__objects">006</span><span class="work-browser__sort"><span class="work-browser__sep" aria-hidden="true">/</span><span class="work-browser__sort-text">Curated sequence</span></span></p>
+          <div class="work-browser__cols" role="group" aria-label="Grid size">
+            <button type="button" data-cols="2" aria-pressed="false" aria-label="2 columns"><span class="work-browser__num" data-oval>2×</span></button>
+            <button type="button" data-cols="3" aria-pressed="true" aria-label="3 columns"><span class="work-browser__num" data-oval>3×</span></button>
+            <button type="button" data-cols="4" aria-pressed="false" aria-label="4 columns"><span class="work-browser__num" data-oval>4×</span></button>
           </div>
+        </div>
+        <div class="work-squares" data-cols="3">
+        <a class="work-squares__item" href="ceramics/persimmon-1.html">
+          <img src="images/ceramics/persimmon-1/persimmon-1-hero-square.avif" width="1200" height="1200" loading="lazy" alt="Persimmon 1: a squat, upright ceramic persimmon with a glazed leaf cap and a twisted stem">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Persimmon 1,</span> <span class="work-squares__year">2026</span></span></span>
         </a>
-        <span class="arrow-button card__arrow" aria-hidden="true"><img class="icon" src="images/icons/arrow-north-east.svg" alt=""></span>
-        <!-- Three views: one large photo, two square close-ups stacked beside it -->
-        <div class="work-gallery">
-          <img class="work-gallery__main" src="images/ceramics/persimmons-hero-group-card.avif" data-full="images/ceramics/persimmons-hero-group-large.avif" width="1720" height="1256" loading="lazy" alt="Three ceramic persimmons with glazed green leaves and twisted stems on a blue backdrop">
-          <img src="images/ceramics/persimmon-1-square.avif" data-full="images/ceramics/persimmon-1-square-large.avif" width="1300" height="1300" loading="lazy" alt="Persimmon 1: a squat, upright ceramic persimmon with a glazed leaf cap and a twisted stem, seen from above at an angle">
-          <img src="images/ceramics/persimmon-2-square.avif" data-full="images/ceramics/persimmon-2-square-large.avif" width="1300" height="1300" loading="lazy" alt="Persimmon 2: a ceramic persimmon lying on its side with a ruffled green leaf cap">
-        </div>
-      </article>
-
-      <!-- The top strip links to ceramics/ritual-1.html -->
-      <article class="box card work-card">
-        <a class="work-card__head card__link" href="ceramics/ritual-1.html">
-          <div class="work-card__cell">
-            <p class="work-card__label">Title:</p>
-            <h2 class="work-card__title" data-oval>Ritual Vessel no. 1</h2>
-          </div>
-          <div class="work-card__cell">
-            <p class="work-card__label">Year:</p>
-            <p class="work-card__value work-card__year">2024</p>
-          </div>
+        <a class="work-squares__item" href="ceramics/ritual-3.html">
+          <img src="images/ceramics/ritual-vessel-3/ritual-3-hero-square.avif" width="1200" height="1200" loading="lazy" alt="Ritual Vessel 3: a wide green-glazed stoneware vessel with a footed base and two winged handles">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual Vessel 3,</span> <span class="work-squares__year">2025</span></span></span>
         </a>
-        <span class="arrow-button card__arrow" aria-hidden="true"><img class="icon" src="images/icons/arrow-north-east.svg" alt=""></span>
-        <!-- Three views: one large photo, two square close-ups stacked beside it -->
-        <div class="work-gallery">
-          <img class="work-gallery__main" src="images/ceramics/ritual-1-three-quarter-card.avif" data-full="images/ceramics/ritual-1-three-quarter-large.avif" width="1720" height="1254" loading="lazy" alt="Ritual Vessel no. 1: a round stoneware vessel in drippy pink and green glaze, with two small curled handles and a row of small spikes">
-          <img src="images/ceramics/ritual-1-top-down-square.avif" width="1200" height="1200" loading="lazy" alt="The vessel seen from directly above, its round opening framed by two handles">
-          <img src="images/ceramics/ritual-1-rim-closeup-square.avif" data-full="images/ceramics/ritual-1-rim-closeup-square-large.avif" width="1300" height="1300" loading="lazy" alt="Close-up of the vessel's rim and shoulder, showing speckled green and pink glaze">
+        <a class="work-squares__item" href="ceramics/ritual-1.html">
+          <img src="images/ceramics/ritual-vessel-1/ritual-1-hero-square.avif" width="1200" height="1200" loading="lazy" alt="Ritual Vessel 1: a round stoneware vessel in drippy pink and green glaze, with two small curled handles">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual Vessel 1,</span> <span class="work-squares__year">2025</span></span></span>
+        </a>
+        <a class="work-squares__item" href="ceramics/persimmon-2.html">
+          <img src="images/ceramics/persimmon-2/persimmon-2-hero-square.avif" width="1200" height="1200" loading="lazy" alt="Persimmon 2: a ceramic persimmon lying on its side, with a ruffled green leaf cap">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Persimmon 2,</span> <span class="work-squares__year">2026</span></span></span>
+        </a>
+        <!-- [TODO] Ritual Vessel 2 has no page yet (link this square once it does) and no year yet -->
+        <div class="work-squares__item">
+          <img src="images/ceramics/ritual-vessel-2/ritual-2-hero-square.avif" width="1200" height="1200" loading="lazy" alt="Ritual Vessel 2: a round brown-glazed stoneware vessel with a footed base and two curled handles">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual Vessel 2,</span> <span class="work-squares__year">[TODO]</span></span></span>
         </div>
-      </article>
-
-      <article class="box card work-card">
-        <div class="work-card__head">
-          <div class="work-card__cell">
-            <p class="work-card__label">Title:</p>
-            <h2 class="work-card__title" data-oval>Ritual Vessel no. 2</h2>
-          </div>
-          <div class="work-card__cell">
-            <p class="work-card__label">Year:</p>
-            <p class="work-card__value work-card__year">2025</p>
-          </div>
+        <!-- [TODO] Ritual Vessel 4 has no page yet (link this square once it does) and no year yet -->
+        <div class="work-squares__item">
+          <img src="images/ceramics/ritual-vessel-4/ritual-4-hero-square.avif" width="1200" height="1200" loading="lazy" alt="Ritual Vessel 4: a round green-glazed stoneware vessel with a narrow neck and two small curled handles">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual Vessel 4,</span> <span class="work-squares__year">[TODO]</span></span></span>
         </div>
-        <span class="arrow-button card__arrow" aria-hidden="true"><img class="icon" src="images/icons/arrow-north-east.svg" alt=""></span>
-        <!-- Three views: one large photo, two square close-ups stacked beside it -->
-        <div class="work-gallery">
-          <img class="work-gallery__main" src="images/ceramics/ritual-2.avif" width="1592" height="1194" loading="lazy" alt="A wide green-glazed stoneware vessel with a footed base, two winged handles, and a row of small spikes">
-          <img src="images/ceramics/ritual-2-02.avif" width="788" height="788" loading="lazy" alt="The green vessel from above at an angle, showing its wide rim and spikes">
-          <img src="images/ceramics/ritual-2-03.avif" width="790" height="790" loading="lazy" alt="The green vessel holding two pink cosmos flowers">
         </div>
-      </article>
+      </section>
     </div>
 
   </main>

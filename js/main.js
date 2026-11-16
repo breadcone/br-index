@@ -20,8 +20,14 @@
   var RESUME = { text: "Résumé", href: "https://freight.cargo.site/m/N3042622597460362339586141958857/Resume.pdf", external: true };
   var EMAIL = { text: "Email", href: "mailto:brian.le.de@gmail.com" };
   var LINKEDIN = { text: "LinkedIn", href: "https://www.linkedin.com/in/lebrians/", external: true };
-  // [TODO] "About" has no page yet; point href at it once it exists.
-  var ABOUT = { text: "About", href: "#", todo: true };
+  var INSTAGRAM = { text: "Instagram", href: "https://www.instagram.com/breadcone/", external: true };
+  // An orchid entry: links to its photo on the orchids page, which opens
+  // its popup (the #name is matched by the photo popup script below)
+  function orchid(name) {
+    return { text: name, href: "orchids.html#" + name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") };
+  }
+  // "About" opens the About dialog (built below), not a separate page.
+  var ABOUT = { text: "About", href: "#about", about: true };
   var MENUS = {
     "br-index/design": {
       title: "/design",
@@ -42,36 +48,40 @@
       home: "ceramics.html",
       groups: [
         { label: "Works", items: [
-          { text: "Persimmons", href: "ceramics/persimmons.html" },
-          { text: "Ritual Vessel no. 1", href: "ceramics/ritual-1.html" },
-          // [TODO] Ritual Vessel no. 2 has a card on ceramics.html but no page yet
-          { text: "Ritual Vessel no. 2", href: "#", todo: true }
+          { text: "Persimmon 1", href: "ceramics/persimmon-1.html" },
+          { text: "Persimmon 2", href: "ceramics/persimmon-2.html" },
+          { text: "Ritual Vessel 1", href: "ceramics/ritual-1.html" },
+          // [TODO] Ritual Vessel 2 and 4 have squares on ceramics.html but no pages yet
+          { text: "Ritual Vessel 2", href: "#", todo: true },
+          { text: "Ritual Vessel 3", href: "ceramics/ritual-3.html" },
+          { text: "Ritual Vessel 4", href: "#", todo: true }
         ] },
         // [TODO] "Artist Statement" has no page yet
         { label: "Info", items: [{ text: "Artist Statement", href: "#", todo: true }] },
-        // [TODO] Instagram link (also "#" on ceramics.html)
-        { label: "Contact", items: [EMAIL, { text: "Instagram", href: "#", todo: true }] }
+        { label: "Contact", items: [EMAIL, INSTAGRAM] }
       ]
     },
     "br-index/orchids": {
       title: "/orchids",
       home: "orchids.html",
       groups: [
-        // [TODO] PLACEHOLDER orchids, not Brian's real collection. Replace with
-        // real plants as { text: "Name", href: "orchids/name.html" }.
-        // Species and Hybrids show their labels even if emptied.
+        // Species and Hybrids show their labels even if emptied. Names are in
+        // alphabetical order. Each opens that orchid's photo popup.
         { label: "Species", keep: true, items: [
-          { text: "Phalaenopsis amabilis", href: "#", todo: true },
-          { text: "Dendrobium kingianum", href: "#", todo: true },
-          { text: "Masdevallia veitchiana", href: "#", todo: true }
+          orchid("Bulbophyllum rothschildianum"),
+          orchid("Cattleya luteola"),
+          orchid("Dendrobium bellatulum"),
+          orchid("Gastrochilus japonicus"),
+          orchid("Laelia alaorii"),
+          orchid("Phalaenopsis corningiana"),
+          orchid("Platystele ovatilabia")
         ] },
         { label: "Hybrids", keep: true, items: [
-          { text: "Paphiopedilum Maudiae", href: "#", todo: true },
-          { text: "Oncidium Sharry Baby", href: "#", todo: true },
-          { text: "Brassia Rex", href: "#", todo: true }
+          orchid("Brassavola David Sander"),
+          orchid("Cattleya Peckhaviensis"),
+          orchid("Phalaenopsis Sacha")
         ] },
-        // [TODO] Instagram link
-        { label: "Contact", items: [EMAIL, { text: "Instagram", href: "#", todo: true }] }
+        { label: "Contact", items: [EMAIL, INSTAGRAM] }
       ]
     }
   };
@@ -95,10 +105,11 @@
     var ext = item.external ? ' target="_blank" rel="noopener"' : "";
     var cur = current ? ' aria-current="page"' : "";
     var todo = item.todo ? ' data-todo="no page yet"' : "";
+    var about = item.about ? " data-about" : "";
     // Years are hidden for now (kept in INDEX); set SHOW_YEARS to true to bring them back
     var SHOW_YEARS = false;
     var meta = SHOW_YEARS && item.meta ? '<span class="index-cell__meta">' + item.meta + "</span>" : "";
-    return '<li><a class="index-cell" href="' + href + '"' + ext + cur + todo + ">" +
+    return '<li><a class="index-cell" href="' + href + '"' + ext + cur + todo + about + ">" +
       '<span class="index-cell__text"><span class="index-cell__title" data-oval>' + item.text + "</span>" + meta + "</span></a></li>";
   }
   // `compact`: single-line entries (no years) sit closer together
@@ -238,6 +249,51 @@
   var header = trigger.closest(".site-header");
   header.parentNode.insertBefore(overlay, header.nextSibling);
 
+  // About dialog: opened by "About" in the Index panel. A landscape box, half
+  // the window wide: the orb photo, name and location on the left; the
+  // statement and access points on the right. Built here so it is in the page
+  // before the hover-oval script runs. Stacks to one column on phones.
+  var aboutDialog = document.createElement("dialog");
+  aboutDialog.className = "about";
+  aboutDialog.setAttribute("aria-label", "About Brian Le");
+  aboutDialog.innerHTML =
+    '<button type="button" class="about__close" aria-label="Close about"><img class="icon" src="' + url("images/icons/close.svg") + '" alt=""></button>' +
+    '<div class="about__grid">' +
+      '<div class="about__side">' +
+        // the same orb photo and moving light as the homepage (.orb-photo):
+        // the light drifts on its own and follows the mouse when it's near.
+        // (The earlier twinkling version is saved in parked/about-orb-twinkle.html.)
+        '<div class="about__cover"><span class="orb-photo about__orb">' +
+          '<img class="related__thumb" src="' + url("images/home/orb.avif") + '" width="800" height="800" alt="A frosted glass orb resting on a soft blue background">' +
+          '<span class="orb-photo__light" aria-hidden="true"></span>' +
+        '</span></div>' +
+        '<div class="about__info">' +
+          '<div class="about__cell"><p class="label">Name</p><p class="about__value">Brian Le</p></div>' +
+          '<div class="about__cell"><p class="label">Location</p><p class="about__value">New York City</p></div>' +
+        "</div>" +
+      "</div>" +
+      '<div class="about__main">' +
+        '<div class="about__text"><p class="label">About</p>' +
+          "<p>Brian is a Design Lead at IBM with over eight years of experience translating complex systems into intuitive and approachable experiences. With a foundation in traditional graphic design, he draws on typography, composition, and visual craft to shape how people understand and interact with technology.</p></div>" +
+      "</div>" +
+    "</div>";
+  document.body.appendChild(aboutDialog);
+
+  var aboutClose = aboutDialog.querySelector(".about__close");
+  aboutClose.addEventListener("click", function () { aboutDialog.close(); });
+  // A click on the dimmed backdrop (outside the box) also closes it
+  aboutDialog.addEventListener("click", function (e) { if (e.target === aboutDialog) aboutDialog.close(); });
+  // Closing puts focus back on "Contents", the control that opened the index
+  aboutDialog.addEventListener("close", function () { trigger.focus(); });
+  var aboutLink = overlay.querySelector("[data-about]");
+  if (aboutLink) {
+    aboutLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      setOpen(false);
+      aboutDialog.showModal();
+    });
+  }
+
   trigger.setAttribute("aria-controls", "index-overlay");
   trigger.setAttribute("aria-expanded", "false");
 
@@ -359,8 +415,27 @@
   // (no overlap). Their CSS sets --oval-closed: 1.
   var CLOSED = SHAPE.slice(0, 12).concat([[12, 8]]);
 
-  function buildPath(width, height, closed) {
-    var pts = (closed ? CLOSED : SHAPE).map(function (p) {
+  // Links inside a `data-oval-vary` list each get their own slightly
+  // different oval: every point is nudged a little and the loop tilts a bit.
+  // The nudges come from the link's position in the page, so a link always
+  // gets the same oval, but no two neighbours match.
+  var varyCount = 0;
+  function variedShape(seed) {
+    function rand() { // small repeatable random numbers, -1 to 1
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280 * 2 - 1;
+    }
+    var tilt = rand() * 4;    // left side up or down by up to 4 units
+    var stretch = rand() * 4; // a touch wider or narrower
+    return SHAPE.map(function (p) {
+      var x = p[0] + rand() * 3.5 + (p[0] - 50) / 50 * stretch;
+      var y = p[1] + rand() * 3 + (50 - p[0]) / 50 * tilt;
+      return [x, y];
+    });
+  }
+
+  function buildPath(width, height, closed, shape) {
+    var pts = (shape || (closed ? CLOSED : SHAPE)).map(function (p) {
       return (p[0] * width / 100).toFixed(1) + " " + (p[1] * height / 40).toFixed(1);
     });
     var d = "M " + pts[0];
@@ -376,7 +451,7 @@
     svg.setAttribute("viewBox", "0 0 " + box.width + " " + box.height);
     var style = getComputedStyle(svg);
     var closed = style.getPropertyValue("--oval-closed").trim() === "1";
-    svg.firstChild.setAttribute("d", buildPath(box.width, box.height, closed));
+    svg.firstChild.setAttribute("d", buildPath(box.width, box.height, closed, svg.ovalShape));
   }
 
   var observer = "ResizeObserver" in window
@@ -395,6 +470,7 @@
     var path = document.createElementNS(SVG_NS, "path");
     path.setAttribute("pathLength", "1");
     svg.appendChild(path);
+    if (el.closest("[data-oval-vary]")) svg.ovalShape = variedShape(++varyCount * 7919);
     el.appendChild(svg);
 
     fit(svg);
@@ -403,6 +479,93 @@
 
   document.querySelectorAll("[data-oval]").forEach(addOval);
   window.addOval = addOval; // used by the intro to circle its key phrase
+})();
+
+/* ---------------------------------------------------------
+   Collection dropdown (orchids page)
+   Clicking "Collection" opens a list of every photo, in two groups:
+   Species, then Hybrids, each in alphabetical order. Choosing a name opens
+   that photo's popup. The list is built from the grid itself, so new photos
+   show up here as soon as they are added to the grid.
+   --------------------------------------------------------- */
+(function () {
+  var toggle = document.querySelector(".work-browser__toggle");
+  if (!toggle) return;
+  var panel = document.getElementById(toggle.getAttribute("aria-controls"));
+  var section = toggle.closest(".work-browser");
+  if (!panel || !section) return;
+
+  var items = Array.from(section.querySelectorAll(".work-squares__item[data-kind]"));
+  function nameOf(item) {
+    var n = item.querySelector(".work-squares__name");
+    return n ? n.textContent.trim() : "";
+  }
+  var closeBox = section.querySelector(".work-browser__close"); // phones only (CSS)
+  function setOpen(open) {
+    panel.hidden = !open;
+    if (closeBox) closeBox.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    toggle.classList.toggle("is-open", open);
+  }
+  function popupOpen() {
+    return document.documentElement.classList.contains("lightbox-open");
+  }
+
+  // Same markup and look as the Contents menu: a serif label per group, the
+  // names in sans, groups split by full-width lines, the blue oval on hover.
+  [{ label: "Species", kind: "species" }, { label: "Hybrids", kind: "hybrid" }].forEach(function (g) {
+    var list = items
+      .filter(function (it) { return it.getAttribute("data-kind") === g.kind; })
+      .sort(function (a, b) { return nameOf(a).localeCompare(nameOf(b)); });
+    var block = document.createElement("section");
+    block.className = "index-sec index-sec--compact";
+    var headWrap = document.createElement("div");
+    headWrap.className = "index-sec__head";
+    var head = document.createElement("h3");
+    head.className = "label";
+    head.textContent = g.label + ":";
+    headWrap.appendChild(head);
+    block.appendChild(headWrap);
+    var ul = document.createElement("ul");
+    ul.className = "index-cells";
+    list.forEach(function (item) {
+      var li = document.createElement("li");
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "index-cell";
+      var wrap = document.createElement("span");
+      wrap.className = "index-cell__text";
+      var text = document.createElement("span");
+      text.className = "index-cell__title";
+      text.setAttribute("data-oval", "");
+      text.textContent = nameOf(item);
+      wrap.appendChild(text);
+      btn.appendChild(wrap);
+      // The list stays open behind the popup, so after closing the popup
+      // you can pick the next name
+      btn.addEventListener("click", function () {
+        var photo = item.querySelector("img");
+        if (photo) photo.click(); // the same click that opens the photo's popup
+      });
+      li.appendChild(btn);
+      ul.appendChild(li);
+      if (window.addOval) window.addOval(text);
+    });
+    block.appendChild(ul);
+    panel.appendChild(block);
+  });
+
+  toggle.addEventListener("click", function () { setOpen(panel.hidden); });
+  if (closeBox) closeBox.addEventListener("click", function () { setOpen(false); toggle.focus(); });
+  // Escape and clicks outside close the list, except while a photo popup is
+  // open: those close the popup only, and the list stays open.
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !panel.hidden && !popupOpen()) { setOpen(false); toggle.focus(); }
+  });
+  document.addEventListener("click", function (e) {
+    if (panel.hidden || section.contains(e.target) || e.target.closest(".lightbox")) return;
+    setOpen(false);
+  });
 })();
 
 
@@ -489,9 +652,29 @@
     el.classList.add("is-ready");
 
     var i = 0;
+    var end = chars.length;
+    // With `data-type-circle-only`, the rest of the line is there from the
+    // start and only the circled phrase types in (the caret waits just
+    // before it), then the oval draws and the caret goes away.
+    var circleOnly = range && el.hasAttribute("data-type-circle-only");
+    if (circleOnly) {
+      chars.forEach(function (c, idx) {
+        if (idx < range[0] || idx >= range[1]) c.classList.add("is-shown");
+      });
+      i = range[0];
+      end = range[1];
+      speed *= 1.3; // a touch slower, since only a word or two types in
+      if (i > 0) chars[i - 1].classList.add("is-caret");
+    }
+
     function step() {
       if (thisRun !== run) return; // a newer line took over
       if (i > 0) chars[i - 1].classList.remove("is-caret");
+
+      if (circleOnly && i === end) {
+        drawCircle(mark);
+        return;
+      }
 
       if (i === chars.length) {
         // Finished: the caret stays at the end and keeps blinking
@@ -545,11 +728,15 @@
     probe.remove();
     heading.style.minHeight = tallest + "px";
   }
-  reserveHeight();
-  if ("ResizeObserver" in window) new ResizeObserver(reserveHeight).observe(heading.parentNode);
-
   // Hover swap is switched off for now (too busy). Set to true to bring it back.
+  // Only reserve the extra height when it's on; otherwise the intro box
+  // keeps exactly its own 3 lines.
   var HOVER_SWAP = false;
+  if (HOVER_SWAP) {
+    reserveHeight();
+    if ("ResizeObserver" in window) new ResizeObserver(reserveHeight).observe(heading.parentNode);
+    if (document.fonts) document.fonts.ready.then(reserveHeight);
+  }
   if (HOVER_SWAP) document.querySelectorAll("[data-intro]").forEach(function (link) {
     var show = function () { swapTo(link.getAttribute("data-intro")); };
     var reset = function () { swapTo(defaultText); };
@@ -670,8 +857,15 @@
    button stays for keyboard and screen-reader users.
    --------------------------------------------------------- */
 (function () {
-  var photos = document.querySelectorAll(".work-card img:not(.icon), .work-grid img");
+  // The orchids page (data-popup-native) also opens its grid photos, at their
+  // sharpest size (see sizeFor). The ceramics home squares are links, not popups.
+  var nativeSize = !!document.querySelector("[data-popup-native]");
+  var photos = document.querySelectorAll(".work-card img:not(.icon), .work-grid img" + (nativeSize ? ", [data-popup-native] .work-squares img" : ""));
   if (!photos.length) return;
+
+  // Site root, worked out from this script's address, so the close icon
+  // loads from any page (also with the fingerprinted name on the live site)
+  var iconRoot = document.currentScript ? document.currentScript.src.replace(/js\/main(\.[0-9a-f]+)?\.js(\?.*)?$/, "") : "";
 
   var pop = document.createElement("div");
   // Same popup on every page and screen size (.lightbox--full in
@@ -683,21 +877,116 @@
   pop.setAttribute("aria-label", "Enlarged photo");
   pop.innerHTML =
     '<div class="lightbox__frame">' +
-      '<div class="box lightbox__box"><img class="lightbox__img" alt=""></div>' +
-      '<button class="visually-hidden lightbox__close" type="button">Close photo</button>' +
+      '<div class="box lightbox__box">' +
+        '<div class="lightbox__media"><img class="lightbox__img" alt=""><div class="lightbox__thumbs" hidden></div></div>' +
+        '<div class="lightbox__meta" hidden></div>' +
+      "</div>" +
+      // Phones: a square X box just above the photo's top-right corner.
+      // Larger screens: hidden but still there for keyboard and screen readers.
+      '<button class="lightbox__close" type="button" aria-label="Close photo"><img class="icon" src="' + iconRoot + 'images/icons/close.svg" alt=""></button>' +
     "</div>";
   document.body.appendChild(pop);
   var big = pop.querySelector(".lightbox__img");
   var closeBtn = pop.querySelector(".lightbox__close");
   var lastPhoto = null;
+  var meta = pop.querySelector(".lightbox__meta");
+  var thumbs = pop.querySelector(".lightbox__thumbs");
+  var gallery = []; // the open photo's set of full-size photos (empty: just one photo)
+
+  // Orchids with more than one photo list them on the grid item:
+  // data-gallery (full-size files) and data-gallery-thumbs (small files),
+  // space-separated, in the same order. The first is the grid photo.
+  // Clicking a thumbnail shows that photo; the popup stays open.
+  function showPhoto(k) {
+    big.src = gallery[k];
+    Array.prototype.forEach.call(thumbs.children, function (b, j) {
+      b.setAttribute("aria-current", j === k ? "true" : "false");
+    });
+  }
+  function fillGallery(item) {
+    thumbs.textContent = "";
+    var full = nativeSize && item ? item.getAttribute("data-gallery") : null;
+    gallery = full ? full.trim().split(/\s+/) : [];
+    if (gallery.length < 2) {
+      gallery = [];
+      thumbs.hidden = true;
+      return;
+    }
+    var small = (item.getAttribute("data-gallery-thumbs") || "").trim().split(/\s+/);
+    gallery.forEach(function (src, k) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "lightbox__thumb";
+      b.setAttribute("aria-label", "Photo " + (k + 1) + " of " + gallery.length);
+      var im = document.createElement("img");
+      im.src = small[k] || src;
+      im.alt = "";
+      b.appendChild(im);
+      b.addEventListener("click", function (e) {
+        e.stopPropagation(); // a thumbnail click doesn't close the popup
+        showPhoto(k);
+      });
+      thumbs.appendChild(b);
+      new Image().src = src; // load ahead so switching is instant
+    });
+    thumbs.hidden = false;
+  }
+
+  // Orchid popups get a small strip under the photo: the name, then the
+  // species cross and year crossed for hybrids, or the natural origin for
+  // species. The data comes from data-* attributes on each grid item.
+  function fillMeta(item) {
+    meta.textContent = "";
+    if (!nativeSize || !item || !item.getAttribute("data-kind")) {
+      meta.hidden = true;
+      return;
+    }
+    var nameEl = item.querySelector(".work-squares__name");
+    var name = document.createElement("p");
+    name.className = "lightbox__meta-name";
+    name.textContent = nameEl ? nameEl.textContent : "";
+    meta.appendChild(name);
+    // The details sit together in one group, under a divider after the name
+    var details = document.createElement("div");
+    details.className = "lightbox__meta-details";
+    meta.appendChild(details);
+    // A row: a bold label, then the value in the lighter weight
+    function row(label, value) {
+      var p = document.createElement("p");
+      p.className = "lightbox__meta-row";
+      var lab = document.createElement("span");
+      lab.className = "lightbox__meta-label";
+      lab.textContent = label;
+      p.appendChild(lab);
+      p.appendChild(document.createTextNode(" " + value));
+      details.appendChild(p);
+    }
+    if (item.getAttribute("data-kind") === "hybrid") {
+      row("Hybrid cross:", item.getAttribute("data-cross") || "[TODO]");
+    } else {
+      row("Species native to:", item.getAttribute("data-origin") || "[TODO]");
+    }
+    meta.hidden = false;
+  }
+
+  // Height of the strip at a given photo width (0 when there is no strip)
+  function metaHeight(width) {
+    if (meta.hidden) return 0;
+    meta.style.width = width + "px";
+    return meta.offsetHeight;
+  }
 
   // Every popup has the shape of the first Persimmons photo; other photos
   // are cropped to fill it (object-fit: cover in css/styles.css).
+  // Pages marked data-popup-phone="square" (all ceramics pages) use a
+  // square instead on phones.
   var RATIO = 1800 / 1270;
+  var phoneQuery = window.matchMedia("(max-width: 800px)");
+  var squareOnPhone = !!document.querySelector('[data-popup-phone="square"]');
 
   // Size the popup: as large as fits inside its padding (the page gutter).
   function sizeFor() {
-    var ratio = RATIO;
+    var ratio = squareOnPhone && phoneQuery.matches ? 1 : RATIO;
     var popStyle = getComputedStyle(pop);
     var padX = (parseFloat(popStyle.paddingLeft) || 0) + (parseFloat(popStyle.paddingRight) || 0);
     var padY = (parseFloat(popStyle.paddingTop) || 0) + (parseFloat(popStyle.paddingBottom) || 0);
@@ -705,13 +994,54 @@
     var line = 2;
     var maxW = pop.clientWidth - padX - line;
     var maxH = pop.clientHeight - padY - line;
-    var width = Math.round(Math.min(maxW, maxH * ratio));
+    // Phones: leave room for the X box above the photo
+    if (phoneQuery.matches) maxH -= closeBtn.offsetHeight;
+    var width;
+    if (nativeSize) {
+      // Every orchid popup is the same square, the size of the smallest
+      // photo's popup before (1080px, at the screen's density so it stays
+      // sharp), and never larger than the window allows.
+      var dpr = window.devicePixelRatio || 1;
+      // With a gallery, n square thumbnails line up with the photo: a column
+      // beside it (as tall as it) or, on phones, a row under it (as wide as
+      // it). Each is (width - (n - 1)) / n across, plus a 1px line before them.
+      var n = gallery.length;
+      var below = n && phoneQuery.matches;
+      var side = n && !below;
+      var thumbSize = function (w) { return (w - (n - 1)) / n; };
+      var total = function (w) { return side ? w + 1 + thumbSize(w) : w; };
+      var capW = side ? (maxW - 1 + (n - 1) / n) / (1 + 1 / n) : maxW;
+      var capH = function (m) { return below ? (maxH - m - 1 + (n - 1) / n) / (1 + 1 / n) : maxH - m; };
+      // The strip (if any) sits under the photo and takes its share of the height
+      width = Math.min(1080 / dpr, capW, capH(0));
+      for (var i = 0; i < 2; i++) {
+        width = Math.min(1080 / dpr, capW, capH(metaHeight(total(width))));
+      }
+      if (n) {
+        // whole-pixel thumbnails, and a photo exactly as tall (or wide) as them
+        var t = Math.floor(thumbSize(width));
+        width = n * t + (n - 1);
+        thumbs.style.width = side ? t + "px" : "";
+        Array.prototype.forEach.call(thumbs.children, function (b) {
+          b.style.width = t + "px";
+          b.style.height = t + "px";
+        });
+      } else {
+        width = Math.round(width);
+      }
+      meta.style.width = total(width) + "px";
+      ratio = 1;
+    } else {
+      width = Math.round(Math.min(maxW, maxH * ratio));
+    }
     big.style.width = width + "px";
     big.style.height = Math.round(width / ratio) + "px";
   }
 
   function open(photo) {
     lastPhoto = photo;
+    fillMeta(photo.closest(".work-squares__item"));
+    fillGallery(photo.closest(".work-squares__item"));
     sizeFor();
     // Show the page's photo at once, then swap in the high-detail file
     // (data-full) when it has loaded, so people can look closely. The page
@@ -724,15 +1054,29 @@
       hi.src = fullSrc;
     }
     big.alt = photo.alt;
+    if (gallery.length) showPhoto(0);
     document.documentElement.classList.add("lightbox-open");
     closeBtn.focus({ preventScroll: true });
   }
   function close() {
     document.documentElement.classList.remove("lightbox-open");
     if (lastPhoto) lastPhoto.focus({ preventScroll: true });
+    // Drop a "#orchid-name" from the address, so the same Contents link
+    // opens the popup again next time
+    if (location.hash && document.getElementById(location.hash.slice(1))) {
+      history.replaceState(null, "", location.pathname + location.search);
+    }
+  }
+
+  // Start downloading the high-detail file as soon as a finger or mouse
+  // presses on a photo, so the sharp version is ready sooner
+  function preload(photo) {
+    var src = photo.getAttribute("data-full");
+    if (src && !photo._preloaded) { photo._preloaded = true; new Image().src = src; }
   }
 
   photos.forEach(function (photo) {
+    photo.addEventListener("pointerdown", function () { preload(photo); });
     photo.setAttribute("tabindex", "0");
     photo.setAttribute("role", "button");
     photo.setAttribute("aria-label", "Enlarge photo: " + photo.alt);
@@ -740,6 +1084,37 @@
     photo.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(photo); }
     });
+  });
+
+  // Orchids page: each photo gets an id from its name ("Cattleya luteola"
+  // becomes #cattleya-luteola). The Contents menu links to these, so
+  // orchids.html#cattleya-luteola opens that photo's popup, whether you come
+  // from another page or are already on the orchids page.
+  if (nativeSize) {
+    document.querySelectorAll("[data-popup-native] .work-squares__item").forEach(function (item) {
+      var n = item.querySelector(".work-squares__name");
+      if (n && !item.id) item.id = n.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    });
+    var openFromHash = function () {
+      var id = decodeURIComponent(location.hash.slice(1));
+      var item = id ? document.getElementById(id) : null;
+      var photo = item && item.classList.contains("work-squares__item") ? item.querySelector("img") : null;
+      if (!photo) return;
+      // close the Contents panel the link was clicked in
+      document.documentElement.classList.remove("index-open");
+      var trigger = document.querySelector(".site-header__index");
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
+      open(photo);
+    };
+    window.addEventListener("hashchange", openFromHash);
+    openFromHash();
+  }
+
+  // Re-fit the open popup when the window changes size (a resized window,
+  // a phone turned sideways), so it never runs off the screen. This also
+  // switches the gallery thumbnails between the column and the phone row.
+  window.addEventListener("resize", function () {
+    if (document.documentElement.classList.contains("lightbox-open")) sizeFor();
   });
 
   closeBtn.addEventListener("click", close);
@@ -763,12 +1138,13 @@
   if (!photos.length) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  var ORB = { x: 0.52, y: 0.51, r: 0.205 };   // matches --orb-x/y/r in the CSS
+  var ORB = { x: 0.52, y: 0.5125, r: 0.2075 }; // matches --orb-x/y/r in the CSS
   var SWING = 0.75 * ORB.r;                   // how far the highlight travels either side of center
   var DRIFT_SECONDS = 12;                     // one full left-right-left drift
   var mouse = null;
   var state = Array.from(photos).map(function () {
-    return { x: ORB.x + SWING * 0.5, y: ORB.y, phase: Math.PI / 6, following: false };
+    // starting spot: a little left of center (40% of the way to the left end)
+    return { x: ORB.x - SWING * 0.4, y: ORB.y, phase: Math.asin(-0.4), following: false };
   });
   var visible = Array.from(photos).map(function () { return true; });
   var running = false;
@@ -1048,7 +1424,9 @@
   // Each group: the elements that switch together, and the lines to test
   var groups = [
     { toggle: ".timeline", test: ".timeline dt, .timeline dd" },
-    { toggle: ".card .work-card__head", test: ".card .work-card__head .work-card__label, .card .work-card__head .work-card__title, .card .work-card__head .work-card__value" }
+    // (Ceramics cards, .work-card--mosaic, are left out: their year lives
+    // only in the header, so it must never be hidden)
+    { toggle: ".card:not(.work-card--mosaic) .work-card__head", test: ".card:not(.work-card--mosaic) .work-card__head :is(.work-card__label, .work-card__title, .work-card__value)" }
   ].map(function (g) {
     return { toggle: Array.from(document.querySelectorAll(g.toggle)), test: g.test };
   }).filter(function (g) { return g.toggle.length; });
@@ -1100,3 +1478,103 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 })();
 
+
+/* ---------------------------------------------------------
+   Works grid size (ceramics home)
+   The 2x / 3x / 4x buttons set the number of grid columns, with a quick,
+   quiet crossfade: the grid (photos and lines together) fades out to the
+   white of the box, changes while hidden, then fades back in a little more
+   slowly. Visitors who prefer reduced motion get the switch instantly.
+   --------------------------------------------------------- */
+(function () {
+  var browser = document.querySelector(".work-browser");
+  if (!browser) return;
+  var grid = browser.querySelector(".work-squares");
+  var buttons = browser.querySelectorAll(".work-browser__cols button");
+  if (!grid) return; // the 2x / 3x / 4x buttons are optional (the orchids page leaves them out)
+
+  // "Objects: 00n": n is the number of objects in the grid, kept in step
+  // with the page automatically
+  var items = Array.prototype.slice.call(grid.querySelectorAll(".work-squares__item"));
+  var objects = browser.querySelector(".work-browser__objects");
+  if (objects) objects.textContent = ("00" + items.length).slice(-3);
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var FADE_OUT = 120, FADE_IN = 240;
+  var running = null, pending;
+
+  // Fades the grid out, makes the change while it's hidden, fades it back in
+  function swap(change) {
+    if (reduceMotion.matches || !grid.animate) {
+      change();
+      return;
+    }
+    clearTimeout(pending);
+    if (running) running.cancel();
+    running = grid.animate([{ opacity: 1 }, { opacity: 0 }], { duration: FADE_OUT, easing: "ease-out", fill: "forwards" });
+    pending = setTimeout(function () {
+      change();
+      if (running) running.cancel();
+      running = grid.animate([{ opacity: 0 }, { opacity: 1 }], { duration: FADE_IN, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+    }, FADE_OUT);
+  }
+
+  function setCols(n) {
+    if (grid.getAttribute("data-cols") === n) return;
+    swap(function () { grid.setAttribute("data-cols", n); });
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      setCols(btn.getAttribute("data-cols"));
+      buttons.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+    });
+  });
+
+  // Order: Curated is the order written in the page; Chronological sorts by
+  // the year in each caption, newest first, with undated works last
+  var orderButtons = browser.querySelectorAll(".work-browser__order button[data-order]");
+  function yearOf(item) {
+    var y = item.querySelector(".work-squares__year");
+    var n = y ? parseInt(y.textContent, 10) : NaN;
+    return isNaN(n) ? -Infinity : n;
+  }
+  var orders = {
+    curated: items,
+    chronological: items.slice().sort(function (a, b) { return yearOf(b) - yearOf(a); })
+  };
+  var currentOrder = "curated";
+  var sortNote = browser.querySelector(".work-browser__sort-text"); // " / Curated sequence" or " / Newest first"
+
+  orderButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var key = btn.getAttribute("data-order");
+      orderButtons.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+      if (key === currentOrder || !orders[key]) return;
+      currentOrder = key;
+      if (sortNote) sortNote.textContent = btn.getAttribute("data-label");
+      swap(function () {
+        orders[key].forEach(function (item) { grid.appendChild(item); });
+      });
+    });
+  });
+
+  // Show (orchids page): Species / Hybrids / All. Hides the photos of the
+  // other kind (each photo's data-kind), with the same quick crossfade.
+  // All is the default.
+  var filterButtons = browser.querySelectorAll(".work-browser__order button[data-filter]");
+  var currentFilter = "all";
+  filterButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var key = btn.getAttribute("data-filter");
+      filterButtons.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+      if (key === currentFilter) return;
+      currentFilter = key;
+      swap(function () {
+        items.forEach(function (item) {
+          item.hidden = key !== "all" && item.getAttribute("data-kind") !== key;
+        });
+      });
+    });
+  });
+})();

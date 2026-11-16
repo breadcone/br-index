@@ -8,6 +8,7 @@ A personal portfolio site for Brian Le, a designer at IBM (mainframe modernizati
 - After a change, tell me which file to open in the browser to check it.
 - If a request is ambiguous, ask one short question before building.
 - Never delete files or images without asking first.
+- Every new orchid or ceramics work gets its name added to the Contents menu in `js/main.js` (`MENUS`), in the right group (orchids: Species or Hybrids, written as `orchid("Name")` so it links to and opens that photo; ceramics: Works), in alphabetical order. Do this with every new addition, not only when asked.
 
 ## Tech rules
 - Plain HTML, CSS, and JavaScript only. No frameworks, no npm packages, no build tools.

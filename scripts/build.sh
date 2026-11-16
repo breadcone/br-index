@@ -25,6 +25,7 @@ tar -cf - \
   --exclude ./.claude \
   --exclude ./scripts \
   --exclude ./_site \
+  --exclude ./parked \
   --exclude ./CLAUDE.md \
   --exclude ./.gitattributes \
   --exclude ./.gitignore \

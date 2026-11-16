@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Orchids — Brian Le</title>
-  <meta name="description" content="Brian grows orchids on his windowsill, coaxing blooms through patience.">
+  <meta name="description" content="Brian is an orchid collector with an affinity for species and primary hybrids.">
   <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
-<body>
+<body class="theme-dark">
 
   <header class="site-header">
     <!-- The glass orb (span.orb) can go back here in place of the name; its styles are kept in css/styles.css -->
@@ -23,13 +23,15 @@
     <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Contents</span></a>
   </header>
 
-  <main class="home">
+  <!-- data-popup-native: photos open in a popup at their sharpest size, not filling the window (js/main.js) -->
+  <main class="home" data-popup-native>
+
 
     <!-- Left column: one tall box with three sections -->
     <div class="box home__left">
 
       <section class="box__section intro">
-        <h1 class="statement"><span data-type-in data-circle="grows orchids">Brian grows orchids on&#10;his windowsill, coaxing blooms through patience.</span></h1>
+        <h1 class="statement statement--orchids"><span data-type-in data-type-circle-only data-circle="orchid collector">Brian is an orchid collector&#10;with an affinity for species&#10;and primary hybrids.</span></h1>
       </section>
 
       <section class="box__section related">
@@ -38,7 +40,7 @@
           <ul class="link-list">
             <!-- data-intro holds each entry's intro line (hover swap is switched off for now; see HOVER_SWAP in js/main.js). -->
             <li><a data-oval data-intro="Brian is a designer working on Mainframe modernization and AI." href="index.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">design work</a></li>
-            <li><a data-oval data-intro="Brian is a ceramic artist that explores forms of becoming and inevitability." href="ceramics.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">ceramics</a></li>
+            <li><a data-oval data-intro="Brian is a ceramic artist making sculptures of ritual through clay and glaze." href="ceramics.html"><img class="icon link-list__arrow" src="images/icons/arrow-north-east.svg" alt="">ceramics</a></li>
           </ul>
         </div>
         <span class="orb-photo">
@@ -48,12 +50,11 @@
 
       </section>
 
-      <section class="box__section">
+      <section class="box__section access">
         <h2 class="label">Access points:</h2>
         <ul class="link-list">
-          <li><a data-oval href="https://freight.cargo.site/m/N3042622597460362339586141958857/Resume.pdf" target="_blank" rel="noopener">Resume</a></li>
           <li><a data-oval href="mailto:brian.le.de@gmail.com">Email</a></li>
-          <li><a data-oval href="https://www.linkedin.com/in/lebrians/" target="_blank" rel="noopener">Linkedin</a></li>
+          <li><a data-oval href="https://www.instagram.com/breadcone/" target="_blank" rel="noopener">Instagram</a></li>
         </ul>
       </section>
 
@@ -61,18 +62,68 @@
 
     <!-- Right column: Orchids -->
     <div class="home__right">
-      <div class="box">
-        <section class="box__section pair">
-          <p><strong>Orchid Grower</strong> at<br><span class="serif">a window sill somewhere</span></p>
-        </section>
-      </div>
-
-      <div class="box subject">
-        <section class="box__section">
-          <h2 class="label">Orchids:</h2>
-          <!-- [TODO] Orchids content goes here -->
-        </section>
-      </div>
+      <!-- The orchid photos, in the same grid as the ceramics works page.
+           The metadata strip (object count and 2x / 3x / 4x) is left out for now,
+           so the grid stays at 3 columns. Names and years are [TODO] until filled in. -->
+      <section class="box work-browser" aria-labelledby="orchid-photos">
+        <div class="work-browser__head">
+          <div class="work-browser__bar work-browser__bar--menu">
+            <!-- "Collection" opens the list of orchids (built in js/main.js) -->
+            <h2 class="work-browser__title" id="orchid-photos"><button class="work-browser__toggle" type="button" aria-expanded="false" aria-controls="orchid-menu">Collection<img class="icon work-browser__chevron" src="images/icons/chevron-down.svg" width="16" height="16" alt=""></button></h2>
+            <!-- Show: Species / All / Hybrids filters the grid (js/main.js) -->
+            <div class="work-browser__order" role="group" aria-label="Show">
+              <button type="button" data-filter="species" aria-pressed="false"><span class="work-browser__opt" data-oval>Species</span></button>
+              <button type="button" data-filter="all" aria-pressed="true"><span class="work-browser__opt" data-oval>All</span></button>
+              <button type="button" data-filter="hybrid" aria-pressed="false"><span class="work-browser__opt" data-oval>Hybrids</span></button>
+            </div>
+            <!-- Phones only: closes the list (shown while it is open) -->
+            <button class="work-browser__close" type="button" aria-label="Close list" hidden><img class="icon" src="images/icons/close.svg" alt=""></button>
+          </div>
+          <div class="work-browser__menu" id="orchid-menu" hidden></div>
+        </div>
+        <div class="work-squares" data-cols="3" data-captions="below">
+          <div class="work-squares__item" data-kind="hybrid" data-cross="Brassavola cucullata × Rhyncholaelia digbyana">
+            <img src="images/orchids/01-david-sander.avif" width="1600" height="1600" loading="lazy" alt="White fringed orchid bloom on a black background, with two smaller close-ups of the flower">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Brassavola David Sander</span></span></span>
+          </div>
+          <div class="work-squares__item" data-kind="species" data-origin="Eastern Himalayas (Yunnan, Assam, Arunachal Pradesh) and northern Indochina (Myanmar, Thailand, Vietnam, Laos)">
+            <img src="images/orchids/02.avif" width="1080" height="1080" loading="lazy" alt="Small orchid with red and orange flowers growing on a piece of dark wood with moss, with a close-up of the bloom">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Dendrobium bellatulum</span></span></span>
+          </div>
+          <div class="work-squares__item" data-kind="species" data-origin="Mexico, Guatemala, Honduras, Panama, Costa Rica" data-gallery="images/orchids/03-plat.avif images/orchids/platystele-ovatilabia/ovatilabia-closeup.avif" data-gallery-thumbs="images/orchids/platystele-ovatilabia/ovatilabia-grid-thumb.avif images/orchids/platystele-ovatilabia/ovatilabia-closeup-thumb.avif">
+            <img src="images/orchids/03-plat.avif" width="1600" height="1600" loading="lazy" alt="Several tiny orchids with white and orange flowers, held up on a finger against black">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Platystele ovatilabia</span></span></span>
+          </div>
+          <div class="work-squares__item" data-kind="hybrid" data-cross="Cattleya schilleriana var. sanderiana 'Wes' × Cattleya aclandiae 'Kim'" data-gallery="images/orchids/04.avif images/orchids/cattleya-peckhaviensis/peckhaviensis-front.avif images/orchids/cattleya-peckhaviensis/peckhaviensis-side.avif images/orchids/cattleya-peckhaviensis/peckhaviensis-back.avif images/orchids/cattleya-peckhaviensis/peckhaviensis-back-side.avif" data-gallery-thumbs="images/orchids/cattleya-peckhaviensis/peckhaviensis-group-thumb.avif images/orchids/cattleya-peckhaviensis/peckhaviensis-front-thumb.avif images/orchids/cattleya-peckhaviensis/peckhaviensis-side-thumb.avif images/orchids/cattleya-peckhaviensis/peckhaviensis-back-thumb.avif images/orchids/cattleya-peckhaviensis/peckhaviensis-back-side-thumb.avif">
+            <img src="images/orchids/04.avif" width="1600" height="1600" loading="lazy" alt="Spotted maroon and magenta orchid on black, with two smaller views of the same flower">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Cattleya Peckhaviensis</span></span></span>
+          </div>
+          <div class="work-squares__item" data-kind="species" data-origin="Southern Yunnan (China), northeastern India, Assam, Myanmar">
+            <img src="images/orchids/05-roth.avif" width="1080" height="1080" loading="lazy" alt="Pink, star-shaped orchid flowers with pale speckles and purple tips, on black">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Bulbophyllum rothschildianum</span></span></span>
+          </div>
+          <div class="work-squares__item" data-kind="species" data-origin="Japan (including the Ryukyu Islands), Korea, Taiwan, Hong Kong" data-gallery="images/orchids/06.avif images/orchids/gastrochilus-japonicus/japonicus-flowers.avif" data-gallery-thumbs="images/orchids/gastrochilus-japonicus/japonicus-grid-thumb.avif images/orchids/gastrochilus-japonicus/japonicus-flowers-thumb.avif">
+            <img src="images/orchids/06.avif" width="1600" height="1600" loading="lazy" alt="A piece of wood with moss and yellow and white orchid flowers, held in a hand">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Gastrochilus japonicus</span></span></span>
+          </div>
+          <div class="work-squares__item" data-kind="hybrid" data-cross="Phalaenopsis parishii × Phalaenopsis malipoensis">
+            <img src="images/orchids/07-sacha.avif" width="1600" height="1600" loading="lazy" alt="Small white orchids with orange lips growing on wood, held near a hand">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Phalaenopsis Sacha</span></span></span>
+          </div>
+          <div class="work-squares__item" data-kind="species" data-origin="Ecuador, Peru, Brazil, Bolivia" data-gallery="images/orchids/08-cat-lut.avif images/orchids/cattleya-luteola/luteola-in-pot.avif" data-gallery-thumbs="images/orchids/cattleya-luteola/luteola-grid-thumb.avif images/orchids/cattleya-luteola/luteola-in-pot-thumb.avif">
+            <img src="images/orchids/08-cat-lut.avif" width="1600" height="1600" loading="lazy" alt="Yellow orchid blooms with orange centers, held on a finger, with two close-ups">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Cattleya luteola</span></span></span>
+          </div>
+          <div class="work-squares__item" data-kind="species" data-origin="Brazil (Bahia)" data-gallery="images/orchids/09-alori.avif images/orchids/laelia-alaorii/alaorii-bells.avif images/orchids/laelia-alaorii/alaorii-in-hand.avif images/orchids/laelia-alaorii/alaorii-in-jar.avif" data-gallery-thumbs="images/orchids/laelia-alaorii/alaorii-grid-thumb.avif images/orchids/laelia-alaorii/alaorii-bells-thumb.avif images/orchids/laelia-alaorii/alaorii-in-hand-thumb.avif images/orchids/laelia-alaorii/alaorii-in-jar-thumb.avif">
+            <img src="images/orchids/09-alori.avif" width="1600" height="1600" loading="lazy" alt="White bell-shaped orchid flower with a purple lip, next to a potted plant held in a hand">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Laelia alaorii</span></span></span>
+          </div>
+          <div class="work-squares__item" data-kind="species" data-origin="Borneo">
+            <img src="images/orchids/phalaenopsis-corningiana/corningiana.avif" width="1600" height="1600" loading="lazy" alt="Star-shaped maroon orchid flowers with white centers on a plant with broad, dark green leaves, with a close-up of one flower">
+            <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Phalaenopsis corningiana</span></span></span>
+          </div>
+        </div>
+      </section>
     </div>
 
   </main>
