@@ -994,8 +994,6 @@
     var line = 2;
     var maxW = pop.clientWidth - padX - line;
     var maxH = pop.clientHeight - padY - line;
-    // Phones: leave room for the X box above the photo
-    if (phoneQuery.matches) maxH -= closeBtn.offsetHeight;
     var width;
     if (nativeSize) {
       // Every orchid popup is the same square, the size of the smallest
@@ -1522,6 +1520,15 @@
   function setCols(n) {
     if (grid.getAttribute("data-cols") === n) return;
     swap(function () { grid.setAttribute("data-cols", n); });
+  }
+
+  // Phones start on 2x (desktop keeps the page's own default). Set straight
+  // away, before the page is seen, so there's no crossfade on load.
+  if (buttons.length && window.matchMedia("(max-width: 800px)").matches) {
+    grid.setAttribute("data-cols", "2");
+    buttons.forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-cols") === "2" ? "true" : "false");
+    });
   }
 
   buttons.forEach(function (btn) {

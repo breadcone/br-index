@@ -2973,6 +2973,14 @@ html:not(.js) .view-toggle {
     --box-pad-x: 24px;
     --box-pad-y: 24px;
     --thumb-size: 96px;
+    /* Big text shrinks on narrow screens (like a phone's small front
+       screen) so the longest intro line still fits on one line: the
+       longest is about 11.4em wide, and the box's text area is the screen
+       minus 82px (16px gutters, 24px padding and 1px lines on each side).
+       Card titles and the big serif titles scale down by the same amount. */
+    --fit: calc((100vw - 82px) / 11.6);
+    --text-display: min(28px, var(--fit));
+    --text-card-title: min(24px, var(--fit) * 24 / 28);
   }
 
   .home {
@@ -3729,5 +3737,28 @@ html:not(.js) .view-toggle {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Popups: no X close buttons, on any screen. Popups close by tapping or
+   clicking outside them (or the photo itself), tapping their trigger
+   again, or pressing Escape. The X styles above are kept, so they can come
+   back. The photo popup's X stays available to keyboards and screen
+   readers only, as it already was on larger screens. */
+.index-close,
+.about__close,
+.work-browser__close,
+.work-browser__close:not([hidden]) {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  .lightbox__close {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
   }
 }
