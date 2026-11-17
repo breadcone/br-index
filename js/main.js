@@ -151,17 +151,6 @@
     }).join("");
     wrap.appendChild(list);
 
-    // The current portfolio is also listed, but only on touch screens (the
-    // CSS hides it elsewhere): there, tapping the label opens the dropdown
-    // instead of going home, so this row is the way home.
-    if (SECTIONS.some(function (s) { return s.text === current; })) {
-      var here = SECTIONS.filter(function (s) { return s.text === current; })[0];
-      var hereItem = document.createElement("li");
-      hereItem.className = "site-switch__current";
-      hereItem.innerHTML = '<a data-oval href="' + url(here.href) + '" aria-current="page">br-index/<span class="site-section">' + here.text.replace("br-index/", "") + "</span></a>";
-      list.insertBefore(hereItem, list.firstChild);
-    }
-
     // Touch screens have no hover, so a tap on the label opens and closes
     // the dropdown. Tapping anywhere outside closes it.
     var touch = window.matchMedia("(hover: none)");

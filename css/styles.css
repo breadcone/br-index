@@ -353,18 +353,6 @@ a:focus-visible > [data-oval] .oval path,
   }
 }
 
-/* The current portfolio's row is only for touch screens, where tapping the
-   label opens the menu instead of going home */
-@media (hover: hover) {
-  .site-switch__current {
-    display: none;
-  }
-
-  .site-switch__menu .site-switch__current + li { /* must outrank ".site-switch__menu li + li" */
-    border-top: 0; /* the header's line is already above it */
-  }
-}
-
 /* The section part of each "br-index/…" label is blue */
 .site-section {
   color: var(--color-accent);
@@ -2845,8 +2833,24 @@ html:not(.js) .view-toggle {
   }
 }
 
+/* Role box: "Design Lead at / International Business Machines"; on phones
+   it becomes "Design Lead / at IBM", with IBM in the plain sans
+   (see Small screens) */
+.company--short {
+  display: none;
+}
+
 /* ---------- Small screens ---------- */
 @media (max-width: 800px) {
+  /* Role box: "Design Lead / at IBM" */
+  .company--full {
+    display: none;
+  }
+
+  .company--short {
+    display: inline;
+  }
+
 
   .index-overlay {
     width: 100%;
@@ -3744,8 +3748,9 @@ html:not(.js) .view-toggle {
    clicking outside them (or the photo itself), tapping their trigger
    again, or pressing Escape. The X styles above are kept, so they can come
    back. The photo popup's X stays available to keyboards and screen
-   readers only, as it already was on larger screens. */
-.index-close,
+   readers only, as it already was on larger screens.
+   Exception: the Contents panel keeps its X on phones (.index-close), since
+   it fills the whole screen there. */
 .about__close,
 .work-browser__close,
 .work-browser__close:not([hidden]) {
