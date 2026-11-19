@@ -2840,6 +2840,39 @@ html:not(.js) .view-toggle {
   display: none;
 }
 
+/* ---------- Tablets and phones (up to 1024px) ----------
+   Layout only: the two-column layouts stack into one column, which covers
+   every iPad held upright. Sideways tablets and laptops keep two columns.
+   Phone-only details (centered header, shorter text, smaller spacing)
+   stay in "Small screens" below, at 800px. */
+@media (max-width: 1024px) {
+  /* Home pages: one column; the left column scrolls normally with the page */
+  .home {
+    grid-template-columns: 1fr;
+  }
+
+  .home__left {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Case studies: text above media */
+  .cs-section--hero .cs-title + .cs-rule {
+    margin-right: calc(var(--cs-pad) * -1);
+  }
+
+  .cs-section {
+    grid-template-columns: 1fr;
+    row-gap: var(--cs-gutter);
+  }
+
+  .cs-text,
+  .cs-media {
+    grid-column: auto;
+  }
+}
+
 /* ---------- Small screens ---------- */
 @media (max-width: 800px) {
   /* Role box: "Design Lead / at IBM" */
@@ -2956,21 +2989,6 @@ html:not(.js) .view-toggle {
     aspect-ratio: 1;
   }
 
-  /* Case studies: text above media */
-  .cs-section--hero .cs-title + .cs-rule {
-    margin-right: calc(var(--cs-pad) * -1);
-  }
-
-  .cs-section {
-    grid-template-columns: 1fr;
-    row-gap: var(--cs-gutter);
-  }
-
-  .cs-text,
-  .cs-media {
-    grid-column: auto;
-  }
-
   :root {
     --page-gutter: 16px;
     --page-top: 16px;
@@ -2987,10 +3005,6 @@ html:not(.js) .view-toggle {
     --text-card-title: min(24px, var(--fit) * 24 / 28);
   }
 
-  .home {
-    grid-template-columns: 1fr;
-  }
-
   .work-tiles {
     grid-template-columns: 1fr 1fr;
   }
@@ -2998,13 +3012,6 @@ html:not(.js) .view-toggle {
   /* one column on phones: the switcher centers on the page */
   .view-toggle {
     left: 50%;
-  }
-
-  /* On phones the left column scrolls normally with the page */
-  .home__left {
-    position: static;
-    height: auto;
-    overflow: visible;
   }
 
   /* No "Access points" section on phones (all three home pages) */
