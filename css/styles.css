@@ -228,7 +228,7 @@ a:focus-visible > [data-oval] .oval path,
 }
 
 .index-overlay .index-cell .index-cell__title .oval path,
-#ceramics-archive-menu .index-cell__title .oval path {
+.work-browser__menu .index-cell .index-cell__title .oval path {
   stroke-dashoffset: 0;
   transition: opacity var(--hover-duration) ease;
 }
