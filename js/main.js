@@ -17,7 +17,7 @@
 (function () {
   // One Index menu per portfolio, picked by the header's "br-index/…" label.
   // Each has a title and groups of entries; an empty group is left out.
-  var RESUME = { text: "Résumé", href: "https://freight.cargo.site/m/N3042622597460362339586141958857/Resume.pdf", external: true };
+  var RESUME = { text: "Resume", href: "https://freight.cargo.site/m/N3042622597460362339586141958857/Resume.pdf", external: true };
   var EMAIL = { text: "Email", href: "mailto:brian.le.de@gmail.com" };
   var LINKEDIN = { text: "LinkedIn", href: "https://www.linkedin.com/in/lebrians/", external: true };
   var INSTAGRAM = { text: "Instagram", href: "https://www.instagram.com/breadcone/", external: true };
@@ -47,7 +47,7 @@
       title: "/ceramics",
       home: "ceramics.html",
       groups: [
-        { label: "Works", items: [
+        { label: "Objects", showCount: true, items: [
           { text: "Dendrobium", href: "ceramics.html#dendrobium-bowl" },
           { text: "Persimmon Fuyu", href: "ceramics.html#persimmon-1" },
           { text: "Persimmon Hachiya", href: "ceramics.html#persimmon-2" },
@@ -128,7 +128,10 @@
     return (
       '<section class="index-sec index-sec--intro"><h2 class="index-title"><a class="index-title__link" href="' + url(menu.home) + '" aria-label="' + menu.title + ' home" data-oval>' + (withTitle ? menu.title : "") + "</a></h2>" +
       (menu.subtitle ? '<p class="index-sub">' + menu.subtitle + "</p>" : "") + "</section>" +
-      menu.groups.map(function (g) { return group(g.label, g.items, true, g.keep); }).join("")
+      menu.groups.map(function (g) {
+        var label = g.showCount ? g.label + " (" + g.items.length + ")" : g.label;
+        return group(label, g.items, true, g.keep);
+      }).join("")
     );
   }
 
@@ -236,7 +239,7 @@
   // before the hover-oval script runs. Stacks to one column on phones.
   var aboutDialog = document.createElement("dialog");
   aboutDialog.className = "about";
-  aboutDialog.setAttribute("aria-label", "About Brian Le");
+  aboutDialog.setAttribute("aria-label", "About Brian Lê");
   aboutDialog.innerHTML =
     '<button type="button" class="about__close" aria-label="Close about"><img class="icon" src="' + url("images/icons/close.svg") + '" alt=""></button>' +
     '<div class="about__grid">' +
@@ -249,13 +252,14 @@
           '<span class="orb-photo__light" aria-hidden="true"></span>' +
         '</span></div>' +
         '<div class="about__info">' +
-          '<div class="about__cell"><p class="label">Name</p><p class="about__value">Brian Le</p></div>' +
+          '<div class="about__cell"><p class="label">Name</p><p class="about__value">Brian Lê</p></div>' +
           '<div class="about__cell"><p class="label">Location</p><p class="about__value">New York City</p></div>' +
         "</div>" +
       "</div>" +
       '<div class="about__main">' +
         '<div class="about__text"><p class="label">About</p>' +
-          "<p>Brian is a Design Lead at IBM with over eight years of experience translating complex systems into intuitive and approachable experiences. With a foundation in traditional graphic design, he draws on typography, composition, and visual craft to shape how people understand and interact with technology.</p></div>" +
+          "<p>Brian Lê is a Design Lead at IBM, working at the intersection of complex technology and human understanding. With a background in traditional graphic design, his practice emphasizes typography, information design, and visual systems to humanize mission-critical systems.</p>" +
+          '<p class="about__resume"><a data-oval href="' + url(RESUME.href) + '" target="_blank" rel="noopener">Resume.pdf</a></p></div>' +
       "</div>" +
     "</div>";
   document.body.appendChild(aboutDialog);
@@ -264,16 +268,16 @@
   aboutClose.addEventListener("click", function () { aboutDialog.close(); });
   // A click on the dimmed backdrop (outside the box) also closes it
   aboutDialog.addEventListener("click", function (e) { if (e.target === aboutDialog) aboutDialog.close(); });
-  // Closing puts focus back on "Contents", the control that opened the index
-  aboutDialog.addEventListener("close", function () { trigger.focus(); });
-  var aboutLink = overlay.querySelector("[data-about]");
-  if (aboutLink) {
+  var aboutReturnFocus = trigger;
+  aboutDialog.addEventListener("close", function () { aboutReturnFocus.focus(); });
+  document.querySelectorAll("[data-about]").forEach(function (aboutLink) {
     aboutLink.addEventListener("click", function (e) {
       e.preventDefault();
+      aboutReturnFocus = overlay.contains(aboutLink) ? trigger : aboutLink;
       setOpen(false);
       aboutDialog.showModal();
     });
-  }
+  });
 
   trigger.setAttribute("aria-controls", "index-overlay");
   trigger.setAttribute("aria-expanded", "false");
@@ -891,6 +895,7 @@
       '<button class="lightbox__close" type="button" aria-label="Close photo"><img class="icon" src="' + iconRoot + 'images/icons/close.svg" alt=""></button>' +
     "</div>";
   document.body.appendChild(pop);
+  var frame = pop.querySelector(".lightbox__frame");
   var big = pop.querySelector(".lightbox__img");
   var closeBtn = pop.querySelector(".lightbox__close");
   var lastPhoto = null;
@@ -945,9 +950,8 @@
   // species cross and year crossed for hybrids, or the natural origin for
   // species. The data comes from data-* attributes on each grid item.
   function fillMeta(item) {
-    var frame = pop.querySelector(".lightbox__frame");
     if (closeBtn.parentNode === meta) frame.appendChild(closeBtn);
-    if (thumbs.parentNode === meta) big.parentNode.appendChild(thumbs);
+    if (thumbs.parentNode !== big.parentNode) big.parentNode.appendChild(thumbs);
     meta.textContent = "";
     var ceramics = item && item.getAttribute("data-kind") === "ceramics";
     pop.classList.toggle("lightbox--ceramics", !!ceramics);
@@ -967,6 +971,7 @@
         if (!entry[1]) return;
         var cell = document.createElement("div");
         cell.className = "lightbox__work-cell";
+        if (index === 2) cell.classList.add("lightbox__work-cell--dimensions");
         var label = document.createElement("p");
         label.className = "work-card__label";
         label.textContent = entry[0];
@@ -1025,30 +1030,53 @@
 
   var squareOnPhone = !!document.querySelector('[data-popup-phone="square"]');
 
+  function fitCeramicsDetails(width) {
+    meta.style.width = width + "px";
+    meta.style.removeProperty("--lightbox-title-min");
+    var title = meta.querySelector(".work-card__title");
+    var dimensions = meta.querySelector(".lightbox__work-cell--dimensions");
+    if (!title || !dimensions || title.scrollWidth <= title.clientWidth) return;
+
+    var titleWidth = title.parentNode.getBoundingClientRect().width;
+    var dimensionsWidth = dimensions.getBoundingClientRect().width;
+    dimensions.style.width = "min-content";
+    var minimum = dimensions.getBoundingClientRect().width;
+    dimensions.style.width = "";
+    var extra = Math.min(title.scrollWidth - title.clientWidth, Math.floor(dimensionsWidth - minimum));
+    if (extra > 0) meta.style.setProperty("--lightbox-title-min", titleWidth + extra + "px");
+  }
+
   function sizeCeramics(maxW, maxH) {
-    // On phones, reserve room below the details for the thumbnail grid.
-    var slots = 3;
-    var gaps = slots - 1;
-    var divider = 1;
     meta.style.width = "";
+    if (thumbs.parentNode !== frame) frame.insertBefore(thumbs, frame.firstChild);
     if (phoneQuery.matches) {
-      var detailsHeight = Math.min(meta.offsetHeight, Math.floor(maxH * 0.4));
+      if (closeBtn.parentNode !== big.parentNode) big.parentNode.appendChild(closeBtn);
       var pixelLimit = 1080 / (window.devicePixelRatio || 1);
-      var rows = Math.max(1, Math.ceil(gallery.length / slots));
-      var thumb = Math.max(1, Math.floor(Math.min(
-        (Math.min(maxW, pixelLimit) - gaps) / slots,
-        (maxH - detailsHeight - gaps - rows * divider) / (slots + rows)
-      )));
-      var size = slots * thumb + gaps;
+      var size = Math.max(1, Math.floor(Math.min(maxW, pixelLimit, maxH)));
+      var minSize = Math.min(size, Math.max(1, Math.floor(maxH / 2)));
+      // Measure the details and thumbnail strip at the actual photo width.
+      // Keep them in view if possible, and scroll only when space runs out.
+      fitCeramicsDetails(size);
+      thumbs.style.width = size + "px";
+      var detailsHeight = meta.offsetHeight;
+      if (size + detailsHeight + thumbs.offsetHeight > maxH) {
+        size = Math.max(minSize, Math.floor((maxH - detailsHeight) / (thumbs.hidden ? 1 : 1.2)));
+        fitCeramicsDetails(size);
+        thumbs.style.width = size + "px";
+        detailsHeight = meta.offsetHeight;
+      }
       big.style.width = size + "px";
       big.style.height = size + "px";
-      thumbs.style.width = "";
-      meta.style.width = size + "px";
-      meta.style.height = detailsHeight + (gallery.length ? rows * (thumb + divider) : 0) + "px";
+      if (size + detailsHeight + thumbs.offsetHeight > maxH) {
+        meta.style.height = Math.max(0, maxH - size - thumbs.offsetHeight) + "px";
+      }
     } else {
+      if (closeBtn.parentNode !== meta) meta.appendChild(closeBtn);
+      thumbs.style.width = "";
       var detailsWidth = meta.offsetWidth;
+      var galleryWidth = thumbs.offsetWidth;
       var ratio = RATIO * 0.9;
-      var height = Math.max(1, Math.floor(Math.min(maxH, (maxW - detailsWidth) / ratio)));
+      var height = Math.max(1, Math.floor(Math.min(maxH, (maxW - detailsWidth - galleryWidth) / ratio)));
       big.style.width = Math.round(height * ratio) + "px";
       big.style.height = height + "px";
     }
@@ -1080,10 +1108,10 @@
     }
     var width;
     if (nativeSize) {
-      // Every orchid popup is the same square, the size of the smallest
-      // photo's popup before (1080px, at the screen's density so it stays
-      // sharp), and never larger than the window allows.
+      // Allow 20% more room for the orchid photo, while leaving space
+      // for gallery controls and metadata within the viewport.
       var dpr = window.devicePixelRatio || 1;
+      var orchidLimit = 1296 / dpr;
       // With a gallery, n square thumbnails line up with the photo: a column
       // beside it (as tall as it) or, on phones, a row under it (as wide as
       // it). Each is (width - (n - 1)) / n across, plus a 1px line before them.
@@ -1095,9 +1123,9 @@
       var capW = side ? (maxW - 1 + (n - 1) / n) / (1 + 1 / n) : maxW;
       var capH = function (m) { return below ? (maxH - m - 1 + (n - 1) / n) / (1 + 1 / n) : maxH - m; };
       // The strip (if any) sits under the photo and takes its share of the height
-      width = Math.min(1080 / dpr, capW, capH(0));
+      width = Math.min(orchidLimit, capW, capH(0));
       for (var i = 0; i < 2; i++) {
-        width = Math.min(1080 / dpr, capW, capH(metaHeight(total(width))));
+        width = Math.min(orchidLimit, capW, capH(metaHeight(total(width))));
       }
       if (n) {
         // whole-pixel thumbnails, and a photo exactly as tall (or wide) as them
@@ -1623,7 +1651,8 @@
 
   // Phones start on 2x (desktop keeps the page's own default). Set straight
   // away, before the page is seen, so there's no crossfade on load.
-  if ((buttons.length || orderButtons.length) && window.matchMedia("(max-width: 800px)").matches) {
+  var phoneGrid = window.matchMedia("(max-width: 800px)");
+  if (buttons.length && phoneGrid.matches) {
     updateCols("2");
     buttons.forEach(function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-cols") === "2" ? "true" : "false");
@@ -1674,7 +1703,9 @@
       updateCols(currentCols);
       if (!orderButtons.length) return;
       grid.setAttribute("data-order", currentOrder);
-      var sequence = currentOrder === "random" ? randomOrder(Number(currentCols) || 2) : items;
+      var cols = phoneGrid.matches && grid.classList.contains("work-squares--ceramics")
+        ? 2 : Number(currentCols) || 2;
+      var sequence = currentOrder === "random" ? randomOrder(cols) : items;
       sequence.forEach(function (item) { grid.appendChild(item); });
     });
   }

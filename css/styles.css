@@ -1027,6 +1027,12 @@ a:focus-visible > [data-oval] .oval path,
   height: 100%;
 }
 
+@media (max-width: 800px) {
+  .work-squares--ceramics[data-order="random"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* Keyboard focus: the caption shows (below) instead of an outline */
 a.work-squares__item:focus-visible {
   outline: none;
@@ -3378,6 +3384,10 @@ html:not(.js) .view-toggle {
   line-height: 1.45;
 }
 
+.about__text p.about__resume {
+  margin-top: 1lh;
+}
+
 /* Square close button just outside the box's top-right corner, on the right
    edge. Its top edge sits on the box's top border and its left edge on the
    box's right border, so each shared edge is one line, not two. */
@@ -3572,10 +3582,54 @@ html:not(.js) .view-toggle {
 }
 
 .lightbox--full.lightbox--ceramics {
-  background-image: linear-gradient(to bottom,
-    color-mix(in srgb, var(--gradient-top) 30%, transparent),
-    color-mix(in srgb, var(--gradient-bottom) 30%, transparent));
   background-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  opacity: 1;
+  pointer-events: none;
+  transition: visibility 0s linear var(--menu-close);
+}
+
+.lightbox--full.lightbox--ceramics::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to bottom,
+    color-mix(in srgb, var(--gradient-bottom) 48%, transparent),
+    rgb(255 255 255 / 0.7) 50%,
+    color-mix(in srgb, var(--gradient-bottom) 48%, transparent));
+  -webkit-backdrop-filter: blur(14px) brightness(1.08) saturate(1.1);
+  backdrop-filter: blur(14px) brightness(1.08) saturate(1.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease-out;
+}
+
+.lightbox-open .lightbox--full.lightbox--ceramics {
+  pointer-events: auto;
+  transition: visibility 0s;
+}
+
+.lightbox-open .lightbox--full.lightbox--ceramics::before {
+  opacity: 1;
+  transition-duration: 100ms;
+}
+
+/* The strip sits outside the photo box, so it needs its own synchronized reveal. */
+.lightbox--ceramics .lightbox__frame > .lightbox__thumbs {
+  clip-path: inset(50%);
+  transition: clip-path var(--menu-close) var(--menu-close-ease);
+}
+
+.lightbox-open .lightbox--ceramics .lightbox__frame > .lightbox__thumbs {
+  clip-path: inset(0);
+  transition: clip-path var(--menu-open) var(--menu-open-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox--full.lightbox--ceramics {
+    transition-delay: 0s;
+  }
 }
 
 /* The selected ceramics thumbnail is marked by opacity. Keep keyboard
@@ -3640,9 +3694,24 @@ html:not(.js) .view-toggle {
 }
 
 @media (max-width: 800px) {
+  .lightbox--ceramics .lightbox__frame > .lightbox__thumbs:not([hidden]) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+    background: transparent;
+  }
+
+  /* The photo box draws the shared bottom edge of the thumbnail row. */
+  .lightbox--ceramics .lightbox__frame > .lightbox__thumbs .lightbox__thumb {
+    border-top: var(--line);
+    border-right: var(--line);
+  }
+
+  .lightbox--ceramics .lightbox__frame > .lightbox__thumbs .lightbox__thumb:first-child {
+    border-left: var(--line);
+  }
+
   .lightbox--ceramics .lightbox__meta:not([hidden]) {
-    grid-template-columns: 1fr minmax(calc(var(--u) * 7.5), auto) 1fr;
-    height: calc(var(--u) * 16);
+    grid-template-columns: minmax(var(--lightbox-title-min, 0px), 1fr) minmax(calc(var(--u) * 7.5), auto) minmax(0, 1fr);
     overflow: auto;
   }
 
@@ -3663,6 +3732,13 @@ html:not(.js) .view-toggle {
     font-size: max(14px, calc(var(--text-small) * 1.15));
   }
 
+  .lightbox--ceramics .lightbox__work-cell .work-card__title {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .lightbox__work-cell:last-of-type {
     grid-column: 1 / -1;
   }
@@ -3673,17 +3749,37 @@ html:not(.js) .view-toggle {
 }
 
 @media (width > 800px) {
+  .lightbox--ceramics {
+    --lightbox-details-width: 310px;
+  }
+
+  .lightbox--ceramics .lightbox__frame {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .lightbox--ceramics .lightbox__frame > .lightbox__thumbs:not([hidden]) {
+    flex: none;
+    order: 1;
+    width: calc(var(--lightbox-details-width) / 3);
+    align-self: flex-start;
+    grid-template-columns: minmax(0, 1fr);
+    border: var(--line);
+    border-left: 0;
+  }
+
   .lightbox--ceramics .lightbox__box {
     display: flex;
   }
 
   .lightbox--ceramics .lightbox__meta:not([hidden]) {
     flex: 0 0 auto;
-    width: 310px;
+    order: -1;
+    width: var(--lightbox-details-width);
     grid-template-columns: 1fr;
-    grid-template-rows: max-content max-content max-content 1fr;
+    grid-template-rows: repeat(3, max-content) 1fr;
     border-top: 0;
-    border-left: var(--line);
+    border-right: var(--line);
     contain: size;
     overflow: auto;
   }
@@ -3706,11 +3802,18 @@ html:not(.js) .view-toggle {
   }
 }
 
-.lightbox--ceramics .lightbox__work-cell:first-child {
-  padding-right: max(44px, calc(var(--u) * 2));
+@media (width > 800px) {
+  .lightbox--ceramics .lightbox__work-cell:first-child {
+    padding-right: max(44px, calc(var(--u) * 2));
+  }
 }
 
-.lightbox--ceramics .lightbox__meta .lightbox__close {
+/* Anchor the phone close button to the photo rather than the details. */
+.lightbox--ceramics .lightbox__media {
+  position: relative;
+}
+
+.lightbox--ceramics :is(.lightbox__meta, .lightbox__media) .lightbox__close {
   top: 0;
   right: 0;
   z-index: 1;
@@ -3743,6 +3846,17 @@ html:not(.js) .view-toggle {
 
 .lightbox--ceramics .lightbox__close:is(:hover, :focus-visible) .icon {
   filter: none;
+}
+
+.lightbox--ceramics .lightbox__media .lightbox__close .icon {
+  filter: invert(1);
+}
+
+.lightbox--ceramics :is(.lightbox__meta, .lightbox__media) .lightbox__close:not(:focus-visible) {
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
 }
 
 /* Collection dropdown (orchids page): clicking "Collection" opens a list of
