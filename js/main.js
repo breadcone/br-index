@@ -48,13 +48,15 @@
       home: "ceramics.html",
       groups: [
         { label: "Works", items: [
-          { text: "Persimmon 1", href: "ceramics/persimmon-1.html" },
-          { text: "Persimmon 2", href: "ceramics/persimmon-2.html" },
-          { text: "Ritual Vessel 1", href: "ceramics/ritual-1.html" },
-          // [TODO] Ritual Vessel 2 and 4 have squares on ceramics.html but no pages yet
-          { text: "Ritual Vessel 2", href: "#", todo: true },
-          { text: "Ritual Vessel 3", href: "ceramics/ritual-3.html" },
-          { text: "Ritual Vessel 4", href: "#", todo: true }
+          { text: "Persimmon Fuyu", href: "ceramics.html#persimmon-1" },
+          { text: "Persimmon Hachiya", href: "ceramics.html#persimmon-2" },
+          { text: "Phalaenopsis Jar", href: "ceramics.html#orchid-pot" },
+          { text: "Ritual in Jade", href: "ceramics.html#ritual-5" },
+          { text: "Ritual in Misty", href: "ceramics.html#misty-ritual" },
+          { text: "Ritual in Oxide", href: "ceramics.html#ritual-1" },
+          { text: "Ritual in Patina", href: "ceramics.html#ritual-3" },
+          { text: "Stone Fruit", href: "ceramics.html#rock-bowl" },
+          { text: "The Gate", href: "ceramics.html#the-gate" }
         ] },
         // [TODO] "Artist Statement" has no page yet
         { label: "Info", items: [{ text: "Artist Statement", href: "#", todo: true }] },
@@ -846,10 +848,10 @@
    button stays for keyboard and screen-reader users.
    --------------------------------------------------------- */
 (function () {
-  // The orchids page (data-popup-native) also opens its grid photos, at their
-  // sharpest size (see sizeFor). The ceramics home squares are links, not popups.
-  var nativeSize = !!document.querySelector("[data-popup-native]");
-  var photos = document.querySelectorAll(".work-card img:not(.icon), .work-grid img" + (nativeSize ? ", [data-popup-native] .work-squares img" : ""));
+  // Enable grid popups on an entire grid or on an individual tile.
+  var gridPhotos = "[data-popup-native] .work-squares img, .work-squares__item[data-popup-native] img";
+  var photos = document.querySelectorAll(".work-card img:not(.icon), .work-grid img, " + gridPhotos);
+  var nativeSize = false;
   if (!photos.length) return;
 
   // Site root, worked out from this script's address, so the close icon
@@ -867,7 +869,7 @@
   pop.innerHTML =
     '<div class="lightbox__frame">' +
       '<div class="box lightbox__box">' +
-        '<div class="lightbox__media"><img class="lightbox__img" alt=""><div class="lightbox__thumbs" hidden></div></div>' +
+        '<div class="lightbox__media"><img class="lightbox__img" alt=""><section class="lightbox__thumbs" aria-label="Gallery photos" hidden></section></div>' +
         '<div class="lightbox__meta" hidden></div>' +
       "</div>" +
       // Phones: a square X box just above the photo's top-right corner.
@@ -882,12 +884,14 @@
   var thumbs = pop.querySelector(".lightbox__thumbs");
   var gallery = []; // the open photo's set of full-size photos (empty: just one photo)
 
-  // Orchids with more than one photo list them on the grid item:
+  // Grid items with more than one photo list them on the tile:
   // data-gallery (full-size files) and data-gallery-thumbs (small files),
   // space-separated, in the same order. The first is the grid photo.
   // Clicking a thumbnail shows that photo; the popup stays open.
   function showPhoto(k) {
     big.src = gallery[k];
+    var description = thumbs.children[k].getAttribute("data-photo-alt");
+    if (description) big.alt = description;
     Array.prototype.forEach.call(thumbs.children, function (b, j) {
       b.setAttribute("aria-current", j === k ? "true" : "false");
     });
@@ -902,11 +906,13 @@
       return;
     }
     var small = (item.getAttribute("data-gallery-thumbs") || "").trim().split(/\s+/);
+    var descriptions = (item.getAttribute("data-gallery-alt") || "").split("|");
     gallery.forEach(function (src, k) {
       var b = document.createElement("button");
       b.type = "button";
       b.className = "lightbox__thumb";
-      b.setAttribute("aria-label", "Photo " + (k + 1) + " of " + gallery.length);
+      b.setAttribute("aria-label", descriptions[k] || ("Photo " + (k + 1) + " of " + gallery.length));
+      if (descriptions[k]) b.setAttribute("data-photo-alt", descriptions[k]);
       var im = document.createElement("img");
       im.src = small[k] || src;
       im.alt = "";
@@ -925,12 +931,43 @@
   // species cross and year crossed for hybrids, or the natural origin for
   // species. The data comes from data-* attributes on each grid item.
   function fillMeta(item) {
+    var frame = pop.querySelector(".lightbox__frame");
+    if (closeBtn.parentNode === meta) frame.appendChild(closeBtn);
+    if (thumbs.parentNode === meta) big.parentNode.appendChild(thumbs);
     meta.textContent = "";
+    var ceramics = item && item.getAttribute("data-kind") === "ceramics";
+    pop.classList.toggle("lightbox--ceramics", !!ceramics);
     if (!nativeSize || !item || !item.getAttribute("data-kind")) {
       meta.hidden = true;
       return;
     }
     var nameEl = item.querySelector(".work-squares__name");
+    if (ceramics) {
+      var year = item.querySelector(".work-squares__year");
+      [
+        ["Title:", nameEl.textContent.replace(/,$/, "")],
+        ["Year:", item.getAttribute("data-year") || (year && year.textContent)],
+        ["Dimensions:", item.getAttribute("data-dimensions")],
+        ["Materials:", item.getAttribute("data-materials")]
+      ].forEach(function (entry, index) {
+        if (!entry[1]) return;
+        var cell = document.createElement("div");
+        cell.className = "lightbox__work-cell";
+        var label = document.createElement("p");
+        label.className = "work-card__label";
+        label.textContent = entry[0];
+        var value = document.createElement("p");
+        value.className = index === 0 ? "work-card__title" : "work-card__value";
+        value.textContent = entry[1];
+        cell.appendChild(label);
+        cell.appendChild(value);
+        meta.appendChild(cell);
+      });
+      meta.appendChild(closeBtn);
+      meta.appendChild(thumbs);
+      meta.hidden = false;
+      return;
+    }
     var name = document.createElement("p");
     name.className = "lightbox__meta-name";
     name.textContent = nameEl ? nameEl.textContent : "";
@@ -971,7 +1008,45 @@
   // square instead on phones.
   var RATIO = 1800 / 1270;
   var phoneQuery = window.matchMedia("(max-width: 800px)");
+
   var squareOnPhone = !!document.querySelector('[data-popup-phone="square"]');
+
+  function sizeCeramics(maxW, maxH) {
+    // On phones, reserve room below the details for the thumbnail grid.
+    var slots = 3;
+    var gaps = slots - 1;
+    var divider = 1;
+    meta.style.width = "";
+    if (phoneQuery.matches) {
+      var detailsHeight = Math.min(meta.offsetHeight, Math.floor(maxH * 0.4));
+      var pixelLimit = 1080 / (window.devicePixelRatio || 1);
+      var rows = Math.max(1, Math.ceil(gallery.length / slots));
+      var thumb = Math.max(1, Math.floor(Math.min(
+        (Math.min(maxW, pixelLimit) - gaps) / slots,
+        (maxH - detailsHeight - gaps - rows * divider) / (slots + rows)
+      )));
+      var size = slots * thumb + gaps;
+      big.style.width = size + "px";
+      big.style.height = size + "px";
+      thumbs.style.width = "";
+      meta.style.width = size + "px";
+      meta.style.height = detailsHeight + (gallery.length ? rows * (thumb + divider) : 0) + "px";
+    } else {
+      var detailsWidth = meta.offsetWidth;
+      var ratio = RATIO * 0.9;
+      var height = Math.max(1, Math.floor(Math.min(maxH, (maxW - detailsWidth) / ratio)));
+      big.style.width = Math.round(height * ratio) + "px";
+      big.style.height = height + "px";
+    }
+  }
+
+  function sizeThumbnails(size, side) {
+    thumbs.style.width = side ? size + "px" : "";
+    Array.prototype.forEach.call(thumbs.children, function (button) {
+      button.style.width = size + "px";
+      button.style.height = size + "px";
+    });
+  }
 
   // Size the popup: as large as fits inside its padding (the page gutter).
   function sizeFor() {
@@ -983,6 +1058,12 @@
     var line = 2;
     var maxW = pop.clientWidth - padX - line;
     var maxH = pop.clientHeight - padY - line;
+    meta.style.height = "";
+    thumbs.style.height = "";
+    if (pop.classList.contains("lightbox--ceramics")) {
+      sizeCeramics(maxW, maxH);
+      return;
+    }
     var width;
     if (nativeSize) {
       // Every orchid popup is the same square, the size of the smallest
@@ -1008,11 +1089,7 @@
         // whole-pixel thumbnails, and a photo exactly as tall (or wide) as them
         var t = Math.floor(thumbSize(width));
         width = n * t + (n - 1);
-        thumbs.style.width = side ? t + "px" : "";
-        Array.prototype.forEach.call(thumbs.children, function (b) {
-          b.style.width = t + "px";
-          b.style.height = t + "px";
-        });
+        sizeThumbnails(t, side);
       } else {
         width = Math.round(width);
       }
@@ -1026,22 +1103,28 @@
   }
 
   function open(photo) {
-    lastPhoto = photo;
+    lastPhoto = photo.closest("a[data-popup-native]") || photo;
+    nativeSize = photo.matches(gridPhotos);
     fillMeta(photo.closest(".work-squares__item"));
     fillGallery(photo.closest(".work-squares__item"));
-    sizeFor();
-    // Show the page's photo at once, then swap in the high-detail file
-    // (data-full) when it has loaded, so people can look closely. The page
-    // itself keeps the lighter file.
-    big.src = photo.currentSrc || photo.src;
     var fullSrc = photo.getAttribute("data-full");
-    if (fullSrc) {
-      var hi = new Image();
-      hi.onload = function () { if (lastPhoto === photo) big.src = hi.src; };
-      hi.src = fullSrc;
-    }
     big.alt = photo.alt;
-    if (gallery.length) showPhoto(0);
+    if (gallery.length) {
+      showPhoto(0);
+    } else {
+      // Keep the page photo visible if the larger file is slow or unavailable.
+      big.src = photo.currentSrc || photo.src;
+      if (fullSrc) {
+        var hi = new Image();
+        hi.onload = function () {
+          if (lastPhoto === (photo.closest("a[data-popup-native]") || photo) && !gallery.length) {
+            big.src = hi.src;
+          }
+        };
+        hi.src = fullSrc;
+      }
+    }
+    sizeFor();
     document.documentElement.classList.add("lightbox-open");
     closeBtn.focus({ preventScroll: true });
   }
@@ -1063,6 +1146,17 @@
   }
 
   photos.forEach(function (photo) {
+    var link = photo.closest("a[data-popup-native]");
+    if (link) {
+      link.setAttribute("aria-haspopup", "dialog");
+      link.addEventListener("pointerdown", function () { preload(photo); });
+      link.addEventListener("click", function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        open(photo);
+      });
+      return;
+    }
     photo.addEventListener("pointerdown", function () { preload(photo); });
     photo.setAttribute("tabindex", "0");
     photo.setAttribute("role", "button");
@@ -1077,16 +1171,16 @@
   // becomes #cattleya-luteola). The Contents menu links to these, so
   // orchids.html#cattleya-luteola opens that photo's popup, whether you come
   // from another page or are already on the orchids page.
-  if (nativeSize) {
+  if (document.querySelector(gridPhotos)) {
     document.querySelectorAll("[data-popup-native] .work-squares__item").forEach(function (item) {
       var n = item.querySelector(".work-squares__name");
       if (n && !item.id) item.id = n.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     });
     var openFromHash = function () {
-      var id = decodeURIComponent(location.hash.slice(1));
+      var id = location.hash.slice(1);
       var item = id ? document.getElementById(id) : null;
       var photo = item && item.classList.contains("work-squares__item") ? item.querySelector("img") : null;
-      if (!photo) return;
+      if (!photo || !photo.matches(gridPhotos)) return;
       // close the Contents panel the link was clicked in
       document.documentElement.classList.remove("index-open");
       var trigger = document.querySelector(".site-header__index");
@@ -1479,9 +1573,9 @@
   var grid = browser.querySelector(".work-squares");
   var buttons = browser.querySelectorAll(".work-browser__cols button");
   if (!grid) return; // the 2x / 3x / 4x buttons are optional (the orchids page leaves them out)
+  var archivePreviews = document.querySelectorAll("[data-archive-preview-grid]");
 
-  // "Objects: 00n": n is the number of objects in the grid, kept in step
-  // with the page automatically
+  // Keep the object count in step with the grid.
   var items = Array.prototype.slice.call(grid.querySelectorAll(".work-squares__item"));
   var objects = browser.querySelector(".work-browser__objects");
   if (objects) objects.textContent = ("00" + items.length).slice(-3);
@@ -1506,15 +1600,20 @@
     }, FADE_OUT);
   }
 
+  function updateCols(n) {
+    grid.setAttribute("data-cols", n);
+    archivePreviews.forEach(function (preview) { preview.setAttribute("data-cols", n); });
+  }
+
   function setCols(n) {
     if (grid.getAttribute("data-cols") === n) return;
-    swap(function () { grid.setAttribute("data-cols", n); });
+    swap(function () { updateCols(n); });
   }
 
   // Phones start on 2x (desktop keeps the page's own default). Set straight
   // away, before the page is seen, so there's no crossfade on load.
   if (buttons.length && window.matchMedia("(max-width: 800px)").matches) {
-    grid.setAttribute("data-cols", "2");
+    updateCols("2");
     buttons.forEach(function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-cols") === "2" ? "true" : "false");
     });
@@ -1550,6 +1649,7 @@
       currentOrder = key;
       if (sortNote) sortNote.textContent = btn.getAttribute("data-label");
       swap(function () {
+        grid.setAttribute("data-order", key);
         orders[key].forEach(function (item) { grid.appendChild(item); });
       });
     });
