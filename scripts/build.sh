@@ -26,11 +26,35 @@ tar -cf - \
   --exclude ./scripts \
   --exclude ./_site \
   --exclude ./parked \
+  --exclude ./images/ceramics \
   --exclude ./CLAUDE.md \
   --exclude ./.gitattributes \
   --exclude ./.gitignore \
   --exclude '*.DS_Store' \
   . | tar -xf - -C "$OUT"
+
+# Publish the ceramics photos referenced by the site, including popup and
+# detail images. Keep unused crops and full-resolution originals in the repo.
+python3 - "$OUT" <<'PY'
+import html
+import shutil
+import sys
+from pathlib import Path
+from urllib.parse import unquote
+
+output = Path(sys.argv[1])
+references = "\n".join(
+    unquote(html.unescape(file.read_text(encoding="utf-8")))
+    for file in output.rglob("*")
+    if file.is_file() and file.suffix in {".html", ".css", ".js"}
+)
+
+for photo in Path("images/ceramics").rglob("*"):
+    if photo.is_file() and photo.as_posix() in references:
+        destination = output / photo
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(photo, destination)
+PY
 
 fingerprint() {
   shasum -a 256 "$1" | cut -c1-10
