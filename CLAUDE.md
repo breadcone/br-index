@@ -64,7 +64,7 @@ CLAUDE.md             This file
 ## Voice and content
 - Write in first person, plain and confident. Short sentences. No buzzwords or filler.
 - Case study structure: overview, The Challenge, Objectives, then numbered sections showing process and outcome.
-- Don't invent facts, numbers, or claims about my work. If text is missing, leave a clear `[TODO]` placeholder.
+- Don't invent facts, numbers, or claims about my work. If text is missing, leave a clear `--` placeholder.
 
 ## Interactions (micro-interactions)
 Keep them subtle and fast (150-300ms), in the same restrained spirit as the design. Ideas queued up:

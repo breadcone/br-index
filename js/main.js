@@ -48,17 +48,20 @@
       home: "ceramics.html",
       groups: [
         { label: "Works", items: [
+          { text: "Dendrobium", href: "ceramics.html#dendrobium-bowl" },
           { text: "Persimmon Fuyu", href: "ceramics.html#persimmon-1" },
           { text: "Persimmon Hachiya", href: "ceramics.html#persimmon-2" },
-          { text: "Phalaenopsis Jar", href: "ceramics.html#orchid-pot" },
+          { text: "Phalaenopsis", href: "ceramics.html#orchid-pot" },
+          { text: "Ritual in Algae", href: "ceramics.html#ritual-in-algae" },
           { text: "Ritual in Jade", href: "ceramics.html#ritual-5" },
-          { text: "Ritual in Misty", href: "ceramics.html#misty-ritual" },
           { text: "Ritual in Oxide", href: "ceramics.html#ritual-1" },
-          { text: "Ritual in Patina", href: "ceramics.html#ritual-3" },
+          { text: "Ritual in Spring", href: "ceramics.html#misty-ritual" },
           { text: "Stone Fruit", href: "ceramics.html#rock-bowl" },
-          { text: "The Gate", href: "ceramics.html#the-gate" }
+          { text: "The Gate", href: "ceramics.html#the-gate" },
+          { text: "Trí Tuệ (Wisdom)", href: "ceramics.html#ritual-3" },
+          { text: "Từ Bi (Compassion)", href: "ceramics.html#ritual-vessel-4" }
         ] },
-        // [TODO] "Artist Statement" has no page yet
+        // "Artist Statement" has no page yet
         { label: "Info", items: [{ text: "Artist Statement", href: "#", todo: true }] },
         { label: "Contact", items: [EMAIL, INSTAGRAM] }
       ]
@@ -202,19 +205,6 @@
   overlay.setAttribute("aria-label", "Contents");
   overlay.innerHTML = buildPanel();
 
-  // Phones only (shown by the CSS): the panel fills the screen, so a square
-  // X box in its top-right corner, beside "/design", closes it.
-  var panelClose = document.createElement("button");
-  panelClose.type = "button";
-  panelClose.className = "index-close";
-  panelClose.setAttribute("aria-label", "Close index");
-  panelClose.innerHTML = '<img class="icon" src="' + url("images/icons/close.svg") + '" alt="">';
-  overlay.querySelector(".index-sec--intro").appendChild(panelClose);
-  panelClose.addEventListener("click", function () {
-    setOpen(false);
-    trigger.focus();
-  });
-
   // Every portfolio's panel is as wide as the design one, so the panel keeps
   // one width across the site. Measured from a hidden copy of the design
   // menu, again once fonts load and when the window changes size.
@@ -334,7 +324,6 @@
   typeTitle();
 
   function setOpen(open) {
-    clearTimeout(closeTimer);
     if (open && !isOpen()) setTimeout(typeTitle, 120); // starts as the panel slides in
     document.documentElement.classList.toggle("index-open", open);
     trigger.setAttribute("aria-expanded", open ? "true" : "false");
@@ -343,31 +332,15 @@
 
   trigger.addEventListener("click", function (e) {
     e.preventDefault();
-    // A mouse has already opened it by hovering, so a click only keeps it open.
-    // Taps and the keyboard toggle it, since they have no hover-off to close it.
-    if (e.pointerType === "mouse") setOpen(true);
-    else setOpen(!isOpen());
+    setOpen(!isOpen());
   });
 
-  // Mouse hover: open on "Index", stay open while the pointer is over the
-  // panel, close a moment after it leaves both (so small slips don't close it).
-  var closeTimer;
-  function hoverIn(e) {
-    if (e.pointerType !== "mouse") return;
-    clearTimeout(closeTimer);
-    if (!isOpen()) setOpen(true);
-  }
-  function hoverOut(e) {
-    if (e.pointerType !== "mouse") return;
-    clearTimeout(closeTimer);
-    closeTimer = setTimeout(function () {
-      if (!overlay.matches(":hover") && !trigger.matches(":hover")) setOpen(false);
-    }, 250);
-  }
-  trigger.addEventListener("pointerenter", hoverIn);
-  trigger.addEventListener("pointerleave", hoverOut);
-  overlay.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") clearTimeout(closeTimer); });
-  overlay.addEventListener("pointerleave", hoverOut);
+  trigger.addEventListener("keydown", function (e) {
+    if (e.key !== " ") return;
+    e.preventDefault();
+    if (!e.repeat) trigger.click();
+  });
+
   document.addEventListener("click", function (e) {
     if (isOpen() && !overlay.contains(e.target) && !trigger.contains(e.target)) setOpen(false);
   });
@@ -473,11 +446,12 @@
 })();
 
 /* ---------------------------------------------------------
-   Collection dropdown (orchids page)
+   Collection and Archive dropdowns
    Clicking "Collection" opens a list of every photo, in two groups:
    Species, then Hybrids, each in alphabetical order. Choosing a name opens
    that photo's popup. The list is built from the grid itself, so new photos
-   show up here as soon as they are added to the grid.
+   show up here as soon as they are added to the grid. The ceramics Archive
+   lists works in their visual order, including in the shuffled grid.
    --------------------------------------------------------- */
 (function () {
   var toggle = document.querySelector(".work-browser__toggle");
@@ -502,24 +476,21 @@
     return document.documentElement.classList.contains("lightbox-open");
   }
 
-  // Same markup and look as the Contents menu: a serif label per group, the
-  // names in sans, groups split by full-width lines, the blue oval on hover.
-  [{ label: "Species", kind: "species" }, { label: "Hybrids", kind: "hybrid" }].forEach(function (g) {
-    var list = items
-      .filter(function (it) { return it.getAttribute("data-kind") === g.kind; })
-      .sort(function (a, b) { return nameOf(a).localeCompare(nameOf(b)); });
+  function renderGroup(group) {
     var block = document.createElement("section");
     block.className = "index-sec index-sec--compact";
-    var headWrap = document.createElement("div");
-    headWrap.className = "index-sec__head";
-    var head = document.createElement("h3");
-    head.className = "label";
-    head.textContent = g.label + ":";
-    headWrap.appendChild(head);
-    block.appendChild(headWrap);
+    if (group.label) {
+      var headWrap = document.createElement("div");
+      headWrap.className = "index-sec__head";
+      var head = document.createElement("h3");
+      head.className = "label";
+      head.textContent = group.label;
+      headWrap.appendChild(head);
+      block.appendChild(headWrap);
+    }
     var ul = document.createElement("ul");
     ul.className = "index-cells";
-    list.forEach(function (item) {
+    group.items.forEach(function (item) {
       var li = document.createElement("li");
       var btn = document.createElement("button");
       btn.type = "button";
@@ -544,9 +515,52 @@
     });
     block.appendChild(ul);
     panel.appendChild(block);
-  });
+  }
 
-  toggle.addEventListener("click", function () { setOpen(panel.hidden); });
+  var archive = panel.id === "ceramics-archive-menu";
+  if (archive) {
+    var grid = section.querySelector(".work-squares");
+    function renderArchive() {
+      if (panel.hidden) return;
+      // Explicitly positioned tiles can be displayed out of markup order.
+      var positions = Array.from(grid.children).filter(function (item) {
+        return item.matches(".work-squares__item:not([hidden])") && nameOf(item);
+      }).map(function (item) {
+        return { item: item, rect: item.getBoundingClientRect() };
+      });
+      positions.sort(function (a, b) {
+        return Math.abs(a.rect.top - b.rect.top) < 1
+          ? a.rect.left - b.rect.left
+          : a.rect.top - b.rect.top;
+      });
+      panel.textContent = "";
+      renderGroup({
+        label: "Objects (" + positions.length + "):",
+        items: positions.map(function (entry) { return entry.item; })
+      });
+    }
+
+    new MutationObserver(renderArchive).observe(grid, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ["data-cols", "data-order", "hidden"]
+    });
+    if (window.ResizeObserver) new ResizeObserver(renderArchive).observe(grid);
+    toggle.addEventListener("click", function () {
+      setOpen(panel.hidden);
+      renderArchive();
+    });
+  } else {
+    [{ label: "Species:", kind: "species" }, { label: "Hybrids:", kind: "hybrid" }].forEach(function (group) {
+      group.items = items.filter(function (item) {
+        return item.getAttribute("data-kind") === group.kind;
+      }).sort(function (a, b) { return nameOf(a).localeCompare(nameOf(b)); });
+      renderGroup(group);
+    });
+    toggle.addEventListener("click", function () { setOpen(panel.hidden); });
+  }
   if (closeBox) closeBox.addEventListener("click", function () { setOpen(false); toggle.focus(); });
   // Escape and clicks outside close the list, except while a photo popup is
   // open: those close the popup only, and the list stays open.
@@ -947,7 +961,7 @@
       [
         ["Title:", nameEl.textContent.replace(/,$/, "")],
         ["Year:", item.getAttribute("data-year") || (year && year.textContent)],
-        ["Dimensions:", item.getAttribute("data-dimensions")],
+        ["Dimensions:", item.getAttribute("data-dimensions") || "--"],
         ["Materials:", item.getAttribute("data-materials")]
       ].forEach(function (entry, index) {
         if (!entry[1]) return;
@@ -988,9 +1002,9 @@
       details.appendChild(p);
     }
     if (item.getAttribute("data-kind") === "hybrid") {
-      row("Hybrid cross:", item.getAttribute("data-cross") || "[TODO]");
+      row("Hybrid cross:", item.getAttribute("data-cross") || "--");
     } else {
-      row("Species native to:", item.getAttribute("data-origin") || "[TODO]");
+      row("Species native to:", item.getAttribute("data-origin") || "--");
     }
     meta.hidden = false;
   }
@@ -1605,53 +1619,86 @@
     archivePreviews.forEach(function (preview) { preview.setAttribute("data-cols", n); });
   }
 
-  function setCols(n) {
-    if (grid.getAttribute("data-cols") === n) return;
-    swap(function () { updateCols(n); });
-  }
+  var orderButtons = browser.querySelectorAll(".work-browser__order button[data-order]");
 
   // Phones start on 2x (desktop keeps the page's own default). Set straight
   // away, before the page is seen, so there's no crossfade on load.
-  if (buttons.length && window.matchMedia("(max-width: 800px)").matches) {
+  if ((buttons.length || orderButtons.length) && window.matchMedia("(max-width: 800px)").matches) {
     updateCols("2");
     buttons.forEach(function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-cols") === "2" ? "true" : "false");
     });
   }
 
+  var currentCols = grid.getAttribute("data-cols");
+  var currentOrder = "curated";
+
+  // Score each shared horizontal or vertical edge once. Color groups
+  // describe the ceramic itself, so the backdrop doesn't skew the shuffle.
+  function colorConflicts(sequence, cols) {
+    var colors = sequence.map(function (item) { return item.dataset.color; });
+    var conflicts = 0;
+    colors.forEach(function (color, i) {
+      if (!color) return;
+      if (i % cols !== 0 && color === colors[i - 1]) conflicts++;
+      if (i >= cols && color === colors[i - cols]) conflicts++;
+    });
+    return conflicts;
+  }
+
+  function randomOrder(cols) {
+    var best = items;
+    var bestScore = Infinity;
+    // Try several shuffled grids and keep the one with the fewest
+    // same-color neighbors. Even a mostly green collection can be shuffled.
+    for (var attempt = 0; attempt < 300 && bestScore > 0; attempt++) {
+      var candidate = items.slice();
+      for (var i = candidate.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var item = candidate[i];
+        candidate[i] = candidate[j];
+        candidate[j] = item;
+      }
+      if (candidate.every(function (item, index) { return item === grid.children[index]; })) continue;
+      var score = colorConflicts(candidate, cols);
+      if (score < bestScore) {
+        best = candidate;
+        bestScore = score;
+      }
+    }
+    return best;
+  }
+
+  function updateGrid() {
+    swap(function () {
+      updateCols(currentCols);
+      if (!orderButtons.length) return;
+      grid.setAttribute("data-order", currentOrder);
+      var sequence = currentOrder === "random" ? randomOrder(Number(currentCols) || 2) : items;
+      sequence.forEach(function (item) { grid.appendChild(item); });
+    });
+  }
+
+  var sortNote = browser.querySelector(".work-browser__sort-text");
+
   buttons.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      setCols(btn.getAttribute("data-cols"));
+      var cols = btn.getAttribute("data-cols");
+      if (cols === currentCols) return;
+      currentCols = cols;
       buttons.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+      updateGrid();
     });
   });
-
-  // Order: Curated is the order written in the page; Chronological sorts by
-  // the year in each caption, newest first, with undated works last
-  var orderButtons = browser.querySelectorAll(".work-browser__order button[data-order]");
-  function yearOf(item) {
-    var y = item.querySelector(".work-squares__year");
-    var n = y ? parseInt(y.textContent, 10) : NaN;
-    return isNaN(n) ? -Infinity : n;
-  }
-  var orders = {
-    curated: items,
-    chronological: items.slice().sort(function (a, b) { return yearOf(b) - yearOf(a); })
-  };
-  var currentOrder = "curated";
-  var sortNote = browser.querySelector(".work-browser__sort-text"); // " / Curated sequence" or " / Newest first"
 
   orderButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
       var key = btn.getAttribute("data-order");
-      orderButtons.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
-      if (key === currentOrder || !orders[key]) return;
+      if (key === currentOrder && key !== "random") return;
       currentOrder = key;
+      orderButtons.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
       if (sortNote) sortNote.textContent = btn.getAttribute("data-label");
-      swap(function () {
-        grid.setAttribute("data-order", key);
-        orders[key].forEach(function (item) { grid.appendChild(item); });
-      });
+      updateGrid();
     });
   });
 

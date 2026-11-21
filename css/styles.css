@@ -227,6 +227,12 @@ a:focus-visible > [data-oval] .oval path,
   transition: stroke-dashoffset var(--draw-duration) ease-in-out;
 }
 
+.index-overlay .index-cell .index-cell__title .oval path,
+#ceramics-archive-menu .index-cell__title .oval path {
+  stroke-dashoffset: 0;
+  transition: opacity var(--hover-duration) ease;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -392,7 +398,9 @@ a:focus-visible > [data-oval] .oval path,
     color var(--hover-duration) ease;
 }
 
-.site-header__link:hover,
+.site-header__link:not(.site-header__index):hover,
+.site-header__index:has(> span:hover),
+.site-header__index[aria-expanded="true"],
 .site-header__link:focus-visible,
 .site-switch__menu a:hover,
 .site-switch__menu a:focus-visible {
@@ -751,6 +759,12 @@ a:focus-visible > [data-oval] .oval path,
   box-shadow: 1px 0 0 var(--color-line), 1px -1px 0 var(--color-line);
 }
 
+/* The first row of tiles draws the shared edge when the grid is flush. */
+.work-browser__bar:has(+ .work-squares),
+.work-browser__head:has(> #ceramics-archive-menu) > .work-browser__bar {
+  border-bottom: 0;
+}
+
 /* "Archive": light italic serif. The line box adds 0.176em above
    the capitals and 0.194em below the letters, and the "S" starts 0.029em
    in, so the padding subtracts those to make the visible gaps equal. */
@@ -975,30 +989,39 @@ a:focus-visible > [data-oval] .oval path,
   box-shadow: 0 0 0 1px var(--color-line); /* a crisp 1px line, not a soft shadow */
 }
 
-.work-squares:is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight {
+.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight {
   grid-column: span 2;
   grid-row: span 2;
 }
 
-.work-squares:not([data-order="chronological"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-left {
+.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-left {
   grid-area: 1 / 1 / span 2 / span 2;
 }
 
-.work-squares:not([data-order="chronological"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-right {
+.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-right {
   grid-area: 3 / -3 / span 2 / -1;
 }
 
-.work-squares:not([data-order="chronological"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-third {
+.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-third {
   grid-area: 5 / 1 / span 2 / span 2;
 }
 
-.work-squares:is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight::before {
+/* Wisdom and Compassion fill the two cells beside the Phalaenopsis Jar. */
+.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) > #ritual-3 {
+  grid-area: 5 / 3;
+}
+
+.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) > #ritual-vessel-4 {
+  grid-area: 6 / 3;
+}
+
+.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight::before {
   content: "";
   display: block;
   padding-top: 100%;
 }
 
-.work-squares:is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight img {
+.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight img {
   position: absolute;
   inset: 0;
   height: 100%;
@@ -2231,11 +2254,6 @@ a.work-squares__item:focus-visible {
   flex: 1 0 auto;
 }
 
-/* Phones only: the X box that closes the panel (see Small screens) */
-.index-close {
-  display: none;
-}
-
 /* Ceramic work pages (ceramics/*.html) -------------------------------- */
 /* One white sheet across the page. On the left, a narrow metadata column
    (title, year, dimensions, materials) that
@@ -2917,46 +2935,6 @@ html:not(.js) .view-toggle {
   .index-overlay {
     width: 100%;
     max-width: none;
-  }
-
-  /* Index panel: a square X box in the top-right corner, as tall as the
-     "/design" row, so it shares that row's top and bottom lines. It draws
-     no lines of its own. Box hover: fills blue, X turns white. */
-  .index-sec--intro {
-    position: relative;
-  }
-
-  .index-close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    display: grid;
-    place-items: center;
-    aspect-ratio: 1;
-    padding: 0;
-    background: var(--color-box);
-    border: 0; /* no divider: the X sits in the "/design" row */
-    font-size: var(--text-card-title);
-    cursor: pointer;
-    transition: background-color var(--hover-duration) ease;
-  }
-
-  .index-close .icon {
-    margin: 0;
-    height: 1em;
-    transition: filter var(--hover-duration) ease;
-  }
-
-  .index-close:hover,
-  .index-close:focus-visible {
-    background: var(--color-hover);
-    outline: none;
-  }
-
-  .index-close:hover .icon,
-  .index-close:focus-visible .icon {
-    filter: invert(1);
   }
 
   /* Ceramic work pages on phones: the title on top, then the photos, then
@@ -3902,6 +3880,12 @@ html:not(.js) .view-toggle {
   display: none;
 }
 
+#ceramics-archive-menu {
+  --index-pad-y: calc(var(--box-pad-y) * 0.65);
+  top: calc(100% - 1px);
+  border-top: var(--line);
+}
+
 /* The names are buttons, set like the Contents menu's links */
 .work-browser__menu .index-cell {
   width: 100%;
@@ -3958,9 +3942,7 @@ html:not(.js) .view-toggle {
    clicking outside them (or the photo itself), tapping their trigger
    again, or pressing Escape. The X styles above are kept, so they can come
    back. The photo popup's X stays available to keyboards and screen
-   readers only, as it already was on larger screens.
-   Exception: the Contents panel keeps its X on phones (.index-close), since
-   it fills the whole screen there. */
+   readers only, as it already was on larger screens. */
 .about__close,
 .work-browser__close,
 .work-browser__close:not([hidden]) {

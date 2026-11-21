@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ceramics — Brian Le</title>
-  <meta name="description" content="Brian is a ceramic artist making sculptures of ritual through clay and glaze.">
+  <meta name="description" content="Brian is a ceramic artist making vessels, objects and occasionally art.">
   <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +30,7 @@
     <div class="box home__left">
 
       <section class="box__section intro">
-        <h1 class="statement statement--ceramics"><span data-type-in data-type-circle-only data-circle="ceramic artist">Brian is a ceramic artist&#10;making sculptures of ritual&#10;through clay and glaze.</span></h1>
+        <h1 class="statement statement--ceramics"><span data-type-in data-type-circle-only data-circle="ceramic artist">Brian is a ceramic artist&#10;making vessels, objects&#10;and occasionally art.</span></h1>
       </section>
 
       <section class="box__section related">
@@ -62,58 +62,71 @@
     <!-- Right column: Ceramics -->
     <div class="home__right">
       <section class="box work-browser" aria-labelledby="selected-works">
-        <div class="work-browser__bar">
-          <h2 class="work-browser__title" id="selected-works">Archive</h2>
+        <div class="work-browser__head">
+          <div class="work-browser__bar work-browser__bar--menu">
+            <h2 class="work-browser__title" id="selected-works"><button class="work-browser__toggle" type="button" aria-expanded="false" aria-controls="ceramics-archive-menu">Archive<img class="icon work-browser__chevron" src="images/icons/chevron-down.svg" width="16" height="16" alt=""></button></h2>
+            <div class="work-browser__order" role="group" aria-label="Order">
+              <button type="button" data-order="random" aria-pressed="false" data-label="Random sequence"><span class="work-browser__opt" data-oval>Random</span></button>
+              <button type="button" data-order="curated" aria-pressed="true" data-label="Curated sequence"><span class="work-browser__opt" data-oval>Curated</span></button>
+            </div>
+          </div>
+          <div class="work-browser__menu" id="ceramics-archive-menu" hidden></div>
         </div>
         <div class="work-squares" data-cols="3">
-        <a class="work-squares__item work-squares__item--highlight work-squares__item--highlight-left" id="rock-bowl" href="ceramics.html#rock-bowl" data-popup-native data-kind="ceramics" data-materials="Stoneware, oxide washes, glaze">
-          <img src="images/ceramics/bowl-mounted-on-rock/rock-bowl-hero3-square.avif" width="1800" height="1800" loading="lazy" alt="Stone Fruit: a shallow ochre ceramic bowl on a rough stone-shaped base">
-          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Stone Fruit,</span> <span class="work-squares__year">2025</span></span></span>
+        <a class="work-squares__item work-squares__item--highlight work-squares__item--highlight-left" id="rock-bowl" data-color="warm" href="ceramics.html#rock-bowl" data-popup-native data-kind="ceramics" data-materials="Stoneware, oxide washes, glaze">
+          <img src="images/ceramics/bowl-mounted-on-rock/stone-fruit-hero-6-square.jpg" data-full="images/ceramics/bowl-mounted-on-rock/stone-fruit-hero-6-large.jpg" width="2400" height="2400" loading="lazy" alt="Stone Fruit: a shallow ochre ceramic bowl on a rough stone-shaped base">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Stone Fruit</span> <span class="work-squares__year">2025</span></span></span>
         </a>
-        <a class="work-squares__item" id="ritual-1" href="ceramics.html#ritual-1"
-           data-popup-native data-kind="ceramics" data-dimensions="6.5 × 10 × 8 in" data-materials="Stoneware, oxide washes, glaze"
-           data-gallery="images/ceramics/oxide-ritual/ritual-1-test3-large.avif images/ceramics/oxide-ritual/ritual-1-top-down-large.avif images/ceramics/oxide-ritual/ritual-1-rim-closeup-large.avif"
-           data-gallery-thumbs="images/ceramics/oxide-ritual/ritual-1-test3-square.avif images/ceramics/oxide-ritual/ritual-1-top-down.avif images/ceramics/oxide-ritual/ritual-1-rim-closeup.avif"
-           data-gallery-alt="Ritual in Oxide: a round stoneware vessel in drippy pink and green glaze, with two small curled handles and a row of small spikes|The vessel seen from directly above, its round opening framed by two handles|Close-up of the vessel's rim and shoulder, showing speckled green and pink glaze">
-          <img src="images/ceramics/oxide-ritual/ritual-1-test3-square.avif" width="1200" height="1200" loading="lazy" alt="Ritual in Oxide: a round stoneware vessel in drippy pink and green glaze, with two small curled handles">
-          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual in Oxide,</span> <span class="work-squares__year">2025</span></span></span>
+        <a class="work-squares__item" id="ritual-1" data-color="pink" href="ceramics.html#ritual-1"
+           data-popup-native data-kind="ceramics" data-dimensions="6.5 × 10 × 8 in" data-materials="Stoneware, oxide washes, glaze">
+          <img src="images/ceramics/oxide-ritual/oxide-hero-square-hd.jpg" data-full="images/ceramics/oxide-ritual/oxide-hero-large-hd.jpg" width="1800" height="1800" loading="lazy" alt="Ritual in Oxide: a round stoneware vessel in drippy pink and green glaze, with two small curled handles">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual in Oxide</span> <span class="work-squares__year">2025</span></span></span>
         </a>
-        <a class="work-squares__item" id="the-gate" href="ceramics.html#the-gate" data-popup-native data-kind="ceramics" data-materials="Stoneware, oxide washes, glaze">
-          <img src="images/ceramics/the-gate/the-gate-square.avif" data-full="images/ceramics/the-gate/the-gate-large.avif" width="1200" height="1200" loading="lazy" alt="The Gate: a green-glazed vessel with a narrow neck and an irregular opening on its front">
-          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">The Gate,</span> <span class="work-squares__year">2025</span></span></span>
+        <a class="work-squares__item" id="the-gate" data-color="green" href="ceramics.html#the-gate" data-popup-native data-kind="ceramics" data-materials="Stoneware, oxide washes, glaze">
+          <img src="images/ceramics/the-gate/the-gate-hero-3-square.jpg" data-full="images/ceramics/the-gate/the-gate-hero-3-large.jpg" width="1200" height="1200" loading="lazy" alt="The Gate: a green-glazed vessel with a narrow neck and an irregular opening on its front">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">The Gate</span> <span class="work-squares__year">2025</span></span></span>
         </a>
-        <a class="work-squares__item" id="ritual-3" href="ceramics.html#ritual-3" data-popup-native data-kind="ceramics" data-materials="Stoneware, glaze">
-          <img src="images/ceramics/patina-ritual/ritual-3-test3-square.avif" data-full="images/ceramics/patina-ritual/ritual-3-test3-large.avif" width="1200" height="1200" loading="lazy" alt="Ritual in Patina: a wide green-glazed stoneware vessel with a footed base and two winged handles">
-          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual in Patina,</span> <span class="work-squares__year">2025</span></span></span>
+        <a class="work-squares__item" id="ritual-in-algae" data-color="green" href="ceramics.html#ritual-in-algae" data-popup-native data-kind="ceramics" data-materials="--">
+          <img src="images/ceramics/ritual-in-algae/algae-hero-2-closer-grid.jpg" data-full="images/ceramics/ritual-in-algae/algae-hero-2-closer-popup.jpg" width="1800" height="1800" loading="lazy" alt="Ritual in Algae: a glossy green ceramic vessel with a tiered neck against a blue backdrop">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual in Algae</span> <span class="work-squares__year">2025</span></span></span>
         </a>
-        <a class="work-squares__item" id="persimmon-2" href="ceramics/persimmon-2.html"
-           data-popup-native data-kind="ceramics" data-dimensions="5 × 6 × 4.5 in" data-materials="Stoneware, oxide washes, glaze"
-           data-gallery="images/ceramics/persimmon-hachiya/persimmon-2-side-view-large.avif images/ceramics/persimmon-hachiya/persimmon-2-top-down-matched-large.webp images/ceramics/persimmon-hachiya/persimmon-2-lid-off-large.avif"
-           data-gallery-thumbs="images/ceramics/persimmon-hachiya/persimmon-2-side-view.avif images/ceramics/persimmon-hachiya/persimmon-2-top-down-matched.webp images/ceramics/persimmon-hachiya/persimmon-2-lid-off.avif"
-           data-gallery-alt="Persimmon Hachiya lying on its side, with a ruffled green leaf cap and a short stem|Persimmon Hachiya from directly above, lying on its side with the leaf cap to the right|Persimmon Hachiya opened, with the hollow body beside its glazed leaf-cap lid">
-          <img src="images/ceramics/persimmon-hachiya/persimmon-2-hero-square.avif" width="1200" height="1200" loading="lazy" alt="Persimmon Hachiya: a ceramic persimmon lying on its side, with a ruffled green leaf cap">
-          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Persimmon Hachiya,</span> <span class="work-squares__year">2026</span></span></span>
-        </a>
-        <a class="work-squares__item work-squares__item--highlight work-squares__item--highlight-right" id="persimmon-1" href="ceramics/persimmon-1.html"
+        <a class="work-squares__item work-squares__item--highlight work-squares__item--highlight-right" id="persimmon-1" data-color="warm" href="ceramics/persimmon-1.html"
            data-popup-native data-kind="ceramics" data-dimensions="7 × 7 × 7 in" data-materials="Stoneware, oxide washes, glaze"
            data-gallery="images/ceramics/persimmon-fuyu/persimmon-1-high-angle-large.avif images/ceramics/persimmon-fuyu/persimmon-1-top-down-large.avif images/ceramics/persimmon-fuyu/persimmon-1-side-view-large.avif"
            data-gallery-thumbs="images/ceramics/persimmon-fuyu/persimmon-1-high-angle.avif images/ceramics/persimmon-fuyu/persimmon-1-top-down.avif images/ceramics/persimmon-fuyu/persimmon-1-side-view.avif"
            data-gallery-alt="Persimmon Fuyu seen from above at an angle, with a glazed leaf cap and twisted stem|Persimmon Fuyu from directly above, showing its four-part glazed leaf cap|Persimmon Fuyu from the side, showing its low, lobed body and long twisted stem">
           <img src="images/ceramics/persimmon-fuyu/persimmon-1-hero-square.avif" width="1200" height="1200" loading="lazy" alt="Persimmon Fuyu: a squat, upright ceramic persimmon with a glazed leaf cap and a twisted stem">
-          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Persimmon Fuyu,</span> <span class="work-squares__year">2026</span></span></span>
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Persimmon Fuyu</span> <span class="work-squares__year">2026</span></span></span>
         </a>
-        <a class="work-squares__item work-squares__item--highlight work-squares__item--highlight-third" id="orchid-pot" href="ceramics.html#orchid-pot" data-popup-native data-kind="ceramics" data-materials="Stoneware, glaze">
-          <img src="images/ceramics/phalaenopsis-mounted-on-jar/orchid-pot-hero-square.avif" data-full="images/ceramics/phalaenopsis-mounted-on-jar/orchid-pot-hero-large.avif" width="1800" height="1800" loading="lazy" alt="Phalaenopsis Jar: a round green-glazed pot with a sculpted orchid on its front">
-          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Phalaenopsis Jar,</span> <span class="work-squares__year">2026</span></span></span>
-        </a>
-        <a class="work-squares__item" id="ritual-5" href="ceramics.html#ritual-5"
+        <a class="work-squares__item" id="ritual-5" data-color="green" href="ceramics.html#ritual-5"
            data-popup-native data-kind="ceramics" data-dimensions="7 × 8 × 7 in (estimated)" data-materials="Stoneware, oxide washes, glaze">
-          <img src="images/ceramics/jade-ritual/jade-ritual-hero-square.avif" data-full="images/ceramics/jade-ritual/jade-ritual-hero-large.avif" width="1200" height="1200" loading="lazy" alt="Ritual in Jade: an olive-green glazed ceramic vessel with a raised foot, a stepped rim, and two small handles">
-          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual in Jade,</span> <span class="work-squares__year">2025</span></span></span>
+          <img src="images/ceramics/jade-ritual/jade-ritual-hero-9-square.jpg" data-full="images/ceramics/jade-ritual/jade-ritual-hero-9-large.jpg" width="1200" height="1200" loading="lazy" alt="Ritual in Jade: an olive-green glazed ceramic vessel with a raised foot, a stepped rim, and two small handles">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual in Jade</span> <span class="work-squares__year">2025</span></span></span>
         </a>
-        <a class="work-squares__item" id="misty-ritual" href="ceramics.html#misty-ritual" data-popup-native data-kind="ceramics" data-materials="Stoneware, oxide washes, glaze">
-          <img src="images/ceramics/misty-ritual/misty-ritual-hero-2-square.avif" data-full="images/ceramics/misty-ritual/misty-ritual-hero-2-large.avif" width="1200" height="1200" loading="lazy" alt="Ritual in Misty: an olive-green glazed vessel with a tall flared neck and two small handles">
-          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual in Misty,</span> <span class="work-squares__year">2025</span></span></span>
+        <a class="work-squares__item work-squares__item--highlight work-squares__item--highlight-third" id="orchid-pot" data-color="green" href="ceramics.html#orchid-pot" data-popup-native data-kind="ceramics" data-materials="Stoneware, glaze">
+          <img src="images/ceramics/phalaenopsis-mounted-on-jar/orchid-pot-hero-square.avif" data-full="images/ceramics/phalaenopsis-mounted-on-jar/orchid-pot-hero-large.avif" width="1800" height="1800" loading="lazy" alt="Phalaenopsis: a round green-glazed pot with a sculpted orchid on its front">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Phalaenopsis</span> <span class="work-squares__year">2026</span></span></span>
+        </a>
+        <a class="work-squares__item" id="ritual-3" data-color="green" href="ceramics.html#ritual-3" data-popup-native data-kind="ceramics" data-materials="Stoneware, glaze">
+          <img src="images/ceramics/patina-ritual/tri-tue-grid-matched.jpg" data-full="images/ceramics/patina-ritual/ritual-3-test3-large.avif" width="1800" height="1800" loading="lazy" alt="Trí Tuệ (Wisdom): a wide green-glazed stoneware vessel with a footed base and two winged handles">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Trí Tuệ (Wisdom)</span> <span class="work-squares__year">2025</span></span></span>
+        </a>
+        <a class="work-squares__item" id="ritual-vessel-4" data-color="green" href="ceramics.html#ritual-vessel-4" data-popup-native data-kind="ceramics" data-materials="--">
+          <img src="images/ceramics/ritual-vessel-4/tu-bi-hero-2-grid.jpg" data-full="images/ceramics/ritual-vessel-4/tu-bi-hero-2-large.jpg" width="1800" height="1800" loading="lazy" alt="Từ Bi (Compassion): a round green-glazed stoneware vessel with a narrow neck and two small curled handles">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Từ Bi (Compassion)</span> <span class="work-squares__year">2025</span></span></span>
+        </a>
+        <a class="work-squares__item" id="misty-ritual" data-color="green" href="ceramics.html#misty-ritual" data-popup-native data-kind="ceramics" data-materials="Stoneware, oxide washes, glaze">
+          <img src="images/ceramics/misty-ritual/rutile-mist-grid-matched.jpg" data-full="images/ceramics/misty-ritual/rutile-mist-hero-5-large.jpg" width="1800" height="1800" loading="lazy" alt="Ritual in Spring: an olive-green glazed vessel with a tall flared neck against a blue backdrop">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Ritual in Spring</span> <span class="work-squares__year">2025</span></span></span>
+        </a>
+        <a class="work-squares__item" id="persimmon-2" data-color="warm" href="ceramics/persimmon-2.html"
+           data-popup-native data-kind="ceramics" data-dimensions="5 × 6 × 4.5 in" data-materials="Stoneware, oxide washes, glaze">
+          <img src="images/ceramics/persimmon-hachiya/hachiya-hero-grid-wider.jpg" data-full="images/ceramics/persimmon-hachiya/hachiya-hero-popup-tight.jpg" width="1800" height="1800" loading="lazy" alt="Persimmon Hachiya: an orange ceramic persimmon with a green leaf cap against a blue backdrop">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Persimmon Hachiya</span> <span class="work-squares__year">2026</span></span></span>
+        </a>
+        <a class="work-squares__item" id="dendrobium-bowl" data-color="green" href="ceramics.html#dendrobium-bowl" data-popup-native data-kind="ceramics" data-materials="--">
+          <img src="images/ceramics/den-bowl/dendrobium-bowl-grid-wider.jpg" data-full="images/ceramics/den-bowl/dendrobium-bowl-hero-v3.jpg" width="1254" height="1254" loading="lazy" alt="Dendrobium: an olive-green bowl with a small sculpted orchid against a blue backdrop">
+          <span class="work-squares__caption"><span class="work-squares__text"><span class="work-squares__name">Dendrobium</span> <span class="work-squares__year">--</span></span></span>
         </a>
         </div>
       </section>
