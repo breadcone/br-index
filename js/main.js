@@ -620,7 +620,7 @@
 
     if (reduceMotion) {
       el.textContent = "";
-      el.style.whiteSpace = "pre-line"; // keeps the &#10; line break
+      if (!heading.classList.contains("statement--ceramics")) el.style.whiteSpace = "pre-line";
       if (range) {
         mark = document.createElement("span");
         mark.className = "intro-mark";

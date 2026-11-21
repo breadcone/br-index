@@ -989,42 +989,46 @@ a:focus-visible > [data-oval] .oval path,
   box-shadow: 0 0 0 1px var(--color-line); /* a crisp 1px line, not a soft shadow */
 }
 
-.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) .work-squares__item--highlight {
   grid-column: span 2;
   grid-row: span 2;
 }
 
-.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-left {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-left {
   grid-area: 1 / 1 / span 2 / span 2;
 }
 
-.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-right {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-right {
   grid-area: 3 / -3 / span 2 / -1;
 }
 
-.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-third {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) .work-squares__item--highlight-third {
   grid-area: 5 / 1 / span 2 / span 2;
 }
 
 /* Wisdom and Compassion fill the two cells beside the Phalaenopsis Jar. */
-.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) > #ritual-3 {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > #ritual-3 {
   grid-area: 5 / 3;
 }
 
-.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) > #ritual-vessel-4 {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > #ritual-vessel-4 {
   grid-area: 6 / 3;
 }
 
-.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight::before {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) .work-squares__item--highlight::before {
   content: "";
   display: block;
   padding-top: 100%;
 }
 
-.work-squares:not([data-order="random"]):is([data-cols="3"], [data-cols="4"]) .work-squares__item--highlight img {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) .work-squares__item--highlight img {
   position: absolute;
   inset: 0;
   height: 100%;
+}
+
+.work-squares--ceramics[data-order="curated"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 @media (max-width: 800px) {
@@ -1262,6 +1266,18 @@ a.work-squares__item:focus-visible {
   max-width: 14em;
   white-space: pre-line;
   text-wrap: balance;
+}
+
+/* Let the ceramics statement rebalance when the authored breaks no longer fit. */
+@media (max-width: 420px) {
+  .statement--ceramics {
+    max-width: none;
+    white-space: normal;
+  }
+
+  .statement--ceramics br {
+    display: none;
+  }
 }
 
 /* Orchids intro: the same idea, 3 lines broken where the HTML says (&#10;),
