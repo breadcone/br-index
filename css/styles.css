@@ -122,6 +122,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Mobile browsers can scroll a fixed background attachment with the page. */
+@media (max-width: 800px), (hover: none) and (pointer: coarse) {
+  body {
+    background-image: none;
+    isolation: isolate;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, var(--gradient-top), var(--gradient-bottom));
+    pointer-events: none;
+  }
+}
+
 h1, h2, h3, p, ul, dl, dd {
   margin: 0;
 }
@@ -1007,11 +1024,11 @@ a:focus-visible > [data-oval] .oval path,
 }
 
 /* Wisdom and Compassion fill the two cells beside the Phalaenopsis Jar. */
-.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > #ritual-3 {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > [data-popup-id="tri-tue-wisdom"] {
   grid-area: 5 / 3;
 }
 
-.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > #ritual-vessel-4 {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > [data-popup-id="tu-bi-compassion"] {
   grid-area: 6 / 3;
 }
 
@@ -1027,14 +1044,8 @@ a:focus-visible > [data-oval] .oval path,
   height: 100%;
 }
 
-.work-squares--ceramics[data-order="curated"] {
+.work-squares--ceramics {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-@media (max-width: 800px) {
-  .work-squares--ceramics[data-order="random"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 /* Keyboard focus: the caption shows (below) instead of an outline */
@@ -1258,34 +1269,38 @@ a.work-squares__item:focus-visible {
   max-width: 11.5em; /* wide enough that every intro line fits in 3 lines */
 }
 
-/* Ceramics intro: set in 3 lines, broken where the HTML says (&#10;), so
-   it's wide enough for the longest line. pre-line keeps those breaks even
-   before the typing script runs. Where the column is narrower, the lines
-   that have to wrap are evened out. */
-.statement--ceramics {
-  max-width: 14em;
-  white-space: pre-line;
-  text-wrap: balance;
-}
-
-/* Let the ceramics statement rebalance when the authored breaks no longer fit. */
-@media (max-width: 420px) {
-  .statement--ceramics {
-    max-width: none;
-    white-space: normal;
-  }
-
-  .statement--ceramics br {
-    display: none;
-  }
-}
-
-/* Orchids intro: the same idea, 3 lines broken where the HTML says (&#10;),
-   wide enough for "Brian enjoys growing orchids." */
+/* Preserve the authored line breaks before and after the typing script. */
+.statement--ceramics,
 .statement--orchids {
   max-width: 14em;
   white-space: pre-line;
   text-wrap: balance;
+}
+
+.home--design .statement br {
+  display: none;
+}
+
+/* Fit each intro's three lines to the available width on phones. */
+@media (max-width: 800px) {
+  .statement {
+    --statement-line-width: 11.6;
+    max-width: none;
+    font-size: min(var(--text-display), calc((100vw - 2 * (var(--page-gutter) + var(--box-pad-x) + 1px)) / var(--statement-line-width)));
+    white-space: pre-line;
+  }
+
+  .statement--ceramics {
+    --statement-line-width: 12.6;
+  }
+
+  .statement--orchids {
+    --statement-line-width: 13.8;
+  }
+
+  .home--design .statement br {
+    display: inline;
+  }
 }
 
 
@@ -1709,6 +1724,7 @@ a.work-squares__item:focus-visible {
    ========================================================= */
 .case-study {
   --cs-rem: calc(var(--u) * 1.17);
+  --cs-title-size: calc(var(--text-card-title) * 1.1);
   --cs-pad: calc(var(--cs-rem) * 3);       /* box padding (same for every section, so columns line up) */
   --cs-gutter: calc(var(--cs-rem) * 7);    /* gap between text and media */
   --cs-panel-pad: calc(var(--cs-rem) * 4); /* gray border around images */
@@ -1748,13 +1764,14 @@ a.work-squares__item:focus-visible {
   line-height: 1;
 }
 
-.cs-section--hero .cs-title + .cs-rule {
+.cs-section--hero .cs-title + .cs-rule,
+.cs-section--hero .cs-hero-copy > .cs-rule:first-child {
   margin: var(--cs-pad) calc(var(--cs-gutter) * -1) var(--cs-pad) calc(var(--cs-pad) * -1);
 }
 
 /* Titles */
 .cs-title {
-  font-size: calc(var(--text-card-title) * 1.1);
+  font-size: var(--cs-title-size);
   font-weight: var(--weight-regular);
   line-height: 0.9;
   letter-spacing: var(--tracking-display);
@@ -1782,6 +1799,10 @@ a.work-squares__item:focus-visible {
   width: 15%;
   height: auto;
   margin: calc(var(--text-small) * 1.4 * 1.8) 0 calc(var(--text-small) * 1.4 * 2.1);
+}
+
+.case-study .cs-text p:not(.cs-number, .cs-note, .cs-award) {
+  line-height: calc(var(--leading-body) + 0.1);
 }
 
 /* Body text: paragraphs separated by one blank line, headings in bold */
@@ -1850,6 +1871,52 @@ a.work-squares__item:focus-visible {
   display: inline-block;
 }
 
+.cs-image-viewer {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  max-height: 100dvh;
+  margin: auto;
+  padding: 0;
+  border: var(--line);
+  background: var(--color-box);
+}
+
+.cs-image-viewer::backdrop {
+  background: rgb(0 0 0 / 65%);
+}
+
+.cs-image-viewer__close {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-out;
+}
+
+.cs-image-viewer__image {
+  display: block;
+  width: 100%;
+  max-height: calc(100dvh - 2px);
+  object-fit: contain;
+}
+
+.case-study .cs-panel img[role="button"] {
+  cursor: zoom-in;
+}
+
+.case-study .cs-panel img[role="button"]:focus-visible,
+.cs-image-viewer__close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.cs-image-viewer--pointer .cs-image-viewer__close:focus {
+  outline: none;
+}
+
 /* Gray media panel: images sit inside a #efefef border */
 .cs-panel {
   display: flex;
@@ -1877,6 +1944,33 @@ a.work-squares__item:focus-visible {
 
 .cs-caption:last-child {
   margin-bottom: 0;
+}
+
+.case-study .cs-caption {
+  position: relative;
+  padding-inline-start: 1.6em;
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+}
+
+.case-study .cs-caption .icon {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.05em;
+  margin: 0;
+}
+
+@media (width > 1024px) {
+  .case-study .cs-caption {
+    box-sizing: content-box;
+    max-inline-size: calc(50% - var(--cs-caption-image-inset, var(--cs-panel-pad)));
+    font-size: 12px;
+  }
+
+  .case-study .cs-caption--above:has(+ .cs-panel--bare),
+  .case-study .cs-panel--bare + .cs-caption:not(.cs-caption--above) {
+    --cs-caption-image-inset: 0px;
+  }
 }
 
 .cs-caption .icon {
@@ -2276,6 +2370,10 @@ a.work-squares__item:focus-visible {
   flex: 1 0 auto;
 }
 
+.index-overlay__close {
+  display: none;
+}
+
 /* Ceramic work pages (ceramics/*.html) -------------------------------- */
 /* One white sheet across the page. On the left, a narrow metadata column
    (title, year, dimensions, materials) that
@@ -2424,6 +2522,7 @@ a.work-squares__item:focus-visible {
   place-items: center;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition:
     opacity var(--menu-close) var(--menu-close-ease),
     visibility 0s linear var(--menu-close);
@@ -2432,13 +2531,26 @@ a.work-squares__item:focus-visible {
 .lightbox-open .lightbox {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
   transition:
     opacity var(--menu-open) var(--menu-open-ease),
     visibility 0s;
 }
 
+@media (hover: none), (max-width: 800px) {
+  .index-open .index-overlay,
+  .site-header:has(.site-switch.is-open) {
+    z-index: 71;
+  }
+}
+
 .lightbox__frame {
   position: relative;
+}
+
+.lightbox__viewport,
+.lightbox__center {
+  display: contents;
 }
 
 .lightbox__box {
@@ -2512,22 +2624,17 @@ a.work-squares__item:focus-visible {
   border: 0;
 }
 
-/* Photo gallery (orchids with more than one photo, data-gallery): a column
-   of square thumbnails to the right of the photo, as tall as the photo,
-   split from it and from each other by 1px lines. js/main.js sizes them in
-   whole pixels so the lines stay crisp. The shown photo's thumbnail is at
-   full strength with a gray outline; the others are dimmed and brighten
-   on hover. */
+/* Five square thumbnail slots below the enlarged photo. */
 .lightbox__media {
   display: flex;
+  flex-direction: column;
 }
 
 .lightbox__thumbs {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  background: var(--color-line); /* shows through the gaps as the lines */
-  border-left: var(--line);
+  display: grid;
+  grid-template-columns: repeat(5, min(20%, 103px, 18svh));
+  align-self: end;
+  border-top: var(--line);
 }
 
 .lightbox__thumbs[hidden] {
@@ -2537,14 +2644,20 @@ a.work-squares__item:focus-visible {
 .lightbox__thumb {
   position: relative;
   display: block;
-  flex: 0 0 auto;
+  aspect-ratio: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
   padding: 0;
   border: 0;
+  border-right: var(--line);
   background: var(--color-box);
   cursor: pointer;
 }
 
 .lightbox__thumb img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
@@ -2572,25 +2685,73 @@ a.work-squares__item:focus-visible {
   outline: none;
 }
 
-/* Phones: the thumbnails run in a row under the photo instead, split from
-   it by a 1px line */
-@media (max-width: 800px) {
-  .lightbox__media {
-    flex-direction: column;
+@media (width > 800px) {
+  .lightbox__frame {
+    display: flex;
+    align-items: flex-start;
   }
 
-  .lightbox__thumbs {
-    flex-direction: row;
+  .lightbox__frame > .lightbox__thumbs {
+    flex: none;
+    align-self: start;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    border: var(--line);
     border-left: 0;
-    border-top: var(--line);
+    background: var(--color-line);
+    clip-path: inset(50%);
+    transition: clip-path var(--menu-close) var(--menu-close-ease);
+  }
+
+  .lightbox-open .lightbox__frame > .lightbox__thumbs {
+    clip-path: inset(0);
+    transition: clip-path var(--menu-open) var(--menu-open-ease);
+  }
+
+  .lightbox__frame > .lightbox__thumbs .lightbox__thumb {
+    border-right: 0;
   }
 }
 
-/* Close box for the photo popup. Larger screens: hidden (a click anywhere
-   closes the popup) but still reachable by keyboard and screen readers.
-   Phones: a square X box just above the photo's top-right corner, like the
-   About dialog's. Its bottom and right edges sit exactly on the popup's
-   line, so each shared edge is one line. Box hover: fills blue. */
+@media (max-width: 800px) {
+  .lightbox--full {
+    --lightbox-compact-padding: 8px 12px;
+    --lightbox-compact-title-size: 15px;
+    display: block;
+    bottom: auto;
+    height: calc(100dvh - var(--header-height));
+    padding: 0;
+  }
+
+  .lightbox__viewport {
+    --lightbox-viewport-padding: var(--page-gutter);
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: var(--lightbox-viewport-padding);
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable both-edges;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  /* Center against the stable viewport. Taller galleries grow downward so
+     the full frame, including its top edge, remains reachable by scrolling. */
+  .lightbox__center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100svh - var(--header-height) - 2 * var(--lightbox-viewport-padding));
+  }
+
+  .lightbox__thumbs {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* Keep the photo popup's close control available to assistive technology. */
 .lightbox__close {
   position: absolute;
   width: 1px;
@@ -2603,44 +2764,8 @@ a.work-squares__item:focus-visible {
 }
 
 @media (max-width: 800px) {
-  .lightbox__close {
-    top: calc(var(--arrow-button-size) * -1);
-    right: -1px;
-    z-index: 1;
-    display: grid;
-    place-items: center;
-    width: var(--arrow-button-size);
-    height: var(--arrow-button-size);
-    overflow: visible;
-    clip: auto;
-    border: var(--line);
-    background: var(--color-box);
-    cursor: pointer;
-    opacity: 0;
-    transition: background-color var(--hover-duration) ease, opacity 150ms ease;
-  }
-
-  /* The X fades in once the photo has finished growing open */
-  .lightbox-open .lightbox__close {
-    opacity: 1;
-    transition: background-color var(--hover-duration) ease, opacity 150ms ease var(--menu-open);
-  }
-
   .lightbox__close .icon {
-    margin: 0;
-    height: calc(var(--u) * 1.4);
-    transition: filter var(--hover-duration) ease;
-  }
-
-  .lightbox__close:hover,
-  .lightbox__close:focus-visible {
-    background: var(--color-hover);
-    outline: none;
-  }
-
-  .lightbox__close:hover .icon,
-  .lightbox__close:focus-visible .icon {
-    filter: invert(1);
+    display: none;
   }
 }
 
@@ -2927,7 +3052,8 @@ html:not(.js) .view-toggle {
   }
 
   /* Case studies: text above media */
-  .cs-section--hero .cs-title + .cs-rule {
+  .cs-section--hero .cs-title + .cs-rule,
+  .cs-section--hero .cs-hero-copy > .cs-rule:first-child {
     margin-right: calc(var(--cs-pad) * -1);
   }
 
@@ -2944,6 +3070,86 @@ html:not(.js) .view-toggle {
 
 /* ---------- Small screens ---------- */
 @media (max-width: 800px) {
+  .case-study {
+    --cs-stack-gap: max(var(--cs-pad), calc(var(--text-small) * 1.4));
+    --cs-media-gap: calc(var(--cs-pad) / 2);
+    --cs-caption-gap: calc(var(--cs-pad) * 2 / 3);
+  }
+
+  .case-study .cs-section {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--cs-stack-gap);
+  }
+
+  .case-study .cs-panel {
+    padding: 0;
+    background: none;
+  }
+
+  .case-study .cs-panel img {
+    border: 1px solid var(--color-media);
+  }
+
+  .case-study .pill--process + .cs-panel img,
+  .case-study .cs-panel--process img {
+    border: 0;
+  }
+
+  .case-study .cs-media .pill {
+    margin-bottom: var(--cs-media-gap);
+  }
+
+  .case-study .cs-caption {
+    margin-top: var(--cs-caption-gap);
+    font-size: 10px;
+  }
+
+  .case-study .cs-caption:not(:last-child) {
+    margin-bottom: var(--cs-stack-gap);
+  }
+
+  .case-study .cs-caption.cs-caption--above {
+    margin-block: 0 var(--cs-caption-gap);
+  }
+
+  .case-study .cs-panel + .cs-caption.cs-caption--above {
+    margin-top: var(--cs-stack-gap);
+  }
+
+  .case-study .cs-section--hero .cs-text,
+  .case-study .cs-section--hero .cs-media,
+  .case-study .cs-section--hero .cs-panel {
+    display: contents;
+  }
+
+  .case-study .cs-section--hero .cs-title {
+    order: -2;
+  }
+
+  .case-study .cs-section-title {
+    font-size: var(--cs-title-size);
+  }
+
+  .case-study :is(.cs-title, .cs-section-title) br {
+    display: none;
+  }
+
+  .case-study .cs-section--hero .cs-panel img:first-child {
+    order: -1;
+    box-sizing: content-box;
+    width: calc(100% + 2 * var(--cs-pad));
+    margin-inline: calc(-1 * var(--cs-pad));
+    border-inline: 0;
+  }
+
+  .case-study .cs-hero-copy > .cs-rule:first-child {
+    display: none;
+  }
+
+  .case-study .cs-section--hero .cs-caption {
+    margin-top: calc(var(--cs-caption-gap) - var(--cs-stack-gap));
+  }
+
   /* Role box: "Design Lead / at IBM" */
   .company--full {
     display: none;
@@ -2957,6 +3163,33 @@ html:not(.js) .view-toggle {
   .index-overlay {
     width: 100%;
     max-width: none;
+  }
+
+  .index-overlay .index-sec--intro {
+    position: relative;
+  }
+
+  .index-overlay__close {
+    --index-close-hit-padding: max(10px, calc((45px - var(--text-card-title)) / 2));
+    position: absolute;
+    inset-block-start: calc(var(--index-pad-y) - var(--index-close-hit-padding));
+    inset-inline-end: calc(var(--index-pad-x) - var(--index-close-hit-padding));
+    display: block;
+    padding: var(--index-close-hit-padding);
+    appearance: none;
+    border: 0;
+    background: transparent;
+    font-size: var(--text-card-title);
+  }
+
+  .index-overlay__close img {
+    display: block;
+    width: 1em;
+    height: 1em;
+  }
+
+  .index-overlay__close:focus-visible {
+    outline: 2px solid var(--color-accent);
   }
 
   /* Ceramic work pages on phones: the title on top, then the photos, then
@@ -3576,6 +3809,7 @@ html:not(.js) .view-toggle {
 
 .lightbox__meta-details {
   padding: calc(var(--u) * 0.6) calc(var(--u) * 0.9) 0;
+  font-size: calc(var(--u) * 1.1);
 }
 
 .lightbox__meta-name,
@@ -3595,6 +3829,21 @@ html:not(.js) .view-toggle {
 /* The name is set a little heavier than the details */
 .lightbox__meta-name {
   font-weight: 500;
+}
+
+@media (max-width: 800px) {
+  .lightbox__meta:has(> .lightbox__meta-name) {
+    padding: 0;
+  }
+
+  .lightbox__meta-name,
+  .lightbox__meta-details {
+    padding: var(--lightbox-compact-padding);
+  }
+
+  .lightbox__meta-name {
+    font-size: var(--lightbox-compact-title-size);
+  }
 }
 
 .lightbox--full.lightbox--ceramics {
@@ -3631,17 +3880,6 @@ html:not(.js) .view-toggle {
   transition-duration: 100ms;
 }
 
-/* The strip sits outside the photo box, so it needs its own synchronized reveal. */
-.lightbox--ceramics .lightbox__frame > .lightbox__thumbs {
-  clip-path: inset(50%);
-  transition: clip-path var(--menu-close) var(--menu-close-ease);
-}
-
-.lightbox-open .lightbox--ceramics .lightbox__frame > .lightbox__thumbs {
-  clip-path: inset(0);
-  transition: clip-path var(--menu-open) var(--menu-open-ease);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .lightbox--full.lightbox--ceramics {
     transition-delay: 0s;
@@ -3657,26 +3895,6 @@ html:not(.js) .view-toggle {
 .lightbox--ceramics .lightbox__thumb:focus-visible {
   outline: 2px solid white;
   outline-offset: -5px;
-}
-
-.lightbox--ceramics .lightbox__thumbs:not([hidden]) {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-self: end;
-  border: 0; /* the metadata grid's gap draws the divider */
-}
-
-.lightbox--ceramics .lightbox__thumb {
-  aspect-ratio: 1;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.lightbox--ceramics .lightbox__thumb img {
-  position: absolute;
-  inset: 0;
 }
 
 /* Ceramics gallery details borrow the work page's labels and typography. */
@@ -3710,78 +3928,77 @@ html:not(.js) .view-toggle {
 }
 
 @media (max-width: 800px) {
-  .lightbox--ceramics .lightbox__frame > .lightbox__thumbs:not([hidden]) {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+  /* The year cell spans the width of the first two thumbnail slots. */
+  .lightbox--ceramics .lightbox__meta:not([hidden]) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     gap: 0;
-    background: transparent;
+    background: var(--color-box);
   }
 
-  /* The photo box draws the shared bottom edge of the thumbnail row. */
-  .lightbox--ceramics .lightbox__frame > .lightbox__thumbs .lightbox__thumb {
-    border-top: var(--line);
+  .lightbox--ceramics .lightbox__work-cell {
+    padding: var(--lightbox-compact-padding);
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .lightbox--ceramics .lightbox__work-cell:first-child .work-card__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .lightbox--ceramics .lightbox__work-cell:not(:last-of-type) {
+    border-bottom: var(--line);
+  }
+
+  .lightbox--ceramics .lightbox__work-cell:is(:first-child, :nth-child(4)) {
+    grid-column: 1 / -1;
+  }
+
+  .lightbox--ceramics .lightbox__work-cell:nth-child(2) {
     border-right: var(--line);
   }
 
-  .lightbox--ceramics .lightbox__frame > .lightbox__thumbs .lightbox__thumb:first-child {
-    border-left: var(--line);
-  }
-
-  .lightbox--ceramics .lightbox__meta:not([hidden]) {
-    grid-template-columns: minmax(var(--lightbox-title-min, 0px), 1fr) minmax(calc(var(--u) * 7.5), auto) minmax(0, 1fr);
-    overflow: auto;
-  }
-
-  .lightbox--ceramics .lightbox__meta:has(> .lightbox__work-cell:nth-child(-n+3):last-of-type) {
-    grid-template-columns: 1fr auto;
-  }
-
-  .lightbox--ceramics .lightbox__work-cell:nth-child(2):last-of-type {
-    grid-column: auto;
-  }
-
-  .lightbox__work-cell {
-    padding: calc(var(--u) * 1.5);
-  }
-
-  .lightbox__work-cell .work-card__title,
-  .lightbox__work-cell .work-card__value {
-    font-size: max(14px, calc(var(--text-small) * 1.15));
-  }
-
-  .lightbox--ceramics .lightbox__work-cell .work-card__title {
+  .lightbox--ceramics .work-card__title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-variation-settings: var(--serif-axes);
+    letter-spacing: var(--tracking-serif);
+    font-size: var(--lightbox-compact-title-size);
+    font-weight: 500;
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .lightbox__work-cell:last-of-type {
-    grid-column: 1 / -1;
+  .lightbox--ceramics .lightbox__work-cell:not(:first-child) .work-card__label {
+    display: inline;
+    margin: 0;
+    font: inherit;
+    font-weight: var(--weight-bold);
+    letter-spacing: normal;
   }
 
-  .lightbox__work-cell:last-of-type .work-card__value {
-    max-inline-size: 24ch;
+  .lightbox--ceramics .work-card__value {
+    display: inline;
+    margin-inline-start: 0.25em;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  .lightbox--ceramics .lightbox__work-cell--dimensions .work-card__value {
+    display: inline-block;
+    white-space: nowrap;
   }
 }
 
 @media (width > 800px) {
   .lightbox--ceramics {
     --lightbox-details-width: 310px;
-  }
-
-  .lightbox--ceramics .lightbox__frame {
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .lightbox--ceramics .lightbox__frame > .lightbox__thumbs:not([hidden]) {
-    flex: none;
-    order: 1;
-    width: calc(var(--lightbox-details-width) / 3);
-    align-self: flex-start;
-    grid-template-columns: minmax(0, 1fr);
-    border: var(--line);
-    border-left: 0;
   }
 
   .lightbox--ceramics .lightbox__box {
@@ -3824,55 +4041,29 @@ html:not(.js) .view-toggle {
   }
 }
 
-/* Anchor the phone close button to the photo rather than the details. */
-.lightbox--ceramics .lightbox__media {
-  position: relative;
-}
+/* Desktop ceramics reveal the close control for keyboard focus. */
+@media (width > 800px) {
+  .lightbox--ceramics .lightbox__close:focus-visible {
+    top: 0;
+    right: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    overflow: visible;
+    clip: auto;
+    background: none;
+    cursor: pointer;
+    outline: 2px solid var(--color-hover);
+    outline-offset: -4px;
+  }
 
-.lightbox--ceramics :is(.lightbox__meta, .lightbox__media) .lightbox__close {
-  top: 0;
-  right: 0;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  overflow: visible;
-  clip: auto;
-  background: none;
-  cursor: pointer;
-  opacity: 1;
-}
-
-.lightbox--ceramics .lightbox__close .icon {
-  height: 16px;
-  margin: 0;
-  translate: 4px -4px;
-}
-
-.lightbox--ceramics .lightbox__close:is(:hover, :focus-visible) {
-  background: none;
-}
-
-.lightbox--ceramics .lightbox__close:focus-visible {
-  outline: 2px solid var(--color-hover);
-  outline-offset: -4px;
-}
-
-.lightbox--ceramics .lightbox__close:is(:hover, :focus-visible) .icon {
-  filter: none;
-}
-
-.lightbox--ceramics .lightbox__media .lightbox__close .icon {
-  filter: invert(1);
-}
-
-.lightbox--ceramics :is(.lightbox__meta, .lightbox__media) .lightbox__close:not(:focus-visible) {
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
+  .lightbox--ceramics .lightbox__close .icon {
+    height: 16px;
+    margin: 0;
+    translate: 4px -4px;
+  }
 }
 
 /* Collection dropdown (orchids page): clicking "Collection" opens a list of
@@ -4053,7 +4244,7 @@ html:not(.js) .view-toggle {
 }
 
 [data-popup-native] .work-squares__item:hover::after,
-[data-popup-native] .work-squares__item:has(img:focus-visible)::after {
+[data-popup-native] .work-squares__item:focus-visible::after {
   box-shadow: inset 0 0 0 1px #fff; /* white outline on the dark orchids page */
 }
 
@@ -4068,24 +4259,9 @@ html:not(.js) .view-toggle {
   }
 }
 
-/* Popups: no X close buttons, on any screen. Popups close by tapping or
-   clicking outside them (or the photo itself), tapping their trigger
-   again, or pressing Escape. The X styles above are kept, so they can come
-   back. The photo popup's X stays available to keyboards and screen
-   readers only, as it already was on larger screens. */
+/* These panels dismiss from outside, from their trigger, or with Escape. */
 .about__close,
 .work-browser__close,
 .work-browser__close:not([hidden]) {
   display: none;
-}
-
-@media (max-width: 800px) {
-  .lightbox__close {
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    border: 0;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-  }
 }

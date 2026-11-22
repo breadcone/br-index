@@ -48,18 +48,18 @@
       home: "ceramics.html",
       groups: [
         { label: "Objects", showCount: true, items: [
-          { text: "Dendrobium", href: "ceramics.html#dendrobium-bowl" },
-          { text: "Persimmon Fuyu", href: "ceramics.html#persimmon-1" },
-          { text: "Persimmon Hachiya", href: "ceramics.html#persimmon-2" },
-          { text: "Phalaenopsis", href: "ceramics.html#orchid-pot" },
+          { text: "Dendrobium", href: "ceramics.html#dendrobium" },
+          { text: "Persimmon Fuyu", href: "ceramics.html#persimmon-fuyu" },
+          { text: "Persimmon Hachiya", href: "ceramics.html#persimmon-hachiya" },
+          { text: "Phalaenopsis", href: "ceramics.html#phalaenopsis" },
           { text: "Ritual in Algae", href: "ceramics.html#ritual-in-algae" },
-          { text: "Ritual in Jade", href: "ceramics.html#ritual-5" },
-          { text: "Ritual in Oxide", href: "ceramics.html#ritual-1" },
-          { text: "Ritual in Spring", href: "ceramics.html#misty-ritual" },
-          { text: "Stone Fruit", href: "ceramics.html#rock-bowl" },
+          { text: "Ritual in Jade", href: "ceramics.html#ritual-in-jade" },
+          { text: "Ritual in Oxide", href: "ceramics.html#ritual-in-oxide" },
+          { text: "Ritual in Spring", href: "ceramics.html#ritual-in-spring" },
+          { text: "Stone Fruit", href: "ceramics.html#stone-fruit" },
           { text: "The Gate", href: "ceramics.html#the-gate" },
-          { text: "Trí Tuệ (Wisdom)", href: "ceramics.html#ritual-3" },
-          { text: "Từ Bi (Compassion)", href: "ceramics.html#ritual-vessel-4" }
+          { text: "Trí Tuệ (Wisdom)", href: "ceramics.html#tri-tue-wisdom" },
+          { text: "Từ Bi (Compassion)", href: "ceramics.html#tu-bi-compassion" }
         ] },
         // "Artist Statement" has no page yet
         { label: "Info", items: [{ text: "Artist Statement", href: "#", todo: true }] },
@@ -161,7 +161,7 @@
 
     // Touch screens have no hover, so a tap on the label opens and closes
     // the dropdown. Tapping anywhere outside closes it.
-    var touch = window.matchMedia("(hover: none)");
+    var touch = window.matchMedia("(hover: none), (max-width: 800px)");
     function setSwitchOpen(open) {
       wrap.classList.toggle("is-open", open);
       nameLink.setAttribute("aria-expanded", open ? "true" : "false");
@@ -207,6 +207,13 @@
   overlay.id = "index-overlay";
   overlay.setAttribute("aria-label", "Contents");
   overlay.innerHTML = buildPanel();
+
+  var closeContentsButton = document.createElement("button");
+  closeContentsButton.type = "button";
+  closeContentsButton.className = "index-overlay__close";
+  closeContentsButton.setAttribute("aria-label", "Close Contents");
+  closeContentsButton.innerHTML = '<img src="' + url("images/icons/close.svg") + '" alt="">';
+  overlay.querySelector(".index-title").after(closeContentsButton);
 
   // Every portfolio's panel is as wide as the design one, so the panel keeps
   // one width across the site. Measured from a hidden copy of the design
@@ -337,6 +344,11 @@
   trigger.addEventListener("click", function (e) {
     e.preventDefault();
     setOpen(!isOpen());
+  });
+
+  closeContentsButton.addEventListener("click", function () {
+    setOpen(false);
+    trigger.focus({ preventScroll: true });
   });
 
   trigger.addEventListener("keydown", function (e) {
@@ -620,7 +632,6 @@
 
     if (reduceMotion) {
       el.textContent = "";
-      if (!heading.classList.contains("statement--ceramics")) el.style.whiteSpace = "pre-line";
       if (range) {
         mark = document.createElement("span");
         mark.className = "intro-mark";
@@ -856,6 +867,72 @@
   });
 })();
 
+// Mobile image viewer for case studies.
+(function () {
+  var photos = document.querySelectorAll(".case-study .cs-panel img");
+  if (!photos.length) return;
+
+  var mobile = window.matchMedia("(max-width: 800px)");
+  var viewer = document.createElement("dialog");
+  viewer.className = "cs-image-viewer";
+  viewer.setAttribute("aria-label", "Enlarged case study image");
+  viewer.innerHTML =
+    '<button class="cs-image-viewer__close" type="button" aria-label="Close enlarged image" autofocus>' +
+      '<img class="cs-image-viewer__image" alt="">' +
+    '</button>';
+  document.body.appendChild(viewer);
+
+  var closeButton = viewer.querySelector(".cs-image-viewer__close");
+  var enlarged = viewer.querySelector(".cs-image-viewer__image");
+
+  function open(photo, fromPointer) {
+    if (!mobile.matches || viewer.open) return;
+    photo.focus({ preventScroll: true });
+    viewer.classList.toggle("cs-image-viewer--pointer", fromPointer);
+    closeButton.setAttribute("aria-label", "Close enlarged image: " + photo.alt);
+    enlarged.alt = photo.alt;
+    enlarged.src = photo.currentSrc || photo.src;
+    viewer.showModal();
+  }
+
+  function updateTriggers() {
+    if (!mobile.matches && viewer.open) viewer.close();
+    photos.forEach(function (photo) {
+      if (mobile.matches) {
+        photo.tabIndex = 0;
+        photo.setAttribute("role", "button");
+        photo.setAttribute("aria-haspopup", "dialog");
+        photo.setAttribute("aria-label", "Enlarge image: " + photo.alt);
+      } else {
+        photo.removeAttribute("tabindex");
+        photo.removeAttribute("role");
+        photo.removeAttribute("aria-haspopup");
+        photo.removeAttribute("aria-label");
+      }
+    });
+  }
+
+  photos.forEach(function (photo) {
+    photo.addEventListener("click", function (event) {
+      open(photo, event.detail > 0);
+    });
+    photo.addEventListener("keydown", function (event) {
+      if (!mobile.matches || (event.key !== "Enter" && event.key !== " ")) return;
+      event.preventDefault();
+      open(photo, false);
+    });
+  });
+  closeButton.addEventListener("click", function () { viewer.close(); });
+  viewer.addEventListener("click", function (event) {
+    if (event.target === viewer) viewer.close();
+  });
+  viewer.addEventListener("keydown", function () {
+    viewer.classList.remove("cs-image-viewer--pointer");
+  });
+  mobile.addEventListener("change", updateTriggers);
+  updateTriggers();
+})();
+
 /* ---------------------------------------------------------
    Image popup (ceramics work cards)
    Clicking a photo opens it larger. Every popup has the same shape and
@@ -885,16 +962,16 @@
   pop.setAttribute("aria-modal", "true");
   pop.setAttribute("aria-label", "Enlarged photo");
   pop.innerHTML =
-    '<div class="lightbox__frame">' +
+    '<div class="lightbox__viewport"><div class="lightbox__center"><div class="lightbox__frame">' +
       '<div class="box lightbox__box">' +
         '<div class="lightbox__media"><img class="lightbox__img" alt=""><section class="lightbox__thumbs" aria-label="Gallery photos" hidden></section></div>' +
         '<div class="lightbox__meta" hidden></div>' +
       "</div>" +
-      // Phones: a square X box just above the photo's top-right corner.
-      // Larger screens: hidden but still there for keyboard and screen readers.
+      // Keep the close control available to keyboard and screen reader users.
       '<button class="lightbox__close" type="button" aria-label="Close photo"><img class="icon" src="' + iconRoot + 'images/icons/close.svg" alt=""></button>' +
-    "</div>";
+    "</div></div></div>";
   document.body.appendChild(pop);
+  var viewport = pop.querySelector(".lightbox__viewport");
   var frame = pop.querySelector(".lightbox__frame");
   var big = pop.querySelector(".lightbox__img");
   var closeBtn = pop.querySelector(".lightbox__close");
@@ -902,6 +979,12 @@
   var meta = pop.querySelector(".lightbox__meta");
   var thumbs = pop.querySelector(".lightbox__thumbs");
   var gallery = []; // the open photo's set of full-size photos (empty: just one photo)
+  var popupWidth;
+  var swipeStart = null;
+  var swipeClosed = false;
+  var fragmentPhotos = new Map();
+  // Entries from a previous page load must be dismissed in place after refresh.
+  var popupSession = performance.timeOrigin;
 
   // Grid items with more than one photo list them on the tile:
   // data-gallery (full-size files) and data-gallery-thumbs (small files),
@@ -951,7 +1034,6 @@
   // species. The data comes from data-* attributes on each grid item.
   function fillMeta(item) {
     if (closeBtn.parentNode === meta) frame.appendChild(closeBtn);
-    if (thumbs.parentNode !== big.parentNode) big.parentNode.appendChild(thumbs);
     meta.textContent = "";
     var ceramics = item && item.getAttribute("data-kind") === "ceramics";
     pop.classList.toggle("lightbox--ceramics", !!ceramics);
@@ -964,7 +1046,7 @@
       var year = item.querySelector(".work-squares__year");
       [
         ["Title:", nameEl.textContent.replace(/,$/, "")],
-        ["Year:", item.getAttribute("data-year") || (year && year.textContent)],
+        ["Year:", item.getAttribute("data-year") || (year && year.textContent) || "--"],
         ["Dimensions:", item.getAttribute("data-dimensions") || "--"],
         ["Materials:", item.getAttribute("data-materials")]
       ].forEach(function (entry, index) {
@@ -982,8 +1064,6 @@
         cell.appendChild(value);
         meta.appendChild(cell);
       });
-      meta.appendChild(closeBtn);
-      meta.appendChild(thumbs);
       meta.hidden = false;
       return;
     }
@@ -1030,112 +1110,63 @@
 
   var squareOnPhone = !!document.querySelector('[data-popup-phone="square"]');
 
-  function fitCeramicsDetails(width) {
-    meta.style.width = width + "px";
-    meta.style.removeProperty("--lightbox-title-min");
-    var title = meta.querySelector(".work-card__title");
-    var dimensions = meta.querySelector(".lightbox__work-cell--dimensions");
-    if (!title || !dimensions || title.scrollWidth <= title.clientWidth) return;
-
-    var titleWidth = title.parentNode.getBoundingClientRect().width;
-    var dimensionsWidth = dimensions.getBoundingClientRect().width;
-    dimensions.style.width = "min-content";
-    var minimum = dimensions.getBoundingClientRect().width;
-    dimensions.style.width = "";
-    var extra = Math.min(title.scrollWidth - title.clientWidth, Math.floor(dimensionsWidth - minimum));
-    if (extra > 0) meta.style.setProperty("--lightbox-title-min", titleWidth + extra + "px");
-  }
-
   function sizeCeramics(maxW, maxH) {
     meta.style.width = "";
-    if (thumbs.parentNode !== frame) frame.insertBefore(thumbs, frame.firstChild);
     if (phoneQuery.matches) {
-      if (closeBtn.parentNode !== big.parentNode) big.parentNode.appendChild(closeBtn);
+      if (closeBtn.parentNode !== frame) frame.appendChild(closeBtn);
       var pixelLimit = 1080 / (window.devicePixelRatio || 1);
-      var size = Math.max(1, Math.floor(Math.min(maxW, pixelLimit, maxH)));
-      var minSize = Math.min(size, Math.max(1, Math.floor(maxH / 2)));
-      // Measure the details and thumbnail strip at the actual photo width.
-      // Keep them in view if possible, and scroll only when space runs out.
-      fitCeramicsDetails(size);
+      var size = Math.max(1, Math.floor(Math.min(maxW, pixelLimit)));
+      meta.style.width = size + "px";
       thumbs.style.width = size + "px";
-      var detailsHeight = meta.offsetHeight;
-      if (size + detailsHeight + thumbs.offsetHeight > maxH) {
-        size = Math.max(minSize, Math.floor((maxH - detailsHeight) / (thumbs.hidden ? 1 : 1.2)));
-        fitCeramicsDetails(size);
-        thumbs.style.width = size + "px";
-        detailsHeight = meta.offsetHeight;
-      }
       big.style.width = size + "px";
       big.style.height = size + "px";
-      if (size + detailsHeight + thumbs.offsetHeight > maxH) {
-        meta.style.height = Math.max(0, maxH - size - thumbs.offsetHeight) + "px";
-      }
     } else {
       if (closeBtn.parentNode !== meta) meta.appendChild(closeBtn);
-      thumbs.style.width = "";
-      var detailsWidth = meta.offsetWidth;
-      var galleryWidth = thumbs.offsetWidth;
       var ratio = RATIO * 0.9;
-      var height = Math.max(1, Math.floor(Math.min(maxH, (maxW - detailsWidth - galleryWidth) / ratio)));
+      var height = Math.max(1, Math.floor(Math.min(maxH, (maxW - meta.offsetWidth) / ratio)));
       big.style.width = Math.round(height * ratio) + "px";
       big.style.height = height + "px";
     }
   }
 
-  function sizeThumbnails(size, side) {
-    thumbs.style.width = side ? size + "px" : "";
-    Array.prototype.forEach.call(thumbs.children, function (button) {
-      button.style.width = size + "px";
-      button.style.height = size + "px";
-    });
-  }
-
-  // Size the popup: as large as fits inside its padding (the page gutter).
+  // On phones the popup scrolls, so a height change doesn't resize the photo.
   function sizeFor() {
-    var ratio = squareOnPhone && phoneQuery.matches ? 1 : RATIO;
-    var popStyle = getComputedStyle(pop);
+    var phone = phoneQuery.matches;
+    var ratio = squareOnPhone && phone ? 1 : RATIO;
+    var sizingBox = phone ? viewport : pop;
+    var popStyle = getComputedStyle(sizingBox);
     var padX = (parseFloat(popStyle.paddingLeft) || 0) + (parseFloat(popStyle.paddingRight) || 0);
     var padY = (parseFloat(popStyle.paddingTop) || 0) + (parseFloat(popStyle.paddingBottom) || 0);
     // leave room for the box's 1px line on each side
     var line = 2;
-    var maxW = pop.clientWidth - padX - line;
-    var maxH = pop.clientHeight - padY - line;
-    meta.style.height = "";
-    thumbs.style.height = "";
+    popupWidth = sizingBox.clientWidth;
+    var maxW = popupWidth - padX - line;
+    var maxH = phone ? Infinity : pop.clientHeight - padY - line;
+    if (!thumbs.hidden) {
+      var thumbnailParent = phone ? big.parentNode : frame;
+      if (thumbs.parentNode !== thumbnailParent) thumbnailParent.appendChild(thumbs);
+      if (!phone) {
+        // Keep the stack the same width across galleries that have up to five photos.
+        var stackWidth = Math.max(2, Math.min(104, Math.floor((maxH - 1) / Math.max(5, gallery.length))));
+        thumbs.style.width = stackWidth + "px";
+        maxW -= stackWidth;
+      }
+    }
     if (pop.classList.contains("lightbox--ceramics")) {
       sizeCeramics(maxW, maxH);
       return;
     }
     var width;
     if (nativeSize) {
-      // Allow 20% more room for the orchid photo, while leaving space
-      // for gallery controls and metadata within the viewport.
-      var dpr = window.devicePixelRatio || 1;
-      var orchidLimit = 1296 / dpr;
-      // With a gallery, n square thumbnails line up with the photo: a column
-      // beside it (as tall as it) or, on phones, a row under it (as wide as
-      // it). Each is (width - (n - 1)) / n across, plus a 1px line before them.
-      var n = gallery.length;
-      var below = n && phoneQuery.matches;
-      var side = n && !below;
-      var thumbSize = function (w) { return (w - (n - 1)) / n; };
-      var total = function (w) { return side ? w + 1 + thumbSize(w) : w; };
-      var capW = side ? (maxW - 1 + (n - 1) / n) / (1 + 1 / n) : maxW;
-      var capH = function (m) { return below ? (maxH - m - 1 + (n - 1) / n) / (1 + 1 / n) : maxH - m; };
-      // The strip (if any) sits under the photo and takes its share of the height
-      width = Math.min(orchidLimit, capW, capH(0));
-      for (var i = 0; i < 2; i++) {
-        width = Math.min(orchidLimit, capW, capH(metaHeight(total(width))));
+      var orchidLimit = 1296 / (window.devicePixelRatio || 1);
+      width = Math.floor(Math.min(orchidLimit, maxW, maxH));
+      if (!phone) {
+        for (var i = 0; i < 2; i++) {
+          width = Math.max(1, Math.floor(Math.min(width, maxH - metaHeight(width))));
+        }
       }
-      if (n) {
-        // whole-pixel thumbnails, and a photo exactly as tall (or wide) as them
-        var t = Math.floor(thumbSize(width));
-        width = n * t + (n - 1);
-        sizeThumbnails(t, side);
-      } else {
-        width = Math.round(width);
-      }
-      meta.style.width = total(width) + "px";
+      if (phone) thumbs.style.width = width + "px";
+      meta.style.width = width + "px";
       ratio = 1;
     } else {
       width = Math.round(Math.min(maxW, maxH * ratio));
@@ -1144,8 +1175,12 @@
     big.style.height = Math.round(width / ratio) + "px";
   }
 
-  function open(photo) {
-    lastPhoto = photo.closest("a[data-popup-native]") || photo;
+  function show(photo) {
+    var trigger = photo.closest("a[data-popup-id]") || photo;
+    if (lastPhoto === trigger) return;
+    swipeStart = null;
+    swipeClosed = false;
+    lastPhoto = trigger;
     nativeSize = photo.matches(gridPhotos);
     fillMeta(photo.closest(".work-squares__item"));
     fillGallery(photo.closest(".work-squares__item"));
@@ -1159,7 +1194,7 @@
       if (fullSrc) {
         var hi = new Image();
         hi.onload = function () {
-          if (lastPhoto === (photo.closest("a[data-popup-native]") || photo) && !gallery.length) {
+          if (lastPhoto === trigger && !gallery.length) {
             big.src = hi.src;
           }
         };
@@ -1167,16 +1202,40 @@
       }
     }
     sizeFor();
+    viewport.scrollTop = 0;
     document.documentElement.classList.add("lightbox-open");
     closeBtn.focus({ preventScroll: true });
   }
-  function close() {
+
+  function open(photo) {
+    var link = photo.closest("a[data-popup-id]");
+    if (link) {
+      var hash = "#" + link.dataset.popupId;
+      if (location.hash !== hash) {
+        if (fragmentPhotos.has(location.hash)) {
+          history.replaceState(history.state, "", hash);
+        } else {
+          history.pushState({ portfolioPopup: popupSession }, "", hash);
+        }
+      }
+    }
+    show(photo);
+  }
+
+  function hide(restoreFocus) {
     document.documentElement.classList.remove("lightbox-open");
-    if (lastPhoto) lastPhoto.focus({ preventScroll: true });
-    // Drop a "#orchid-name" from the address, so the same Contents link
-    // opens the popup again next time
-    if (location.hash && document.getElementById(location.hash.slice(1))) {
-      history.replaceState(null, "", location.pathname + location.search);
+    if (restoreFocus !== false && lastPhoto) lastPhoto.focus({ preventScroll: true });
+    lastPhoto = null;
+  }
+
+  function close(restoreFocus) {
+    if (!lastPhoto) return;
+    hide(restoreFocus);
+    if (!fragmentPhotos.has(location.hash)) return;
+    if (history.state && history.state.portfolioPopup === popupSession) {
+      history.back();
+    } else {
+      history.replaceState(history.state, "", location.pathname + location.search);
     }
   }
 
@@ -1188,8 +1247,10 @@
   }
 
   photos.forEach(function (photo) {
-    var link = photo.closest("a[data-popup-native]");
+    var link = photo.closest("a[data-popup-id]");
     if (link) {
+      fragmentPhotos.set("#" + link.dataset.popupId, photo);
+      if (link.dataset.popupAlias) fragmentPhotos.set("#" + link.dataset.popupAlias, photo);
       link.setAttribute("aria-haspopup", "dialog");
       link.addEventListener("pointerdown", function () { preload(photo); });
       link.addEventListener("click", function (e) {
@@ -1209,36 +1270,81 @@
     });
   });
 
-  // Orchids page: each photo gets an id from its name ("Cattleya luteola"
-  // becomes #cattleya-luteola). The Contents menu links to these, so
-  // orchids.html#cattleya-luteola opens that photo's popup, whether you come
-  // from another page or are already on the orchids page.
-  if (document.querySelector(gridPhotos)) {
-    document.querySelectorAll("[data-popup-native] .work-squares__item").forEach(function (item) {
-      var n = item.querySelector(".work-squares__name");
-      if (n && !item.id) item.id = n.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    });
-    var openFromHash = function () {
-      var id = location.hash.slice(1);
-      var item = id ? document.getElementById(id) : null;
-      var photo = item && item.classList.contains("work-squares__item") ? item.querySelector("img") : null;
-      if (!photo || !photo.matches(gridPhotos)) return;
-      // close the Contents panel the link was clicked in
+  if (fragmentPhotos.size) {
+    function closeContents() {
       document.documentElement.classList.remove("index-open");
       var trigger = document.querySelector(".site-header__index");
       if (trigger) trigger.setAttribute("aria-expanded", "false");
+    }
+
+    function syncPopup() {
+      var photo = fragmentPhotos.get(location.hash);
+      if (!photo) {
+        if (lastPhoto) hide();
+        return;
+      }
+      closeContents();
       open(photo);
-    };
-    window.addEventListener("hashchange", openFromHash);
-    openFromHash();
+    }
+
+    // A same-page Contents link uses the History API, just like a tile.
+    document.addEventListener("click", function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var link = e.target.closest(".index-overlay a[href]");
+      if (!link || link.origin !== location.origin || link.pathname !== location.pathname) return;
+      var photo = fragmentPhotos.get(link.hash);
+      if (!photo) return;
+      e.preventDefault();
+      closeContents();
+      open(photo);
+    });
+    window.addEventListener("popstate", syncPopup);
+    window.addEventListener("hashchange", syncPopup);
+    syncPopup();
   }
 
-  // Re-fit the open popup when the window changes size (a resized window,
-  // a phone turned sideways), so it never runs off the screen. This also
-  // switches the gallery thumbnails between the column and the phone row.
+  // Re-fit on rotation or desktop resize, ignoring phone toolbar changes.
   window.addEventListener("resize", function () {
-    if (document.documentElement.classList.contains("lightbox-open")) sizeFor();
+    if (document.documentElement.classList.contains("lightbox-open") &&
+        (!phoneQuery.matches || viewport.clientWidth !== popupWidth)) sizeFor();
   });
+
+  var touchMenuQuery = window.matchMedia("(hover: none), (max-width: 800px)");
+  var header = document.querySelector(".site-header");
+  if (header) {
+    header.addEventListener("click", function (e) {
+      if (!touchMenuQuery.matches || !document.documentElement.classList.contains("lightbox-open")) return;
+      var trigger = e.target.closest(".site-header__index, .site-header__name");
+      if (!trigger) return;
+      close(false);
+      trigger.focus({ preventScroll: true });
+    }, true);
+  }
+
+  pop.addEventListener("pointerdown", function (e) {
+    swipeStart = null;
+    swipeClosed = false;
+    if (phoneQuery.matches && e.pointerType === "touch" && e.isPrimary) {
+      swipeStart = { id: e.pointerId, x: e.clientX, y: e.clientY };
+    }
+  });
+  pop.addEventListener("pointercancel", function () { swipeStart = null; });
+  pop.addEventListener("pointerup", function (e) {
+    if (!swipeStart || e.pointerId !== swipeStart.id) return;
+    var x = e.clientX - swipeStart.x;
+    var y = e.clientY - swipeStart.y;
+    swipeStart = null;
+    if (x < 65 || x < Math.abs(y) * 1.5) return;
+    swipeClosed = true;
+    close();
+  });
+  pop.addEventListener("click", function (e) {
+    // A swipe that starts on a thumbnail should never select that photo.
+    if (!swipeClosed) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    swipeClosed = false;
+  }, true);
 
   closeBtn.addEventListener("click", close);
   pop.addEventListener("click", close); // anywhere, photo included
@@ -1703,8 +1809,7 @@
       updateCols(currentCols);
       if (!orderButtons.length) return;
       grid.setAttribute("data-order", currentOrder);
-      var cols = phoneGrid.matches && grid.classList.contains("work-squares--ceramics")
-        ? 2 : Number(currentCols) || 2;
+      var cols = Number(currentCols) || 2;
       var sequence = currentOrder === "random" ? randomOrder(cols) : items;
       sequence.forEach(function (item) { grid.appendChild(item); });
     });
