@@ -1,6 +1,26 @@
 // Shared scripts for every page. Interactions get added here one at a time.
 
 /* ---------------------------------------------------------
+   Clean addresses
+   The published site links to pages without ".html" (br-index.com/ceramics,
+   and just br-index.com for the design homepage); scripts/build.sh rewrites
+   the links when it publishes. The files here keep their ".html" links, so
+   they still work when opened straight from the folder.
+   pagePath() treats "/ceramics.html" and "/ceramics" (and "/index.html" and
+   "/") as the same page. If someone arrives on an old ".html" address on the
+   live site, the address bar is tidied to the clean one (no reload).
+   --------------------------------------------------------- */
+function pagePath(path) {
+  return path.replace(/\.html$/, "").replace(/\/index$/, "/");
+}
+(function () {
+  var local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  if (/^https?:$/.test(location.protocol) && !local && /\.html$/.test(location.pathname)) {
+    history.replaceState(history.state, "", pagePath(location.pathname) + location.search + location.hash);
+  }
+})();
+
+/* ---------------------------------------------------------
    Index overlay (site navigation)
    Hovering or clicking "Index" in the header slides a panel in from the
    right edge, just below the header, so "Index" stays visible. With a
@@ -101,12 +121,13 @@
   var root = script ? script.src.replace(/js\/main(\.[0-9a-f]+)?\.js(\?.*)?$/, "") : "";
   function url(path) { return /^(https?:|mailto:)/.test(path) ? path : root + path; }
 
-  var here = location.href.split("#")[0].split("?")[0];
   // Each entry is a full-width cell: title in sans with an optional serif
   // line under it (the years).
   function cell(item) {
     var href = item.todo ? "#" : url(item.href);
-    var current = !item.todo && href === here;
+    var target = new URL(href, location.href);
+    var current = !item.todo && !target.hash && target.origin === location.origin &&
+      pagePath(target.pathname) === pagePath(location.pathname);
     var ext = item.external ? ' target="_blank" rel="noopener"' : "";
     var cur = current ? ' aria-current="page"' : "";
     var todo = item.todo ? ' data-todo="no page yet"' : "";
@@ -1291,7 +1312,7 @@
     document.addEventListener("click", function (e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       var link = e.target.closest(".index-overlay a[href]");
-      if (!link || link.origin !== location.origin || link.pathname !== location.pathname) return;
+      if (!link || link.origin !== location.origin || pagePath(link.pathname) !== pagePath(location.pathname)) return;
       var photo = fragmentPhotos.get(link.hash);
       if (!photo) return;
       e.preventDefault();

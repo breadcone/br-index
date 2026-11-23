@@ -25,6 +25,7 @@ tar -cf - \
   --exclude ./.claude \
   --exclude ./scripts \
   --exclude ./_site \
+  --exclude ./_originals \
   --exclude ./parked \
   --exclude ./images/ceramics \
   --exclude ./CLAUDE.md \
@@ -72,6 +73,17 @@ find "$OUT" -name '*.html' -exec perl -pi -e "
   s#(href=\"(?:\\.\\./)*css/styles)\\.css\"#\$1.$CSS_HASH.css\"#g;
   s#(src=\"(?:\\.\\./)*js/main)\\.js\"#\$1.$JS_HASH.js\"#g;
 " {} +
+
+# Clean addresses: links to the site's own pages drop ".html"
+# ("ceramics.html#the-gate" -> "ceramics#the-gate",
+# "projects/ai-framework.html" -> "projects/ai-framework"), and links to the
+# design homepage point at the folder itself ("index.html" -> "./",
+# "../index.html" -> "../"). GitHub Pages serves "/ceramics" from
+# ceramics.html. Only quoted relative paths are changed; outside links
+# (https://..., mailto:) and image paths are left alone.
+find "$OUT" \( -name '*.html' -o -name 'main.*.js' \) -exec perl -pi -e '
+  s{(["\x27])(?!https?:|mailto:|//)((?:\.\./)*(?:[\w-]+/)*)([\w-]+)\.html(?=[#"\x27])}{$1 . ($3 eq "index" ? ($2 eq "" ? "./" : $2) : $2 . $3)}ge;
+' {} +
 
 # Fail loudly if any page still points at the old names
 if grep -rlE '(href="(\.\./)*css/styles\.css"|src="(\.\./)*js/main\.js")' "$OUT" --include='*.html'; then
