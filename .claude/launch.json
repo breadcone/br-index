@@ -6,6 +6,18 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8123"],
       "port": 8123
+    },
+    {
+      "name": "site-scratch",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "cd /private/tmp/claude-501/-Users-brianle--claude-spares-spare-AH0uU2/82413eda-30dd-4287-a965-186eb6116ee7/scratchpad/site && exec python3 -m http.server 8125"],
+      "port": 8125
+    },
+    {
+      "name": "site-scratch-2",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "cd /private/tmp/claude-501/-Users-brianle--claude-spares-spare-4EAEGK/6a677a27-3aa4-4a16-8c72-12d786077067/scratchpad/site && exec python3 -m http.server 8124"],
+      "port": 8124
     }
   ]
 }

@@ -23,7 +23,7 @@
     <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Contents</span></a>
   </header>
 
-  <main class="case-study">
+  <main class="case-study case-study--v2">
 
     <!-- Overview -->
     <section class="cs-section cs-section--hero" id="overview">
@@ -69,7 +69,6 @@
           <img src="../images/projects/ai-framework/01-hero.avif" width="2400" height="1600" alt="Abstract render of gray and blue planes converging at a single point">
           <img src="../images/projects/ai-framework/02-homepage-discover.avif" width="2400" height="1880" alt="IBM z17 mainframe: three dark cabinets against a blue background">
         </div>
-        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>IBM z17</b>: The first mainframe engineered for the AI age. AI Framework brought those capabilities into the hands of system administrators.</p>
       </div>
     </section>
 
@@ -99,21 +98,33 @@
       </div>
 
       <div class="cs-media">
-        <span class="pill pill--process">Process</span>
-        <div class="cs-panel">
-          <img src="../images/projects/ai-framework/03-process.webp" width="2400" height="1060" loading="lazy" alt="Early sketches and wireframes exploring how to organize systems, service classes, and AI enrollments">
+        <div class="cs-label-row">
+          <p class="cs-caption"><span class="pill pill--process">Process</span><span class="cs-caption__lead">Early explorations focused on how administrators naturally think about their environments.</span><br> We experimented with different ways of organizing systems, service classes, and AI enrollments before converging on a workspace that felt familiar to experienced z/OS users.</p>
         </div>
-        <p class="cs-caption"><b><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> Early explorations focused on how administrators naturally think about their environments.</b> We experimented with different ways of organizing systems, service classes, and AI enrollments before converging on a workspace that felt familiar to experienced z/OS users.</p>
+        <div class="cs-panel cs-panel--pair cs-panel--trio">
+          <img src="../images/projects/ai-framework/03-process-1.avif" width="758" height="498" loading="lazy" alt="Hand sketch of tables listing systems where AI is operational, in audit mode, or off">
+          <img src="../images/projects/ai-framework/03-process-2.avif" width="758" height="498" loading="lazy" alt="Sketch of a system layout with service classes linked to systems and an enrollment table">
+          <img src="../images/projects/ai-framework/03-process-3.avif" width="758" height="498" loading="lazy" alt="Wireframe of a workflow panel opening over the System Readiness view">
+          <img src="../images/projects/ai-framework/03-process-4.avif" width="758" height="498" loading="lazy" alt="Wireframe of the enrollments table with filters, modes, and status">
+          <img src="../images/projects/ai-framework/03-process-5.avif" width="758" height="498" loading="lazy" alt="Wireframe of System Readiness with service classes mapped to systems and enrollments">
+          <img src="../images/projects/ai-framework/03-process-6.avif" width="758" height="498" loading="lazy" alt="Early design of a page for exploring where AI is being used on z/OS">
+        </div>
 
-        <span class="pill pill--to-be">To-be</span>
-        <div class="cs-panel cs-panel--flush-bottom">
-          <img src="../images/projects/ai-framework/04-sc.webp" width="2400" height="1332" loading="lazy" alt="Workload Management screen for training models and enabling AI for service classes">
+        <!-- To-be half, set off from the Process half by an edge-to-edge line -->
+        <div class="cs-media__part">
+          <div class="cs-label-row">
+            <p class="cs-caption"><span class="pill pill--to-be">To-be</span><span class="cs-caption__lead">Workload Management.</span><br> The first implementation introduced the core workflow for training models, reviewing results, and enabling AI for individual service classes.</p>
+          </div>
+          <div class="cs-panel">
+            <img src="../images/projects/ai-framework/04-sc.webp" width="2400" height="1332" loading="lazy" alt="Workload Management screen for training models and enabling AI for service classes">
+          </div>
+          <div class="cs-label-row">
+            <p class="cs-caption"><span class="cs-caption__lead">Language Environment.</span><br> Shared design patterns reduced the learning curve, allowing users to focus on the unique behaviors of each AI capability rather than relearning the interface.</p>
+          </div>
+          <div class="cs-panel">
+            <img src="../images/projects/ai-framework/05-sc-1.webp" width="2400" height="1420" loading="lazy" alt="Language Environment screen built on the same shared design patterns">
+          </div>
         </div>
-        <p class="cs-caption"><b><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> Workload Management:</b> The first implementation introduced the core workflow for training models, reviewing results, and enabling AI for individual service classes.</p>
-        <div class="cs-panel">
-          <img src="../images/projects/ai-framework/05-sc-1.webp" width="2400" height="1420" loading="lazy" alt="Language Environment screen built on the same shared design patterns">
-        </div>
-        <p class="cs-caption"><b><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""></b> <b>Language Environment:</b> Shared design patterns reduced the learning curve, allowing users to focus on the unique behaviors of each AI capability rather than relearning the interface.</p>
       </div>
     </section>
 
@@ -140,20 +151,24 @@
       </div>
 
       <div class="cs-media">
+        <div class="cs-label-row">
+          <p class="cs-caption"><span class="cs-caption__lead">Seeing is believing.</span><br> Compare predicted and historical workload patterns before enabling AI, allowing administrators to evaluate recommendations using familiar operational data.</p>
+        </div>
         <div class="cs-panel">
           <img src="../images/projects/ai-framework/06-system-modal-check-results.webp" width="2400" height="1598" loading="lazy" alt="Modal comparing predicted and historical workload patterns before enabling AI">
         </div>
-        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>Seeing is believing:</b> Compare predicted and historical workload patterns before enabling AI, allowing administrators to evaluate recommendations using familiar operational data.</p>
-
+        <div class="cs-label-row">
+          <p class="cs-caption"><span class="cs-caption__lead">Trust before automation.</span><br> AI exposed the reasoning behind each recommendation so administrators could validate individual tuning decisions before adopting automated optimization.</p>
+        </div>
         <div class="cs-panel">
           <img src="../images/projects/ai-framework/07-system-landing-first-time-use.webp" width="2400" height="1500" loading="lazy" alt="System screen showing the reasoning behind each AI recommendation">
         </div>
-        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>Trust before automation:</b> AI exposed the reasoning behind each recommendation so administrators could validate individual tuning decisions before adopting automated optimization.</p>
-
+        <div class="cs-label-row">
+          <p class="cs-caption"><span class="cs-caption__lead">Confidence through evidence.</span><br> Performance metrics compared historical and AI-enabled runs, helping administrators understand how recommendations affected CPU time, memory usage, and other runtime characteristics.</p>
+        </div>
         <div class="cs-panel">
           <img src="../images/projects/ai-framework/08-visualization-5.webp" width="2400" height="1518" loading="lazy" alt="Performance metrics comparing historical and AI-enabled runs">
         </div>
-        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>Confidence through evidence:</b> Performance metrics compared historical and AI-enabled runs, helping administrators understand how recommendations affected CPU time, memory usage, and other runtime characteristics.</p>
       </div>
     </section>
 

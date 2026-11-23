@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Archived version 1 of this case study (replaced by projects/cloud-pak-system.html). Not published. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloud Pak System — Brian Lê</title>
+  <meta name="description" content="A platform for deploying and managing enterprise private cloud infrastructure.">
+  <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&display=swap">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <script src="../js/main.js" defer></script>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+</head>
+<body>
+
+  <header class="site-header">
+    <!-- The glass orb (span.orb) can go back here in place of the name; its styles are kept in css/styles.css -->
+    <a class="site-header__link site-header__name" href="../index.html"><span data-oval>br-index/<span class="site-section">design</span></span></a>
+    <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Contents</span></a>
+  </header>
+
+  <main class="case-study">
+
+    <!-- Overview -->
+    <section class="cs-section cs-section--hero" id="overview">
+      <div class="cs-text">
+        <h1 class="cs-title">Cloud Pak<br> System</h1>
+        <div class="cs-hero-copy">
+          <hr class="cs-rule">
+
+          <p>A platform for deploying and managing enterprise private cloud infrastructure. Relied on by engineers operating complex, high-stakes systems.</p>
+
+          <div class="cs-block">
+            <h3>The Reality</h3>
+            <p>The deployment experience exposed over 40 parameters at once, with no clear hierarchy or sense of priority. Users were left to configure infrastructure directly, often without guidance. When something went wrong, failures were difficult to diagnose and even harder to recover from.</p>
+          </div>
+
+          <blockquote class="cs-quote">It worked, but it was hard to use.</blockquote>
+
+          <div class="cs-block">
+            <h3>Objectives</h3>
+            <p>Modernize a dense legacy interface into a system that could be understood and trusted. Introduce structure, hierarchy, and a consistent visual language through the Carbon Design System.</p>
+          </div>
+
+          <div class="cs-block">
+            <h3>Role</h3>
+            <p>Defined the visual language, interaction patterns, and component specifications. Led design system adoption and worked across product and engineering to reshape core workflows.</p>
+          </div>
+
+          <hr class="cs-rule">
+
+          <div class="cs-block">
+            <h3>The Case Study</h3>
+            <ul class="cs-jump-list">
+              <li><a data-oval href="#start-experience"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Modernizing Start Experience</a></li>
+              <li><a data-oval href="#deployments"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Simplifying Deployments</a></li>
+              <li><a data-oval href="#monitoring"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Monitoring Deployments</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-media">
+        <div class="cs-panel">
+          <img src="../images/projects/cloud-pak-system/01-hero.avif" width="2400" height="1552" alt="Cloud Pak System login screen with a blue abstract graphic beside the sign-in form">
+          <img src="../images/projects/cloud-pak-system/02-desktop-hd.avif" width="2400" height="1576" alt="Cloud Pak System dashboard showing cluster utilization, hardware allocation, and the system rack">
+        </div>
+        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>Login &amp; dashboard explorations:</b> Visual explorations used for stakeholder presentations and storytelling.</p>
+      </div>
+    </section>
+
+    <!-- 1 -->
+    <section class="cs-section" id="start-experience">
+      <div class="cs-text">
+        <p class="cs-number">1</p>
+        <h2 class="cs-section-title">Modernizing<br> login &amp; starting<br> experience</h2>
+        <img class="cs-hand-arrow" src="../images/shared/arrow-hand-drawn.svg" alt="">
+
+        <div class="cs-block">
+          <h3>Evaluating the Legacy Experience</h3>
+          <p>We started with an interface that felt more like a doorway than an introduction. It was bare, functional, and untouched for years. Its utility was there, but intent was lost. We wanted the first moment with the product to feel like a welcome, not a form to fill out.</p>
+        </div>
+
+        <blockquote class="cs-quote">“The moment I log in, I should feel like, this is a modern tool and I’m in good hands.”</blockquote>
+
+        <div class="cs-block">
+          <h3>Implementing Carbon Design System</h3>
+          <p>Working within the Carbon Design System, we rebuilt structure and tone from the ground up. Grids and components gave us order; rhythm and contrast brought back personality. The goal wasn’t just compliance, but also coherence.</p>
+        </div>
+
+        <div class="cs-block">
+          <h3>Refreshing the Visual Language</h3>
+          <p>We approached the visuals like a reset of atmosphere: darker foundations, sharper light, a sense of calm precision. The result was something quieter yet more confident. The login page finally spoke in the same language as the technology behind it.</p>
+        </div>
+      </div>
+
+      <div class="cs-media">
+        <span class="pill pill--as-is">As-is</span>
+        <div class="cs-panel">
+          <img src="../images/projects/cloud-pak-system/03-cluster-overview.webp" width="2400" height="676" loading="lazy" alt="Legacy IBM ID login page and plain welcome screen">
+        </div>
+        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>Legacy, or at least it looks like it.</b> The original entry point felt dated and detached—more mechanical than meaningful.</p>
+
+        <span class="pill pill--to-be">To-be</span>
+        <div class="cs-panel">
+          <img src="../images/projects/cloud-pak-system/04-cluster-overview-2.webp" width="2400" height="1718" loading="lazy" alt="Redesigned login and start screens built with the Carbon Design System">
+        </div>
+        <p class="cs-caption"><b><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""></b> <b>A design system–compliant experience that opens with clarity and tone.</b> Explorations that reintroduce the human element in a system built for machines.</p>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="cs-section" id="deployments">
+      <div class="cs-text">
+        <p class="cs-number">2</p>
+        <h2 class="cs-section-title">Simplifying<br> deployments</h2>
+        <img class="cs-hand-arrow" src="../images/shared/arrow-hand-drawn.svg" alt="">
+
+        <p>The deployment experience had grown out of step with how people actually worked. It exposed the infrastructure instead of abstracting it—dozens of interdependent parameters scattered across panels, no clear hierarchy, no sense of what mattered most.</p>
+
+        <div class="cs-block">
+          <h3>Finding Clarity in Complexity</h3>
+          <p>We started by tracing every step from login to deployment, looking for where people slowed down, repeated tasks, or filled fields just to move forward. Most of the friction wasn’t from what users needed to do, but from how it was <i>shown</i>. Everything had the same weight on screen, so nothing stood out.</p>
+        </div>
+
+        <div class="cs-block">
+          <h3>Designing Understanding</h3>
+          <p>We stripped the process to its essentials: first configure, then validate, then deploy. The design shifted from demanding precision to offering clarity, giving users confidence that they were setting things up right.</p>
+        </div>
+
+        <blockquote class="cs-quote">“Same complexity, just finally made understandable.”</blockquote>
+
+        <div class="cs-block">
+          <h3>Visual Design Saves the Day</h3>
+          <p>Visually, the new experience introduced structure and calm. White space and rhythm replaced noise; color and motion became cues for state and progress.</p>
+        </div>
+      </div>
+
+      <div class="cs-media">
+        <span class="pill pill--as-is">As-is</span>
+        <div class="cs-panel">
+          <img src="../images/projects/cloud-pak-system/05-as-is-deploy.webp" width="2200" height="1826" loading="lazy" alt="Legacy deployment screens with dense panels of parameters">
+        </div>
+        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>As-is:</b> Visual design explorations used for stakeholder presentations and storytelling.</p>
+
+        <span class="pill pill--to-be">To-be</span>
+        <div class="cs-panel">
+          <img src="../images/projects/cloud-pak-system/06-deploy-306.webp" width="2400" height="2362" loading="lazy" alt="Redesigned deployment flow, configure step">
+        </div>
+        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>As-is:</b> Visual design explorations used for stakeholder presentations and storytelling.</p>
+        <div class="cs-panel">
+          <img src="../images/projects/cloud-pak-system/07-deploy-503.webp" width="2400" height="2150" loading="lazy" alt="Redesigned deployment flow, later step">
+        </div>
+        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>As-is:</b> Visual design explorations used for stakeholder presentations and storytelling.</p>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="cs-section" id="monitoring">
+      <div class="cs-text">
+        <p class="cs-number">3</p>
+        <h2 class="cs-section-title">Monitoring<br> deployments</h2>
+        <img class="cs-hand-arrow" src="../images/shared/arrow-hand-drawn.svg" alt="">
+
+        <p>Before this work, deployment was mostly a black box. You’d start a job and hope for the best. If something failed, there wasn’t a clear way to understand what went wrong or what was still running.</p>
+
+        <div class="cs-block">
+          <h3>Bringing visibility into motion</h3>
+          <p>The monitoring view was designed to make the system feel alive. Every cluster, node, and resource now had a place and a pulse. You could see activity unfolding instead of reading static data. It was less about dashboards and more about awareness.</p>
+        </div>
+
+        <div class="cs-block">
+          <h3>A visual language for state and health</h3>
+          <p>The visuals were pared back to help information breathe. We used color sparingly, reserving it for meaning rather than decoration. Layout and rhythm guided the eye without noise or distraction. Even complex relationships became easier to read at a glance.</p>
+        </div>
+
+        <div class="cs-block">
+          <h3>Lasting outcomes</h3>
+          <p>The result is a monitoring experience that feels deliberate and confident. It balances precision with calm, helping users focus on the work instead of fighting the interface.</p>
+        </div>
+
+        <blockquote class="cs-quote">“It gives me context, not just numbers.”</blockquote>
+      </div>
+
+      <div class="cs-media">
+        <!-- On the live site these two images have no gray border, with captions above -->
+        <p class="cs-caption cs-caption--above"><img class="icon" src="../images/icons/arrow-down-curved.svg" alt=""> <b>Process:</b> Visual design explorations used for stakeholder presentations and storytelling.</p>
+        <div class="cs-panel cs-panel--bare cs-panel--process">
+          <img src="../images/projects/cloud-pak-system/08-process.webp" width="2400" height="1670" loading="lazy" alt="Process board of sticky notes beside early monitoring screen designs">
+        </div>
+        <p class="cs-caption cs-caption--above"><img class="icon" src="../images/icons/arrow-down-curved.svg" alt=""> <b>To-be:</b> Visual design explorations used for stakeholder presentations and storytelling.</p>
+        <div class="cs-panel cs-panel--bare">
+          <img src="../images/projects/cloud-pak-system/09-monitor.webp" width="2400" height="4314" loading="lazy" alt="Redesigned monitoring view showing clusters, nodes, and resource health">
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Project menu: a small square arrow button fixed bottom-right.
+       Hover (or tap) opens a card listing this project's sections and the next projects. -->
+  <nav class="project-menu" aria-label="Project contents">
+    <div class="project-menu__panel" id="project-menu-panel">
+      <div class="project-menu__group">
+        <p class="project-menu__title">Cloud Pak System</p>
+        <ul class="project-menu__list">
+          <li><a data-oval href="#overview"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Introduction</a></li>
+          <li><a data-oval href="#start-experience"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Modernizing Start Experience</a></li>
+          <li><a data-oval href="#deployments"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Simplifying Deployments</a></li>
+          <li><a data-oval href="#monitoring"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Monitoring Deployments</a></li>
+        </ul>
+      </div>
+      <div class="project-menu__group">
+        <p class="project-menu__title">Next Projects</p>
+        <ul class="project-menu__list">
+          <li><a data-oval href="../projects/cloud-pak-aiops.html"><img class="icon" src="../images/icons/arrow-right.svg" alt=""> Cloud Pak AIOps</a></li>
+          <li><a data-oval href="../projects/ai-framework.html"><img class="icon" src="../images/icons/arrow-right.svg" alt=""> z/OS AI Framework</a></li>
+        </ul>
+      </div>
+    </div>
+    <button class="project-menu__button" type="button" aria-label="Project menu" aria-expanded="false" aria-controls="project-menu-panel"><img class="icon" src="../images/icons/arrow-north-east.svg" alt=""></button>
+  </nav>
+
+</body>
+</html>

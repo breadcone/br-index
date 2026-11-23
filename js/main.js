@@ -1857,3 +1857,82 @@
     });
   });
 })();
+
+// Browser mockup auto-scroll (case studies). The screen inside [data-autoscroll]
+// scrolls down in short, eased steps with reading pauses, rests at the bottom,
+// then glides back to the top. Hover, touch, wheel, or keyboard focus hands
+// control to the visitor; it picks up again a moment after they leave.
+// Off for prefers-reduced-motion (the screen can still be scrolled by hand).
+(function () {
+  var mocks = document.querySelectorAll("[data-autoscroll]");
+  if (!mocks.length) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var STEP = 0.4;        // share of the visible screen moved per step
+  var STEP_MS = 1100;    // how long each step takes
+  var PAUSE_MS = 1800;   // reading pause between steps
+  var END_PAUSE_MS = 2600;
+  var RESUME_MS = 1200;  // wait after the visitor leaves before resuming
+
+  function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+  mocks.forEach(function (mock) {
+    var view = mock.querySelector(".cs-browser__viewport");
+    if (!view) return;
+    var held = false, visible = false, timer = null, anim = null;
+
+    function stop() {
+      clearTimeout(timer); timer = null;
+      if (anim) { cancelAnimationFrame(anim); anim = null; }
+    }
+
+    function glide(to, ms, done) {
+      var from = view.scrollTop, start = null;
+      function frame(now) {
+        if (start === null) start = now;
+        var t = Math.min(1, (now - start) / ms);
+        view.scrollTop = from + (to - from) * ease(t);
+        if (t < 1) anim = requestAnimationFrame(frame);
+        else { anim = null; done(); }
+      }
+      anim = requestAnimationFrame(frame);
+    }
+
+    function next() {
+      if (held || !visible || document.hidden) return;
+      var max = view.scrollHeight - view.clientHeight;
+      if (max <= 1) return;
+      if (view.scrollTop >= max - 1) {
+        glide(0, STEP_MS * 1.6, function () { timer = setTimeout(next, PAUSE_MS); });
+      } else {
+        var to = Math.min(max, view.scrollTop + view.clientHeight * STEP);
+        glide(to, STEP_MS, function () {
+          timer = setTimeout(next, to >= max - 1 ? END_PAUSE_MS : PAUSE_MS);
+        });
+      }
+    }
+
+    function schedule(ms) { stop(); if (!held && visible) timer = setTimeout(next, ms); }
+    function hold() { held = true; stop(); }
+    function release() { held = false; schedule(RESUME_MS); }
+
+    mock.addEventListener("mouseenter", hold);
+    mock.addEventListener("mouseleave", function () {
+      if (!mock.contains(document.activeElement)) release();
+    });
+    view.addEventListener("focus", hold);
+    view.addEventListener("blur", function () { if (!mock.matches(":hover")) release(); });
+    view.addEventListener("touchstart", hold, { passive: true });
+    view.addEventListener("touchend", function () { held = false; schedule(RESUME_MS * 3); }, { passive: true });
+    view.addEventListener("wheel", function () { if (!held) { stop(); schedule(RESUME_MS * 2); } }, { passive: true });
+
+    new IntersectionObserver(function (entries) {
+      visible = entries[0].isIntersecting;
+      if (visible) schedule(PAUSE_MS); else stop();
+    }, { threshold: 0.5 }).observe(mock);
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) stop(); else schedule(PAUSE_MS);
+    });
+  });
+})();

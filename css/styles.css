@@ -1023,12 +1023,12 @@ a:focus-visible > [data-oval] .oval path,
   grid-area: 5 / 1 / span 2 / span 2;
 }
 
-/* Wisdom and Compassion fill the two cells beside the Phalaenopsis Jar. */
-.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > [data-popup-id="tri-tue-wisdom"] {
+/* Spring and Algae fill the two cells beside the Phalaenopsis Jar. */
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > [data-popup-id="ritual-in-spring"] {
   grid-area: 5 / 3;
 }
 
-.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > [data-popup-id="tu-bi-compassion"] {
+.work-squares:not([data-order="random"]):is(.work-squares--ceramics, [data-cols="3"], [data-cols="4"]) > [data-popup-id="ritual-in-algae"] {
   grid-area: 6 / 3;
 }
 
@@ -2188,6 +2188,157 @@ a.work-squares__item:focus-visible {
   margin-bottom: 0;
 }
 
+/* Tag + caption above the image (Cloud Pak System v2, section 1).
+   The tag sits inline at the start of the caption, on the same baseline as
+   the bold lead-in; the rest of the caption starts on the next line, flush
+   with the tag's left edge. */
+.cs-label-row {
+  margin-bottom: calc(var(--text-small) * 1.4);
+}
+
+.cs-panel + .cs-label-row {
+  margin-top: calc(var(--text-small) * 2.6);
+}
+
+/* Caption text next to a tag: Carbon Gray 80 (the tag keeps its own color) */
+.case-study .cs-media .cs-label-row .cs-caption {
+  color: #393939;
+}
+
+/* Caption lead-in sentence: bold, on its own line */
+.cs-caption__lead {
+  font-weight: var(--weight-bold);
+}
+
+/* Tag on its own line above the caption: sized in em so it stays about as
+   tall as the caption text */
+.case-study .cs-media .cs-label-row .pill {
+  display: table; /* own line, but only as wide as the word */
+  margin: 0 0 calc(var(--text-small) * 0.6);
+  padding: 0.48em 0.6em;
+  font-size: calc(var(--text-small) * 0.82 - 1px); /* fixed size, not tied to the caption */
+}
+
+/* Separate images shown side by side (they used to be one image with a
+   built-in gray gap). Same gap as the hero pair. */
+.cs-panel--pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+.cs-panel--pair,
+.cs-panel__stack {
+  gap: calc(var(--cs-panel-pad) / 2);
+}
+
+.cs-panel__stack {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Three across (AI Framework v2 process sketches); stacks on phones like
+   the pair */
+.cs-panel--pair.cs-panel--trio {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Grid of illustration tiles: 4 across, the big tile spans 2 x 2.
+   The big tile's image fills its cell (cropping a sliver of plain
+   background if needed), so it always lines up with the small tiles. */
+.cs-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: calc(var(--cs-panel-pad) / 4);
+}
+
+.cs-tiles img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cs-tiles__big {
+  position: relative;
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.cs-tiles__big img {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Cloud Pak System v2: every image gets the same 1px Gray 30 border, drawn
+   inside the image so it covers the image's own edge (built-in gray
+   outlines and shadows were trimmed off the files). Keyboard focus still
+   shows the blue focus ring. */
+.case-study--v2 .cs-media .cs-panel img {
+  border: 0;
+}
+
+.case-study--v2 .cs-media .cs-panel img:not(:focus-visible) {
+  outline: 1px solid #c6c6c6; /* Carbon Gray 30 */
+  outline-offset: -1px;
+}
+
+/* Images stacked in one panel sit at the same half gap everywhere */
+.case-study--v2 .cs-panel {
+  gap: calc(var(--cs-panel-pad) / 2);
+}
+
+.case-study .cs-media .cs-label-row .cs-caption {
+  max-inline-size: none;
+  margin: 0;
+  padding-inline-start: 0;
+  font-size: 12px;
+  line-height: calc(var(--leading-body) + 0.1);
+}
+
+/* Version 2 layout test (projects/cloud-pak-system-v2.html, desktop only):
+   a 1px divider runs top to bottom between the text and image columns, and
+   the images drop the gray border, sitting with the same padding as the text.
+   The text column keeps the same width it has in version 1. */
+@media (width > 1024px) {
+  .case-study--v2 .cs-section {
+    grid-template-columns:
+      calc((100% - 2 * var(--cs-pad) - 11 * var(--cs-gutter)) / 4 + 2 * var(--cs-gutter) + 2 * var(--cs-pad))
+      minmax(0, 1fr);
+    column-gap: 0;
+    padding: 0;
+  }
+
+  .case-study--v2 .cs-text,
+  .case-study--v2 .cs-media {
+    grid-column: auto;
+    padding: var(--cs-pad);
+  }
+
+  .case-study--v2 .cs-media {
+    border-left: var(--line); /* the divider */
+    background: #f4f4f4;      /* Carbon Gray 10 */
+  }
+
+  /* Hero rule runs from the box border to the divider */
+  .case-study--v2 .cs-section--hero .cs-title + .cs-rule,
+  .case-study--v2 .cs-section--hero .cs-hero-copy > .cs-rule:first-child {
+    margin-right: calc(var(--cs-pad) * -1);
+  }
+
+  /* No gray border: images sit straight in the column */
+  .case-study--v2 .cs-panel {
+    padding: 0;
+    background: none;
+  }
+
+  /* Captions and their arrows line up with the image's left edge */
+  .case-study--v2 .cs-caption {
+    --cs-caption-image-inset: 0px;
+  }
+}
+
 /* Award link in the serif, like the live site */
 .cs-award {
   --oval-stroke: 1.5px;
@@ -3097,6 +3248,31 @@ html:not(.js) .view-toggle {
 
   .case-study .cs-media .pill {
     margin-bottom: var(--cs-media-gap);
+  }
+
+  .case-study .cs-label-row {
+    margin-bottom: var(--cs-media-gap);
+  }
+
+  .case-study .cs-panel + .cs-label-row {
+    margin-top: var(--cs-stack-gap);
+  }
+
+  /* Side-by-side images stack on phones */
+  .case-study .cs-panel--pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-study .cs-panel--pair,
+  .case-study .cs-panel__stack,
+  .case-study--v2 .cs-panel {
+    gap: var(--cs-media-gap);
+  }
+
+  /* v2: the full-width hero image touches the box edges on phones, so it
+     skips the inside border (it would sit right next to the black line) */
+  .case-study--v2 .cs-section--hero .cs-panel img:first-child:not(:focus-visible) {
+    outline: none;
   }
 
   .case-study .cs-caption {
@@ -4264,4 +4440,86 @@ html:not(.js) .view-toggle {
 .work-browser__close,
 .work-browser__close:not([hidden]) {
   display: none;
+}
+
+/* Browser mockup (case studies): a 16:10 window whose screen scrolls on its own.
+   Hover, touch, or focus it and the visitor scrolls it themselves. */
+.cs-browser {
+  background: var(--color-box);
+  border: var(--line);
+}
+
+.cs-browser__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-bottom: var(--line);
+}
+
+.cs-browser__dots {
+  display: flex;
+  gap: 5px;
+  flex: none;
+}
+
+.cs-browser__dots i {
+  width: 8px;
+  height: 8px;
+  border: var(--line);
+  border-radius: 50%;
+}
+
+.cs-browser__viewport {
+  aspect-ratio: 16 / 10;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.cs-browser__viewport:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.cs-panel .cs-browser__viewport img {
+  width: 100%;
+}
+
+/* Sticky top bar and bottom action bar inside the browser mockup: the same
+   screenshot cropped to that strip (height and offset set inline per image). */
+.cs-browser__sticky {
+  position: sticky;
+  z-index: 1;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+}
+
+.cs-browser__sticky--top {
+  top: 0;
+  background-position: top;
+}
+
+.cs-browser__sticky--bottom {
+  bottom: 0;
+  background-position: bottom;
+}
+
+/* The browser frame already draws the edge, so the screen inside it skips
+   the v2 inside border (and the phone border) that would double it up. */
+.case-study--v2 .cs-media .cs-panel .cs-browser img:not(:focus-visible) {
+  outline: none;
+}
+
+.case-study .cs-panel .cs-browser img {
+  border: 0;
+}
+
+/* A media column split in two parts (Cloud Pak System v2, section 2): the
+   second part bleeds out to the column's edges and is set off by one 1px
+   line running edge to edge (it keeps the column's own background). */
+.cs-media__part {
+  margin: var(--cs-pad) calc(var(--cs-pad) * -1) calc(var(--cs-pad) * -1);
+  padding: var(--cs-pad);
+  border-top: var(--line);
 }

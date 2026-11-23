@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Archived version 1 of this case study (replaced by projects/ai-framework.html). Not published. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>z/OS AI Framework — Brian Lê</title>
+  <meta name="description" content="A centralized place for configuring, training, monitoring, and managing AI capabilities across IBM z/OS.">
+  <!-- Temporary serif: Fraunces Italic (free). Swap for licensed Gramercy later. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&display=swap">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <script src="../js/main.js" defer></script>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+</head>
+<body>
+
+  <header class="site-header">
+    <!-- The glass orb (span.orb) can go back here in place of the name; its styles are kept in css/styles.css -->
+    <a class="site-header__link site-header__name" href="../index.html"><span data-oval>br-index/<span class="site-section">design</span></span></a>
+    <a class="site-header__link site-header__index" href="#index" role="button"><span data-oval>Contents</span></a>
+  </header>
+
+  <main class="case-study">
+
+    <!-- Overview -->
+    <section class="cs-section cs-section--hero" id="overview">
+      <div class="cs-text">
+        <h1 class="cs-title">z/OS<br> AI Framework</h1>
+        <div class="cs-hero-copy">
+          <hr class="cs-rule">
+
+          <p>A centralized place for configuring, training, monitoring, and managing AI capabilities across IBM z/OS. Over four years, I helped shape the experience from its first AI use case into a platform supporting four AI capabilities across the operating system.</p>
+
+          <div class="cs-block">
+            <h3>The Challenge</h3>
+            <p>IBM was introducing z/OS AI Framework, bringing AI-powered capabilities into core parts of the operating system. The challenge was designing the first interface for configuring, training, and managing those capabilities. As new use cases were introduced, that experience became the foundation for the platform.</p>
+          </div>
+
+          <blockquote class="cs-quote">AI should to feel like a capability, not another system to manage.</blockquote>
+
+          <div class="cs-block">
+            <h3>Objectives</h3>
+            <p>Create a unified experience for configuring, training, and managing AI capabilities across IBM z/OS. Build a framework that could scale across future AI use cases while giving administrators confidence to adopt AI.</p>
+          </div>
+
+          <div class="cs-block">
+            <h3>UX/Visual Designer <img class="icon" src="../images/icons/arrow-right.svg" alt="to"> Design Lead</h3>
+            <p>Designed the platform’s core experiences before expanding my role to include design direction, team process, and collaboration across product, engineering, and research.</p>
+          </div>
+
+          <hr class="cs-rule">
+
+          <div class="cs-block">
+            <h3>The Case Study</h3>
+            <ul class="cs-jump-list">
+              <li><a data-oval href="#introducing-ai"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Introducing AI to z/OS</a></li>
+              <li><a data-oval href="#trust-confidence"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Designing Trust &amp; Confidence</a></li>
+              <li><a data-oval href="#growth"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Designing for Growth</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-media">
+        <div class="cs-panel">
+          <img src="../images/projects/ai-framework/01-hero.avif" width="2400" height="1600" alt="Abstract render of gray and blue planes converging at a single point">
+          <img src="../images/projects/ai-framework/02-homepage-discover.avif" width="2400" height="1880" alt="IBM z17 mainframe: three dark cabinets against a blue background">
+        </div>
+        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>IBM z17</b>: The first mainframe engineered for the AI age. AI Framework brought those capabilities into the hands of system administrators.</p>
+      </div>
+    </section>
+
+    <!-- 1 -->
+    <section class="cs-section" id="introducing-ai">
+      <div class="cs-text">
+        <p class="cs-number">1</p>
+        <h2 class="cs-section-title">Introducing AI<br> to z/OS</h2>
+        <img class="cs-hand-arrow" src="../images/shared/arrow-hand-drawn.svg" alt="">
+
+        <div class="cs-block">
+          <h3>Designing the First AI Experience</h3>
+          <p>AI Framework introduced machine learning to IBM z/OS for the first time. Without existing interaction patterns to build from, we worked closely with engineering to translate a complex technical domain into an experience that administrators could easily understand and trust.</p>
+        </div>
+
+        <blockquote class="cs-quote">The domain was still taking shape, and so was the interface.</blockquote>
+
+        <div class="cs-block">
+          <h3>Making Sense of a New Domain</h3>
+          <p>AI Framework introduced an entirely new set of concepts to z/OS. AI models, training, recommendations, and operational modes all needed a place within an interface that still felt familiar to experienced administrators. Working closely with engineering and our users, we developed a shared understanding of the domain before designing it into a single, unified platform.</p>
+        </div>
+
+        <div class="cs-block">
+          <h3>Designing for Growth</h3>
+          <p>Although Workload Management was the first AI capability, the platform was always intended to grow. As Language Environment and additional AI capabilities followed, shared navigation, interaction patterns, and workflows provided continuity while allowing each experience to adapt to the needs of its own specific domain.</p>
+        </div>
+      </div>
+
+      <div class="cs-media">
+        <span class="pill pill--process">Process</span>
+        <div class="cs-panel">
+          <img src="../images/projects/ai-framework/03-process.webp" width="2400" height="1060" loading="lazy" alt="Early sketches and wireframes exploring how to organize systems, service classes, and AI enrollments">
+        </div>
+        <p class="cs-caption"><b><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> Early explorations focused on how administrators naturally think about their environments.</b> We experimented with different ways of organizing systems, service classes, and AI enrollments before converging on a workspace that felt familiar to experienced z/OS users.</p>
+
+        <span class="pill pill--to-be">To-be</span>
+        <div class="cs-panel cs-panel--flush-bottom">
+          <img src="../images/projects/ai-framework/04-sc.webp" width="2400" height="1332" loading="lazy" alt="Workload Management screen for training models and enabling AI for service classes">
+        </div>
+        <p class="cs-caption"><b><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> Workload Management:</b> The first implementation introduced the core workflow for training models, reviewing results, and enabling AI for individual service classes.</p>
+        <div class="cs-panel">
+          <img src="../images/projects/ai-framework/05-sc-1.webp" width="2400" height="1420" loading="lazy" alt="Language Environment screen built on the same shared design patterns">
+        </div>
+        <p class="cs-caption"><b><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""></b> <b>Language Environment:</b> Shared design patterns reduced the learning curve, allowing users to focus on the unique behaviors of each AI capability rather than relearning the interface.</p>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="cs-section" id="trust-confidence">
+      <div class="cs-text">
+        <p class="cs-number">2</p>
+        <h2 class="cs-section-title">Designing<br> Trust &amp; Confidence</h2>
+        <img class="cs-hand-arrow" src="../images/shared/arrow-hand-drawn.svg" alt="">
+
+        <p>AI recommendations only become useful if administrators are willing to act on them. Because these systems directly affect production workloads, every recommendation needed to be understandable, transparent, and easy to validate before it could be fully trusted.</p>
+
+        <blockquote class="cs-quote">How do you convince a conservative, highly technical admin to trust AI?</blockquote>
+
+        <div class="cs-block">
+          <h3>Seeing is Believing</h3>
+          <p>Every recommendation could be inspected before it was enabled. Simulations compared predicted and historical behavior, while detailed runtime options explained exactly what AI proposed changing. The goal was to keep users in control throughout every stage of their adoption process.</p>
+        </div>
+
+        <div class="cs-block">
+          <h3>Earning Confidence</h3>
+          <p>Performance metrics made it possible to compare historical and AI-enabled runs over time. Improvements became visible through familiar operational data, giving administrators another way to evaluate AI as they expanded adoption across their production environments.</p>
+        </div>
+      </div>
+
+      <div class="cs-media">
+        <div class="cs-panel">
+          <img src="../images/projects/ai-framework/06-system-modal-check-results.webp" width="2400" height="1598" loading="lazy" alt="Modal comparing predicted and historical workload patterns before enabling AI">
+        </div>
+        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>Seeing is believing:</b> Compare predicted and historical workload patterns before enabling AI, allowing administrators to evaluate recommendations using familiar operational data.</p>
+
+        <div class="cs-panel">
+          <img src="../images/projects/ai-framework/07-system-landing-first-time-use.webp" width="2400" height="1500" loading="lazy" alt="System screen showing the reasoning behind each AI recommendation">
+        </div>
+        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>Trust before automation:</b> AI exposed the reasoning behind each recommendation so administrators could validate individual tuning decisions before adopting automated optimization.</p>
+
+        <div class="cs-panel">
+          <img src="../images/projects/ai-framework/08-visualization-5.webp" width="2400" height="1518" loading="lazy" alt="Performance metrics comparing historical and AI-enabled runs">
+        </div>
+        <p class="cs-caption"><img class="icon" src="../images/icons/arrow-up-curved.svg" alt=""> <b>Confidence through evidence:</b> Performance metrics compared historical and AI-enabled runs, helping administrators understand how recommendations affected CPU time, memory usage, and other runtime characteristics.</p>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="cs-section" id="growth">
+      <div class="cs-text">
+        <p class="cs-number">3</p>
+        <h2 class="cs-section-title">Designing<br> for Growth</h2>
+        <img class="cs-hand-arrow" src="../images/shared/arrow-hand-drawn.svg" alt="">
+
+        <p>The platform was always intended to support many AI capabilities across IBM z/OS. Each new use case introduced different workflows and technical requirements, but they all still felt like part of the same family.</p>
+
+        <blockquote class="cs-quote">The platform kept growing.<br>The design kept up.</blockquote>
+
+        <div class="cs-block">
+          <h3>A Foundation for the Future</h3>
+          <p>Over four years, the platform expanded from a single AI capability to multiple production experiences, with additional concepts already underway. Designing for growth meant new capabilities could build on an established foundation instead of starting over from scratch.</p>
+        </div>
+      </div>
+
+      <div class="cs-media">
+        <div class="cs-panel">
+          <img src="../images/projects/ai-framework/09-grad-teal.webp" width="2400" height="2266" loading="lazy" alt="z/OS AI Framework home page showing configured AI capabilities and future use cases">
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Project menu: a small "Contents" button fixed bottom-right.
+       Hover (or tap) opens a card listing this project's sections and the next projects. -->
+  <nav class="project-menu" aria-label="Project contents">
+    <div class="project-menu__panel" id="project-menu-panel">
+      <div class="project-menu__group">
+        <p class="project-menu__title">z/OS AI Framework</p>
+        <ul class="project-menu__list">
+          <li><a data-oval href="#overview"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Introduction</a></li>
+          <li><a data-oval href="#introducing-ai"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Introducing AI to z/OS</a></li>
+          <li><a data-oval href="#trust-confidence"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Designing Trust &amp; Confidence</a></li>
+          <li><a data-oval href="#growth"><img class="icon" src="../images/icons/arrow-south-east.svg" alt=""> Designing for Growth</a></li>
+        </ul>
+      </div>
+      <div class="project-menu__group">
+        <p class="project-menu__title">Next Projects</p>
+        <ul class="project-menu__list">
+          <li><a data-oval href="../projects/cloud-pak-system.html"><img class="icon" src="../images/icons/arrow-right.svg" alt=""> Cloud Pak System</a></li>
+          <li><a data-oval href="../projects/cloud-pak-aiops.html"><img class="icon" src="../images/icons/arrow-right.svg" alt=""> Cloud Pak AIOps</a></li>
+        </ul>
+      </div>
+    </div>
+    <button class="project-menu__button" type="button" aria-label="Project menu" aria-expanded="false" aria-controls="project-menu-panel"><img class="icon" src="../images/icons/arrow-north-east.svg" alt=""></button>
+  </nav>
+
+</body>
+</html>
