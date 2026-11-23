@@ -2902,6 +2902,11 @@ a.work-squares__item:focus-visible {
   }
 }
 
+/* The popup takes focus when opened with a mouse or touch; no ring for that. */
+.lightbox__viewport:focus {
+  outline: none;
+}
+
 /* Keep the photo popup's close control available to assistive technology. */
 .lightbox__close {
   position: absolute;

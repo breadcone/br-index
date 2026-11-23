@@ -996,6 +996,11 @@ function pagePath(path) {
   var frame = pop.querySelector(".lightbox__frame");
   var big = pop.querySelector(".lightbox__img");
   var closeBtn = pop.querySelector(".lightbox__close");
+  viewport.setAttribute("tabindex", "-1"); // can take focus, but isn't a Tab stop
+  // Remember whether the last input was a pointer or the keyboard.
+  var usedPointer = false;
+  document.addEventListener("pointerdown", function () { usedPointer = true; }, true);
+  document.addEventListener("keydown", function () { usedPointer = false; }, true);
   var lastPhoto = null;
   var meta = pop.querySelector(".lightbox__meta");
   var thumbs = pop.querySelector(".lightbox__thumbs");
@@ -1225,7 +1230,10 @@ function pagePath(path) {
     sizeFor();
     viewport.scrollTop = 0;
     document.documentElement.classList.add("lightbox-open");
-    closeBtn.focus({ preventScroll: true });
+    // Keyboard users land on the close control. Mouse and touch users get
+    // focus on the popup itself, so the hidden X doesn't flash into view.
+    if (usedPointer) viewport.focus({ preventScroll: true });
+    else closeBtn.focus({ preventScroll: true });
   }
 
   function open(photo) {
@@ -1377,8 +1385,8 @@ function pagePath(path) {
 /* ---------------------------------------------------------
    Orb photo highlight
    By default the highlight on the glass orb photo drifts slowly left and
-   right on its own. When the mouse comes within a short distance of the
-   photo, it follows the mouse's left/right position instead, then eases
+   right on its own. When the mouse comes near the orb (within a circle
+   wider than the photo), it follows the mouse's left/right position instead, then eases
    back into the slow drift when the mouse moves away. It moves straight
    across the glass at a fixed height. The drift only runs while the photo
    is on screen. Off for reduced motion.
@@ -1401,19 +1409,27 @@ function pagePath(path) {
   var last = null;
 
   // How close the mouse must be to start following: a circle around the
-  // photo's center, a bit bigger than the photo itself (at least 160px).
-  function range(box) { return Math.max(160, box.width * 1.25); }
+  // orb's center, well beyond the photo itself (at least 240px).
+  function range(box) { return Math.max(240, box.width * 1.8); }
+  // How far left/right the mouse moves to carry the light from one end to
+  // the other (kept the same as before, so the light stays as responsive).
+  function span(box) { return Math.max(160, box.width * 1.25) * 0.75; }
 
-  function target(photo, s, dt) {
-    var box = photo.getBoundingClientRect();
+  // How quickly the light catches up, per second of time rather than per
+  // frame, so it moves at the same speed on every screen and browser
+  // (Safari often runs at 30 frames a second, which used to halve it).
+  // Higher = quicker. Following the mouse is quick; drifting is gentle.
+  var FOLLOW_SPEED = 8;
+  var DRIFT_SPEED = 3.6;
+
+  function target(box, s, dt) {
     var cx = box.left + box.width * ORB.x;
     var cy = box.top + box.height * ORB.y;
-    var r = range(box);
-    if (mouse && Math.hypot(mouse.x - cx, mouse.y - cy) <= r) {
+    if (mouse && Math.hypot(mouse.x - cx, mouse.y - cy) <= range(box)) {
       // Following: only the mouse's left/right position counts.
       s.following = true;
-      var t = Math.max(-1, Math.min(1, (mouse.x - cx) / (r * 0.75)));
-      return { x: ORB.x + t * SWING, y: ORB.y, ease: 0.05 }; // lower = slower, smoother catch-up
+      var t = Math.max(-1, Math.min(1, (mouse.x - cx) / span(box)));
+      return { x: ORB.x + t * SWING, y: ORB.y, speed: FOLLOW_SPEED };
     }
     if (s.following) {
       // Just left the range: pick up the drift from where the light is now.
@@ -1421,50 +1437,67 @@ function pagePath(path) {
       s.phase = Math.asin(Math.max(-1, Math.min(1, (s.x - ORB.x) / SWING)));
     }
     s.phase += dt * (2 * Math.PI / DRIFT_SECONDS);
-    return { x: ORB.x + Math.sin(s.phase) * SWING, y: ORB.y, ease: 0.06 };
+    return { x: ORB.x + Math.sin(s.phase) * SWING, y: ORB.y, speed: DRIFT_SPEED };
+  }
+
+  // Only touch a setting when its value actually changed (saves the
+  // browser from redrawing the glow when nothing moved).
+  function set(photo, s, name, value) {
+    if (s.last[name] === value) return;
+    s.last[name] = value;
+    photo.style.setProperty(name, value);
   }
 
   function frame(now) {
-    var dt = last === null ? 0 : Math.min(0.1, (now - last) / 1000);
+    var dt = last === null ? 1 / 60 : Math.min(0.1, (now - last) / 1000);
     last = now;
     var any = false;
+    // Measure every photo first, then change them all. Measuring after a
+    // change forces the browser to redo the page layout mid-frame, which
+    // is what made it sluggish (Safari especially).
+    var boxes = Array.prototype.map.call(photos, function (photo, i) {
+      return visible[i] ? photo.getBoundingClientRect() : null;
+    });
     photos.forEach(function (photo, i) {
       if (!visible[i]) return;
       any = true;
       var s = state[i];
-      var t = target(photo, s, dt);
-      s.x += (t.x - s.x) * t.ease;
-      s.y += (t.y - s.y) * t.ease;
-      photo.style.setProperty("--hx", (s.x * 100).toFixed(2) + "%");
-      photo.style.setProperty("--hy", (s.y * 100).toFixed(2) + "%");
+      if (!s.last) s.last = {};
+      var box = boxes[i];
+      var t = target(box, s, dt);
+      var k = 1 - Math.exp(-t.speed * dt);
+      s.x += (t.x - s.x) * k;
+      s.y += (t.y - s.y) * k;
+      set(photo, s, "--hx", (s.x * 100).toFixed(2) + "%");
+      set(photo, s, "--hy", (s.y * 100).toFixed(2) + "%");
       // white in the middle, turning the same pink as the highlight moves toward either side
       var side = Math.max(-1, Math.min(1, (s.x - ORB.x) / (0.75 * ORB.r)));
-      photo.style.setProperty("--pink", Math.abs(side).toFixed(3));
+      set(photo, s, "--pink", Math.abs(side).toFixed(3));
       // bend the highlight to follow the orb's surface. d is how far across
       // the orb it sits (0 = middle, 1 = edge); a line drawn down a ball
       // curves more the nearer it is to the edge, with radius r / d.
-      var w = photo.getBoundingClientRect().width;
+      var w = box.width;
       var d = (s.x - ORB.x) / ORB.r;
       var dir = d < 0 ? -1 : 1;
       var ad = Math.max(0.12, Math.abs(d));
       var hr = (ORB.r / ad) * w;
       var fs = Math.sqrt(Math.max(0.15, 1 - d * d));
-      photo.style.setProperty("--hr", hr.toFixed(1) + "px");
-      photo.style.setProperty("--hcx", (s.x * w - dir * hr).toFixed(1) + "px");
-      photo.style.setProperty("--ht", (w * 0.06 * fs).toFixed(1) + "px");
-      photo.style.setProperty("--fs", fs.toFixed(3));
+      set(photo, s, "--hr", hr.toFixed(1) + "px");
+      set(photo, s, "--hcx", (s.x * w - dir * hr).toFixed(1) + "px");
+      set(photo, s, "--ht", (w * 0.06 * fs).toFixed(1) + "px");
+      set(photo, s, "--fs", fs.toFixed(3));
       // shadow slides the opposite way from the highlight, staying under the orb
       var sx = ORB.x - (s.x - ORB.x) * 0.9;
       var sy = ORB.y + ORB.r * 1.02 - (s.y - ORB.y) * 0.25;
-      photo.style.setProperty("--sx", (sx * 100).toFixed(2) + "%");
-      photo.style.setProperty("--sy", (sy * 100).toFixed(2) + "%");
+      set(photo, s, "--sx", (sx * 100).toFixed(2) + "%");
+      set(photo, s, "--sy", (sy * 100).toFixed(2) + "%");
       // light focused through the glass lands in the shadow, a little closer to the orb
       var cx = ORB.x - (s.x - ORB.x) * 0.55;
-      photo.style.setProperty("--cx", (cx * 100).toFixed(2) + "%");
-      photo.style.setProperty("--cy", ((sy - 0.004) * 100).toFixed(2) + "%");
+      set(photo, s, "--cx", (cx * 100).toFixed(2) + "%");
+      set(photo, s, "--cy", ((sy - 0.004) * 100).toFixed(2) + "%");
       // faint wash on the backdrop, on the same side as the light
       var lx = ORB.x + (s.x - ORB.x) * 3;
-      photo.style.setProperty("--lx", (lx * 100).toFixed(2) + "%");
+      set(photo, s, "--lx", (lx * 100).toFixed(2) + "%");
     });
     if (any) requestAnimationFrame(frame);
     else { running = false; last = null; }
