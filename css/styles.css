@@ -2368,7 +2368,7 @@ a.work-squares__item:focus-visible {
   --index-pad-x: calc(var(--box-pad-x) * 0.75);
   --index-pad-y: calc(var(--box-pad-y) * 0.75);
   --index-cell-y: calc(var(--u) * 0.75);         /* space around each entry */
-  --index-cell-y-compact: calc(var(--u) * 0.35); /* single-line entries */
+  --index-cell-y-compact: calc(var(--u) * 0.25); /* single-line entries (a little tighter than the 0.35u they were) */
 }
 
 .index-sec {
@@ -2455,6 +2455,28 @@ a.work-squares__item:focus-visible {
   padding-bottom: var(--index-cell-y-compact);
 }
 
+/* Long groups (ceramics Objects, orchid Species): 5 entries show in full
+   and the 6th is cut in half right at the divider below, a hint that the
+   rest scrolls inside the group. So the section has no bottom padding: the
+   list runs down to the line. A row is its padding plus the title's line
+   (2u at 1.2). A little room above the list keeps the hover oval from
+   being clipped; the usual section padding sits under the last entry and
+   only shows once scrolled to the end. Scrolling stops at the list's ends
+   instead of carrying on into the panel. */
+.index-sec--scroll {
+  padding-bottom: 0;
+}
+
+.index-sec--scroll .index-cells {
+  --row: calc(var(--index-cell-y-compact) * 2 + var(--u) * 2.4);
+  --oval-room: calc(var(--u) * 0.2);
+  max-height: calc(var(--row) * 5.5 + var(--oval-room));
+  padding: var(--oval-room) 0 var(--index-pad-y);
+  margin-top: calc(var(--oval-room) * -1); /* the list's first row stays where it was */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 
 .index-cell__text {
   display: flex;
@@ -2475,6 +2497,26 @@ a.work-squares__item:focus-visible {
 
 .index-cell__meta {
   margin-top: calc(var(--u) * 0.3);
+}
+
+/* Related entries (the other portfolios): the menu title's italic serif
+   and colors ("/" black, name blue). Sized to look the same as the sans
+   entries above, not to measure the same: the serif's lowercase is about
+   10% shorter and its light italic reads smaller still, so it is set 15%
+   larger (2.3u vs 2u). */
+.index-sec--related .index-cell__title {
+  font-size: calc(var(--u) * 2.3);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-variation-settings: var(--serif-axes);
+  font-weight: var(--weight-serif-light);
+  letter-spacing: var(--tracking-display);
+}
+
+/* The "/" reads a little tall next to the lowercase name, so it is set
+   slightly smaller, on the same baseline */
+.index-cell__slash {
+  font-size: 0.88em;
 }
 
 .index-overlay {

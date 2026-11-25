@@ -67,22 +67,21 @@ function pagePath(path) {
       title: "/ceramics",
       home: "ceramics.html",
       groups: [
-        { label: "Objects", showCount: true, items: [
-          { text: "Dendrobium", href: "ceramics.html#dendrobium" },
+        // Same order as the grid on ceramics.html (its curated order)
+        { label: "Objects", showCount: true, scroll: true, items: [
+          { text: "Stone Fruit", href: "ceramics.html#stone-fruit" },
+          { text: "Ritual in Oxide", href: "ceramics.html#ritual-in-oxide" },
+          { text: "The Gate", href: "ceramics.html#the-gate" },
+          { text: "Trí Tuệ (Wisdom)", href: "ceramics.html#tri-tue-wisdom" },
           { text: "Persimmon Fuyu", href: "ceramics.html#persimmon-fuyu" },
           { text: "Persimmon Hachiya", href: "ceramics.html#persimmon-hachiya" },
           { text: "Phalaenopsis", href: "ceramics.html#phalaenopsis" },
-          { text: "Ritual in Algae", href: "ceramics.html#ritual-in-algae" },
-          { text: "Ritual in Jade", href: "ceramics.html#ritual-in-jade" },
-          { text: "Ritual in Oxide", href: "ceramics.html#ritual-in-oxide" },
           { text: "Ritual in Spring", href: "ceramics.html#ritual-in-spring" },
-          { text: "Stone Fruit", href: "ceramics.html#stone-fruit" },
-          { text: "The Gate", href: "ceramics.html#the-gate" },
-          { text: "Trí Tuệ (Wisdom)", href: "ceramics.html#tri-tue-wisdom" },
-          { text: "Từ Bi (Compassion)", href: "ceramics.html#tu-bi-compassion" }
+          { text: "Ritual in Algae", href: "ceramics.html#ritual-in-algae" },
+          { text: "Từ Bi (Compassion)", href: "ceramics.html#tu-bi-compassion" },
+          { text: "Ritual in Jade", href: "ceramics.html#ritual-in-jade" },
+          { text: "Dendrobium", href: "ceramics.html#dendrobium" }
         ] },
-        // "Artist Statement" has no page yet
-        { label: "Info", items: [{ text: "Artist Statement", href: "#", todo: true }] },
         { label: "Contact", items: [EMAIL, INSTAGRAM] }
       ]
     },
@@ -92,7 +91,7 @@ function pagePath(path) {
       groups: [
         // Species and Hybrids show their labels even if emptied. Names are in
         // alphabetical order. Each opens that orchid's photo popup.
-        { label: "Species", keep: true, items: [
+        { label: "Species", showCount: true, keep: true, scroll: true, items: [
           orchid("Bulbophyllum rothschildianum"),
           orchid("Cattleya luteola"),
           orchid("Dendrobium bellatulum"),
@@ -101,7 +100,7 @@ function pagePath(path) {
           orchid("Phalaenopsis corningiana"),
           orchid("Platystele ovatilabia")
         ] },
-        { label: "Hybrids", keep: true, items: [
+        { label: "Hybrids", showCount: true, keep: true, items: [
           orchid("Brassavola David Sander"),
           orchid("Cattleya Peckhaviensis"),
           orchid("Phalaenopsis Sacha")
@@ -136,13 +135,25 @@ function pagePath(path) {
     var SHOW_YEARS = false;
     var meta = SHOW_YEARS && item.meta ? '<span class="index-cell__meta">' + item.meta + "</span>" : "";
     return '<li><a class="index-cell" href="' + href + '"' + ext + cur + todo + about + ">" +
-      '<span class="index-cell__text"><span class="index-cell__title" data-oval>' + item.text + "</span>" + meta + "</span></a></li>";
+      '<span class="index-cell__text"><span class="index-cell__title" data-oval>' + (item.html || item.text) + "</span>" + meta + "</span></a></li>";
   }
   // `compact`: single-line entries (no years) sit closer together
-  function group(label, items, compact, keep) {
+  // `scroll`: long lists show 4 and a half entries, and the rest scroll
+  function group(label, items, compact, keep, scroll) {
     if (!items.length && !keep) return "";
-    return '<section class="index-sec' + (compact ? " index-sec--compact" : "") + '"><div class="index-sec__head"><h2 class="label">' + label + ":</h2></div>" +
+    return '<section class="index-sec' + (compact ? " index-sec--compact" : "") + (scroll ? " index-sec--scroll" : "") + '"><div class="index-sec__head"><h2 class="label">' + label + ":</h2></div>" +
       '<ul class="index-cells">' + items.map(cell).join("") + "</ul></section>";
+  }
+  // Last group in every menu: the other two portfolios ("/ceramics",
+  // "/orchids"), in the menu title's italic serif ("/" black and a touch
+  // smaller, name blue)
+  function related(menu) {
+    var items = Object.keys(MENUS).filter(function (k) { return MENUS[k] !== menu; }).map(function (k) {
+      var m = MENUS[k];
+      var name = m.title.replace(/^\//, "");
+      return { text: m.title, html: '<span class="index-cell__slash">/</span><span class="site-section">' + name + "</span>", href: m.home };
+    });
+    return group("Related entries", items, true).replace('class="index-sec index-sec--compact"', 'class="index-sec index-sec--compact index-sec--related"');
   }
   function buildPanel(menu, withTitle) {
     menu = menu || INDEX;
@@ -151,8 +162,9 @@ function pagePath(path) {
       (menu.subtitle ? '<p class="index-sub">' + menu.subtitle + "</p>" : "") + "</section>" +
       menu.groups.map(function (g) {
         var label = g.showCount ? g.label + " (" + g.items.length + ")" : g.label;
-        return group(label, g.items, true, g.keep);
-      }).join("")
+        return group(label, g.items, true, g.keep, g.scroll);
+      }).join("") +
+      related(menu)
     );
   }
 
@@ -1866,6 +1878,18 @@ function pagePath(path) {
       var cols = Number(currentCols) || 2;
       var sequence = currentOrder === "random" ? randomOrder(cols) : items;
       sequence.forEach(function (item) { grid.appendChild(item); });
+      syncMenuOrder(sequence);
+    });
+  }
+
+  // The Contents menu's Objects list follows the grid: whatever order the
+  // grid is showing (curated, newest first, shuffled), the menu shows too
+  function syncMenuOrder(sequence) {
+    var menuLinks = Array.prototype.slice.call(document.querySelectorAll(".index-overlay .index-cell"));
+    sequence.forEach(function (item) {
+      var id = item.getAttribute("data-popup-id");
+      var link = id && menuLinks.find(function (a) { return a.hash === "#" + id; });
+      if (link) link.parentNode.parentNode.appendChild(link.parentNode);
     });
   }
 
